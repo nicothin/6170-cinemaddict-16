@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Николай Громов](https://up.htmlacademy.ru/ecmascript/16/user/6170).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Фаллер](https://htmlacademy.ru/profile/id505933).
 
 ---
 
