@@ -1,6 +1,6 @@
-import { createMovieCard } from './movieCard';
-import { createMovieList } from './movieList';
-import { createShowMore } from './showMoreButton';
+import { createMovieCard } from './movie-card';
+import { createMovieList } from './movie-list';
+import { createShowMore } from './show-more-button';
 
 const MAIN_MOVIE_COUNT = 5;
 const TOP_RATED_MOVIE_COUNT = 2;

@@ -1,6 +1,6 @@
 import { renderTemplate } from './render';
-import { createMovieCounter } from './view/movieCounter';
-import { createUserRank } from './view/userRank';
+import { createMovieCounter } from './view/movie-counter';
+import { createUserRank } from './view/user-rank';
 import { createMenu } from './view/menu';
 import { createSorter } from './view/sorter';
 import { createMovies } from './view/movies';
