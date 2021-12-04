@@ -1,5 +1,8 @@
+import { createMovieCard } from './movie-card';
+
 export const createMovieList = ({movieList = [], title, hideTitle, modifiers = '', slotAfterContent = ''}) => {
-  const movies = movieList.join(' ');
+  console.log(movieList);
+  const movies = movieList.map((movie) => createMovieCard(movie)).join(' ');
 
   return `
     <section class="films-list ${modifiers}">

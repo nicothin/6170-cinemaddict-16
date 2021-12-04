@@ -1,5 +1,42 @@
-export const createMovieDetails = () => `
-  <section class="film-details">
+import dayjs from 'dayjs';
+import { CLASSNAME, EMOTIONS } from '../constants';
+import { generateComment } from '../mock/generate-comments';
+import { getFormattedList, getFormattedRuntime } from '../utils';
+import { createComment } from './comment';
+
+export const createMovieDetails = (movie) => {
+  const { title, alternativeTitle, ageRating, totalRating, poster, description, director, writers, actors, genre, release, runtime } = movie.filmInfo;
+  const { alreadyWatched, favorite, watchlist } = movie.userDetails;
+
+  const infoText = {
+    writer: `Writer${writers.length > 1 ? 's' : ''}`,
+    actor: `Actor${actors.length > 1 ? 's' : ''}`,
+    genre: `Genre${genre.length > 1 ? 's' : ''}`,
+  };
+
+  const formattedDirector = getFormattedList(director);
+  const formattedWriter = getFormattedList(writers);
+  const formattedActor = getFormattedList(actors);
+  const formattedGenres = genre.map((item) => `<span class="film-details__genre">${item}</span>`).join(' ');
+  const formattedRelease = dayjs(release.date).format('DD MMMM YYYY');
+  const formattedRuntime = getFormattedRuntime(runtime);
+  const commentsCounter = movie.comments.length;
+
+  const watchlistActiveClassName = watchlist ? CLASSNAME.FILM_DETAILS_CONTROL_ACTIVE : '';
+  const watchedActiveClassName = alreadyWatched ? CLASSNAME.FILM_DETAILS_CONTROL_ACTIVE : '';
+  const favoriteActiveClassName = favorite ? CLASSNAME.FILM_DETAILS_CONTROL_ACTIVE : '';
+
+  const comments = movie.comments.map((comment) => createComment(
+    generateComment(comment)
+  )).join(' ');
+
+  const emotionsList = EMOTIONS.map((emotion) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+  <label class="film-details__emoji-label" for="emoji-${emotion}">
+    <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
+  </label>
+`).join(' ');
+
+  return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
         <div class="film-details__close">
@@ -7,127 +44,70 @@ export const createMovieDetails = () => `
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="${title}">
 
-            <p class="film-details__age">18+</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
-                <h3 class="film-details__title">The Great Flamarion</h3>
-                <p class="film-details__title-original">Original: The Great Flamarion</p>
+                <h3 class="film-details__title">${title}</h3>
+                <p class="film-details__title-original">Original: ${alternativeTitle}</p>
               </div>
 
               <div class="film-details__rating">
-                <p class="film-details__total-rating">8.9</p>
+                <p class="film-details__total-rating">${totalRating}</p>
               </div>
             </div>
 
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
-                <td class="film-details__cell">Anthony Mann</td>
+                <td class="film-details__cell">${formattedDirector}</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+                <td class="film-details__term">${infoText.writer}</td>
+                <td class="film-details__cell">${formattedWriter}</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+                <td class="film-details__term">${infoText.actor}</td>
+                <td class="film-details__cell">${formattedActor}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">30 March 1945</td>
+                <td class="film-details__cell">${formattedRelease}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">1h 18m</td>
+                <td class="film-details__cell">${formattedRuntime}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
                 <td class="film-details__cell">USA</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">Genres</td>
-                <td class="film-details__cell">
-                  <span class="film-details__genre">Drama</span>
-                  <span class="film-details__genre">Film-Noir</span>
-                  <span class="film-details__genre">Mystery</span></td>
-              </tr>
+                <td class="film-details__term">${infoText.genre}</td>
+                <td class="film-details__cell">${formattedGenres}</tr>
             </table>
 
-            <p class="film-details__film-description">
-              The film opens following a murder at a cabaret in Mexico City in 1936, and then presents the events leading up to it in flashback. The Great Flamarion (Erich von Stroheim) is an arrogant, friendless, and misogynous marksman who displays his trick gunshot act in the vaudeville circuit. His show features a beautiful assistant, Connie (Mary Beth Hughes) and her drunken husband Al (Dan Duryea), Flamarion's other assistant. Flamarion falls in love with Connie, the movie's femme fatale, and is soon manipulated by her into killing her no good husband during one of their acts.
-            </p>
+            <p class="film-details__film-description">${description}</p>
           </div>
         </div>
 
         <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistActiveClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watched ${watchedActiveClassName}" id="watched" name="watched">Already watched</button>
+          <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteActiveClassName}" id="favorite" name="favorite">Add to favorites</button>
         </section>
       </div>
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCounter}</span></h3>
 
           <ul class="film-details__comments-list">
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Interesting setting and a good cast</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">Tim Macoveev</span>
-                  <span class="film-details__comment-day">2019/12/31 23:59</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji-sleeping">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Booooooooooring</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">2 days ago</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji-puke">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Very very old. Meh</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">2 days ago</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">Today</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
+            ${comments}
           </ul>
 
           <div class="film-details__new-comment">
@@ -138,25 +118,7 @@ export const createMovieDetails = () => `
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
+              ${emotionsList}
             </div>
           </div>
         </section>
@@ -164,3 +126,4 @@ export const createMovieDetails = () => `
     </form>
   </section>
 `;
+};

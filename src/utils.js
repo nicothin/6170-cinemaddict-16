@@ -8,3 +8,18 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 export const getUnique = (array) => [...new Set(array)];
+
+export const getSliceText = (text, length) => {
+  let sliced = text.slice(0, length);
+  if (sliced.length < text.length) {
+    sliced += '…';
+  }
+  return sliced;
+};
+
+export const getFormattedList = (data) => typeof data === 'string' ? data : data.join(', ');
+
+export const getFormattedRuntime = (minutes) => {
+  const runtimeHours = Math.trunc(minutes / 60);
+  return `${runtimeHours ? `${runtimeHours}h` : ''} ${minutes % 60}m`;
+};
