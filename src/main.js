@@ -13,7 +13,7 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-const movieDetail = false; // generateMovie();
+const movieDetail = generateMovie();
 const movieList = {
   main: generateMoviesList(23),
   topRated: generateMoviesList(2),
