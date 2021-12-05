@@ -1,3 +1,5 @@
+export const MOVIE_COUNT_PER_STEP = 5;
+
 export const EMOTIONS = [
   'smile',
   'sleeping',
