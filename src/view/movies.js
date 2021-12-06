@@ -1,30 +1,36 @@
-import { createMovieCard } from './movieCard';
-import { createMovieList } from './movieList';
-import { createShowMore } from './showMoreButton';
+import { MOVIE_COUNT_PER_STEP } from '../constants';
+import { createMovieList } from './movie-list';
 
-const MAIN_MOVIE_COUNT = 5;
-const TOP_RATED_MOVIE_COUNT = 2;
-const MOST_COMMENTED_MOVIE_COUNT = 2;
+export const createMovies = (movieList = []) => {
+  let content;
+  if (!movieList.main.length ) {
+    content = '<h2 class="films-list__title">There are no movies in our database</h2>';
+  }
+  else {
+    content = createMovieList({
+      id: 'movie-main',
+      movieList: movieList.main,
+      title: 'All movies. Upcoming',
+      hideTitle: true,
+      movieCountPerStep: MOVIE_COUNT_PER_STEP,
+    });
+    if (movieList.topRated.length) {
+      content += createMovieList({
+        id: 'movie-top-rated',
+        movieList: movieList.topRated,
+        title: 'Top rated',
+        modifiers: 'films-list--extra',
+      });
+    }
+    if (movieList.mostCommented.length) {
+      content += createMovieList({
+        id: 'movie-most-commented',
+        movieList: movieList.mostCommented,
+        title: 'Most commented',
+        modifiers: 'films-list--extra',
+      });
+    }
+  }
 
-const mainMoviesList = [];
-for (let i = 0; i < MAIN_MOVIE_COUNT; i++) {
-  mainMoviesList.push(createMovieCard());
-}
-
-const topRatedMoviesList = [];
-for (let i = 0; i < TOP_RATED_MOVIE_COUNT; i++) {
-  topRatedMoviesList.push(createMovieCard());
-}
-
-const mostCommentedMoviesList = [];
-for (let i = 0; i < MOST_COMMENTED_MOVIE_COUNT; i++) {
-  mostCommentedMoviesList.push(createMovieCard());
-}
-
-export const createMovies = () => `
-  <section class="films">
-    ${createMovieList({ movieList: mainMoviesList, title: 'All movies. Upcoming', hideTitle: true, slotAfterContent: createShowMore(), })}
-    ${createMovieList({ movieList: topRatedMoviesList, title: 'Top rated', modifiers: 'films-list--extra',})}
-    ${createMovieList({ movieList: mostCommentedMoviesList, title: 'Most commented', modifiers: 'films-list--extra',})}
-  </section>
-`;
+  return `<section class="films">${content}</section>`;
+};

@@ -7,7 +7,8 @@
     "eslint": "eslint src/",
     "test": "npm run eslint",
     "build": "webpack --mode development",
-    "start": "webpack serve --mode development --open"
+    "start": "webpack serve --mode development --open",
+    "lint-staged": "lint-staged"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -18,9 +19,20 @@
     "babel-loader": "^8.2.3",
     "eslint": "7.32.0",
     "eslint-config-htmlacademy": "5.0.0",
+    "lint-staged": "^12.1.2",
+    "simple-git-hooks": "^2.7.0",
     "webpack": "^5.62.1",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.4.0"
+  },
+  "dependencies": {
+    "dayjs": "1.10.7"
+  },
+  "lint-staged": {
+    "*.js": "eslint"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
   },
   "engines": {
     "node": "16"
