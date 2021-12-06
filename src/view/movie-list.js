@@ -1,4 +1,4 @@
-import { RENDERPOSITION } from '../constants';
+import { RenderPosition } from '../constants';
 import { renderTemplate } from '../render';
 import { createMovieCard } from './movie-card';
 import { createShowMore } from './show-more-button';
@@ -21,7 +21,7 @@ export const createMovieList = ({ id, movieList = [], title, hideTitle, modifier
         if (event.target.closest(`#${id}`) && event.target.classList.contains('films-list__show-more')) {
           movieList
             .slice(showingMovieCount, showingMovieCount + movieCountPerStep)
-            .forEach((movie) => renderTemplate(place, createMovieCard(movie), RENDERPOSITION.BEFOREEND));
+            .forEach((movie) => renderTemplate(place, createMovieCard(movie), RenderPosition.BEFOREEND));
           showingMovieCount += movieCountPerStep;
         }
         if (showingMovieCount >= movieList.length) {

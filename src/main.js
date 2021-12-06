@@ -7,7 +7,7 @@ import { createMovies } from './view/movies';
 import { createMovieDetails } from './view/movie-details';
 import { generateMovie, generateMoviesList } from './mock/generate-movies-list';
 
-import { RENDERPOSITION } from './constants';
+import { RenderPosition } from './constants';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -37,6 +37,6 @@ if (movieDetail) {
   renderTemplate(
     siteFooterElement,
     createMovieDetails(movieDetail),
-    RENDERPOSITION.AFTEREND
+    RenderPosition.AFTEREND
   );
 }

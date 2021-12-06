@@ -7,7 +7,7 @@ export const EMOTIONS = [
   'angry'
 ];
 
-export const RENDERPOSITION = {
+export const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
