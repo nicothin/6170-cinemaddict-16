@@ -8,6 +8,21 @@ import { createMovieDetails } from './view/movie-details';
 import { generateMovie, generateMoviesList } from './mock/generate-movies-list';
 
 import { RenderPosition } from './constants';
+import { axios } from './axios/axios';
+
+axios
+  .get('movies')
+  .then((response) => {
+    const all = response.data;
+    const topRated = all.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1).slice(0, 2);
+    const mostCommented = all.sort((a, b) => a.comments.length < b.comments.length ? 1 : -1).slice(0, 2);
+    // eslint-disable-next-line no-console
+    console.log([all, topRated, mostCommented]);
+    return response;
+  })
+  .catch((e) => {
+    throw new Error('Ошибка сетевого обмена', e);
+  });
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
