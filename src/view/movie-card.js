@@ -42,7 +42,12 @@ const createMovieCard = (movie) => {
 };
 
 export default class MovieCard extends Component {
-  #movie;
+  #movie = null;
+
+  #linkClickHandler = (event) => {
+    event.preventDefault();
+    this._callback.click();
+  }
 
   constructor(movie) {
     super(movie);
@@ -51,5 +56,10 @@ export default class MovieCard extends Component {
 
   get template() {
     return createMovieCard(this.#movie);
+  }
+
+  setLinkClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#linkClickHandler);
   }
 }

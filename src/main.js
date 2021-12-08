@@ -1,7 +1,7 @@
 import { axios } from './axios/axios';
 import { remove, render } from './utils/render';
-import { MOVIE_COUNT_PER_STEP, RenderPosition } from './constants'; // eslint-disable-line no-unused-vars
-import { generateMovie, generateMoviesList } from './mock/generate-movies-list'; // eslint-disable-line no-unused-vars
+import { MOVIE_COUNT_PER_STEP, RenderPosition } from './constants';
+import { generateMoviesList } from './mock/generate-movies-list';
 
 import UserRank from './view/user-rank';
 import Menu from './view/menu';
@@ -9,7 +9,7 @@ import Sorter from './view/sorter';
 import MoviePage from './view/movies';
 import MovieList from './view/movie-list';
 import MovieCounter from './view/movie-counter';
-// import MovieDetails from './view/movie-details';
+import MovieDetails from './view/movie-details';
 import MovieCard from './view/movie-card';
 import ShowMore from './view/show-more-button';
 
@@ -32,7 +32,6 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-// const movieDetail = generateMovie();
 const movieList = {
   main: generateMoviesList(23),
   topRated: generateMoviesList(2),
@@ -76,9 +75,17 @@ const moviePageComponent = new MoviePage();
 const movieMainListComponent = new MovieList({ title: 'All movies. Upcoming', hideTitle: true });
 const movieTopRatedListComponent = new MovieList({ title: 'Top rated', modifiers: 'films-list--extra' });
 const movieMostCommentedListComponent = new MovieList({ title: 'Most commented', modifiers: 'films-list--extra' });
-// const movieDetailsComponent = new MovieDetails(movieDetail);
 const movieCounterComponent = new MovieCounter(movieList.main.length);
 const showMoreMainListComponent = new ShowMore();
+
+const renderMovieCard = (movie) => {
+  const movieCardComponent = new MovieCard(movie);
+  render(movieMainListComponent.element.querySelector('.films-list__container'), movieCardComponent);
+  movieCardComponent.setLinkClickHandler(() => {
+    const movieDetailsComponent = new MovieDetails(movie);
+    render(siteFooterElement, movieDetailsComponent, RenderPosition.AFTEREND);
+  });
+};
 
 render(siteHeaderElement, userRankComponent);
 
@@ -89,11 +96,11 @@ render(siteMainElement, sorterComponent);
 render(siteMainElement, moviePageComponent);
 
 render(moviePageComponent, movieMainListComponent);
+
 movieList.main
   .slice(0, Math.min(movieList.main.length, MOVIE_COUNT_PER_STEP))
-  .forEach((movie) => {
-    render(movieMainListComponent.element.querySelector('.films-list__container'), new MovieCard(movie));
-  });
+  .forEach((movie) => renderMovieCard(movie));
+
 if (movieList.main.length > MOVIE_COUNT_PER_STEP) {
   let showingMovieCardCounter = MOVIE_COUNT_PER_STEP;
   render(movieMainListComponent, showMoreMainListComponent);
@@ -101,9 +108,7 @@ if (movieList.main.length > MOVIE_COUNT_PER_STEP) {
   showMoreMainListComponent.setClickHandler(() => {
     movieList.main
       .slice(showingMovieCardCounter, showingMovieCardCounter + MOVIE_COUNT_PER_STEP)
-      .forEach((movie) => {
-        render(movieMainListComponent.element.querySelector('.films-list__container'), new MovieCard(movie));
-      });
+      .forEach((movie) => renderMovieCard(movie));
 
     showingMovieCardCounter += MOVIE_COUNT_PER_STEP;
 
@@ -114,15 +119,15 @@ if (movieList.main.length > MOVIE_COUNT_PER_STEP) {
 }
 
 render(moviePageComponent, movieTopRatedListComponent);
+
 movieList.topRated.forEach((movie) => {
   render(movieTopRatedListComponent.element.querySelector('.films-list__container'), new MovieCard(movie));
 });
 
 render(moviePageComponent, movieMostCommentedListComponent);
+
 movieList.mostCommented.forEach((movie) => {
   render(movieMostCommentedListComponent.element.querySelector('.films-list__container'), new MovieCard(movie));
 });
 
 render(siteFooterElement.querySelector('.footer__statistics'), movieCounterComponent);
-
-// render(siteFooterElement, movieDetailsComponent, RenderPosition.AFTEREND);

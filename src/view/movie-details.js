@@ -3,9 +3,11 @@ import Component from '../abstract/component';
 import { EMOTIONS } from '../constants';
 import { generateComment } from '../mock/generate-comments';
 import { getFormattedList, getFormattedRuntime } from '../utils/common';
+import { setPageScrollDisable } from '../utils/dom';
+import { remove } from '../utils/render';
 import { createComment } from './comment';
 
-export const createMovieDetails = (movie) => {
+const createMovieDetails = (movie) => {
   const { title, alternativeTitle, ageRating, totalRating, poster, description, director, writers, actors, genre, release, runtime } = movie.filmInfo;
   const { alreadyWatched, favorite, watchlist } = movie.userDetails;
 
@@ -133,14 +135,31 @@ export const createMovieDetails = (movie) => {
 };
 
 export default class MovieDetails extends Component {
-  #movie;
+  #movie = null;
+  #onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      this.close();
+    }
+  };
 
   constructor(movie) {
     super(movie);
     this.#movie = movie;
+
+    setPageScrollDisable(true);
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+      this.close();
+    });
+    document.addEventListener('keydown', this.#onEscKeyDown);
   }
 
   get template() {
     return createMovieDetails(this.#movie);
+  }
+
+  close () {
+    setPageScrollDisable(false);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+    remove(this);
   }
 }
