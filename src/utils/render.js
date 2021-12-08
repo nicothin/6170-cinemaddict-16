@@ -1,10 +1,6 @@
 import { RenderPosition } from '../constants';
 import Component from '../abstract/component';
 
-export const renderTemplate = (container, template, place = RenderPosition.BEFOREEND) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 /**
  * Вставляет элемент в элемент.
  * @param {Element} container Родительский элемент
@@ -36,7 +32,7 @@ export const render = (container, element, place = RenderPosition.BEFOREEND) => 
 };
 
 /**
- * Создаёт DOM-элемента из строки
+ * Создаёт DOM-элемент из строки
  * @param {string} template Строка с разметкой
  * @returns {Element} DOM-узел
  */
@@ -47,3 +43,15 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
+/**
+ * Убивает компонент
+ * @param {object} component Компонент, который больше не нужен
+ */
+export const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
+  component.element.remove();
+  component.removeElement();
+};

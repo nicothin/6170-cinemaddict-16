@@ -2,6 +2,7 @@ import { createElement } from '../utils/render';
 
 export default class Component {
   #element = null;
+  _callback = {};
 
   constructor() {
     if (new.target === Component) {
