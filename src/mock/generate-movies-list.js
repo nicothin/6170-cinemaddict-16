@@ -1,4 +1,4 @@
-import { getRandomInteger, getUnique } from '../utils';
+import { getRandomInteger, getUnique } from '../utils/common';
 import { generateHumanName, generateText } from './utils';
 import { generateCommentsIds } from './generate-comments';
 

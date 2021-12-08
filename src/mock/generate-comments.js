@@ -1,5 +1,5 @@
 import { EMOTIONS } from '../constants';
-import { getRandomInteger } from '../utils';
+import { getRandomInteger } from '../utils/common';
 import { generateHumanName, generateText } from './utils';
 
 export const generateCommentsIds = () => {
