@@ -1,4 +1,6 @@
 export const MOVIE_COUNT_PER_STEP = 5;
+export const MOVIE_TOP_RATED_COUNT = 2;
+export const MOVIE_MOST_COMMENT_COUNT = 2;
 
 export const EMOTIONS = [
   'smile',

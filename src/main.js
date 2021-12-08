@@ -1,6 +1,11 @@
 import { axios } from './axios/axios';
 import { remove, render } from './utils/render';
-import { MOVIE_COUNT_PER_STEP, RenderPosition } from './constants';
+import {
+  MOVIE_COUNT_PER_STEP,
+  MOVIE_MOST_COMMENT_COUNT,
+  MOVIE_TOP_RATED_COUNT,
+  RenderPosition
+} from './constants';
 import { generateMoviesList } from './mock/generate-movies-list';
 
 import UserRank from './view/user-rank';
@@ -14,12 +19,14 @@ import MovieCard from './view/movie-card';
 import ShowMore from './view/show-more-button';
 
 
+// NOTE[@nicothin]: временно, пока не ясна модель реактивности компонентов
+// TODO[@nicothin]: возможно, впилить redux
 axios
   .get('movies')
   .then((response) => {
     const all = response.data;
-    const topRated = all.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1).slice(0, 2);
-    const mostCommented = all.sort((a, b) => a.comments.length < b.comments.length ? 1 : -1).slice(0, 2);
+    const topRated = all.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1).slice(0, MOVIE_TOP_RATED_COUNT);
+    const mostCommented = all.sort((a, b) => a.comments.length < b.comments.length ? 1 : -1).slice(0, MOVIE_MOST_COMMENT_COUNT);
     // eslint-disable-next-line no-console
     console.log([all, topRated, mostCommented]);
     return response;
