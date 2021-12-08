@@ -1,13 +1,11 @@
 import Component from '../abstract/component';
 
 // TODO[@nicothin]: убрать экспорт
-export const createShowMore = () => `
-  <button class="films-list__show-more">Show more</button>
-`.trim();
+export const createShowMore = () => '<button class="films-list__show-more">Show more</button>';
 
 export default class ShowMore extends Component {
-  #clickHandler = (evt) => {
-    evt.preventDefault();
+  #clickHandler = (event) => {
+    event.preventDefault();
     this._callback.click();
   }
 
