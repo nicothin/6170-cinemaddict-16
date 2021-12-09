@@ -26,6 +26,8 @@
     "webpack-dev-server": "^4.4.0"
   },
   "dependencies": {
+    "axios": "^0.24.0",
+    "camelcase-keys": "^7.0.1",
     "dayjs": "1.10.7"
   },
   "lint-staged": {

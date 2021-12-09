@@ -1,12 +1,17 @@
 import dayjs from 'dayjs';
-import { CLASSNAME, EMOTIONS } from '../constants';
+import Component from '../abstract/component';
+import { EMOTIONS } from '../constants';
 import { generateComment } from '../mock/generate-comments';
-import { getFormattedList, getFormattedRuntime } from '../utils';
+import { getFormattedList, getFormattedRuntime } from '../utils/common';
+import { setPageScrollDisable } from '../utils/dom';
+import { remove } from '../utils/render';
 import { createComment } from './comment';
 
-export const createMovieDetails = (movie) => {
+const createMovieDetails = (movie) => {
   const { title, alternativeTitle, ageRating, totalRating, poster, description, director, writers, actors, genre, release, runtime } = movie.filmInfo;
   const { alreadyWatched, favorite, watchlist } = movie.userDetails;
+
+  const ACTIVE_CLASSNAME = 'film-details__control-button--active';
 
   const infoText = {
     writer: `Writer${writers.length > 1 ? 's' : ''}`,
@@ -22,9 +27,9 @@ export const createMovieDetails = (movie) => {
   const formattedRuntime = getFormattedRuntime(runtime);
   const commentsCounter = movie.comments.length;
 
-  const watchlistActiveClassName = watchlist ? CLASSNAME.FILM_DETAILS_CONTROL_ACTIVE : '';
-  const watchedActiveClassName = alreadyWatched ? CLASSNAME.FILM_DETAILS_CONTROL_ACTIVE : '';
-  const favoriteActiveClassName = favorite ? CLASSNAME.FILM_DETAILS_CONTROL_ACTIVE : '';
+  const watchlistActiveClassName = watchlist ? ACTIVE_CLASSNAME : '';
+  const watchedActiveClassName = alreadyWatched ? ACTIVE_CLASSNAME : '';
+  const favoriteActiveClassName = favorite ? ACTIVE_CLASSNAME : '';
 
   const comments = movie.comments.map((comment) => createComment(
     generateComment(comment)
@@ -36,7 +41,8 @@ export const createMovieDetails = (movie) => {
   </label>
 `).join(' ');
 
-  return `<section class="film-details">
+  return `
+  <section class="film-details">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
         <div class="film-details__close">
@@ -44,7 +50,7 @@ export const createMovieDetails = (movie) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="${title}">
+            <img class="film-details__poster-img" src="${poster}" alt="${title}">
 
             <p class="film-details__age">${ageRating}+</p>
           </div>
@@ -125,5 +131,35 @@ export const createMovieDetails = (movie) => {
       </div>
     </form>
   </section>
-`;
+`.trim();
 };
+
+export default class MovieDetails extends Component {
+  #movie = null;
+  #onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      this.close();
+    }
+  };
+
+  constructor(movie) {
+    super(movie);
+    this.#movie = movie;
+
+    setPageScrollDisable(true);
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+      this.close();
+    });
+    document.addEventListener('keydown', this.#onEscKeyDown);
+  }
+
+  get template() {
+    return createMovieDetails(this.#movie);
+  }
+
+  close () {
+    setPageScrollDisable(false);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+    remove(this);
+  }
+}
