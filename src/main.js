@@ -1,11 +1,8 @@
-import { axios } from './axios/axios';
+import { isEqual } from 'lodash';
 import { remove, render } from './utils/render';
-import {
-  MOVIE_COUNT_PER_STEP,
-  MOVIE_MOST_COMMENT_COUNT,
-  MOVIE_TOP_RATED_COUNT,
-  RenderPosition
-} from './constants';
+import { MovieStore, MOVIE_COUNT_PER_STEP, RenderPosition } from './constants';
+import { movieInitialState, Operation as MovieOperation } from './reducers/movie-reducer';
+import { movieStore } from './store';
 
 import UserRank from './view/user-rank';
 import Menu from './view/menu';
@@ -21,57 +18,57 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-// NOTE[@nicothin]: Кровь из глаз. Временно, пока не ясно с реактивностью.
-// TODO[@nicothin]: Впилить redux?
-axios
-  .get('movies')
-  .then((response) => {
-    const movieList = {
-      main: response.data,
-      topRated: response.data.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1).slice(0, MOVIE_TOP_RATED_COUNT),
-      mostCommented: response.data.sort((a, b) => a.comments.length < b.comments.length ? 1 : -1).slice(0, MOVIE_MOST_COMMENT_COUNT),
-    };
+const moviePageComponent = new MoviePage();
+
+const previousStore = movieInitialState;
+
+const changeMainMoviesHandler = () => {
+  const newStore = movieStore.getState();
+  if (!isEqual(previousStore[MovieStore.ALL], newStore[MovieStore.ALL])) {
 
     const menuData = [
       {
         id: 'all',
         text: 'All movies',
-        counter: movieList.main.length,
+        counter: newStore[MovieStore.ALL].length,
         isActive: true,
         isShowCounter: false,
       },
       {
         id: 'watchlist',
         text: 'Watchlist',
-        counter: movieList.main.filter((movie) => movie.userDetails.watchlist).length,
+        counter: newStore[MovieStore.ALL].filter((movie) => movie.userDetails.watchlist).length,
         isActive: false,
         isShowCounter: true,
       },
       {
         id: 'history',
         text: 'History',
-        counter: movieList.main.filter((movie) => movie.userDetails.alreadyWatched).length,
+        counter: newStore[MovieStore.ALL].filter((movie) => movie.userDetails.alreadyWatched).length,
         isActive: false,
         isShowCounter: true,
       },
       {
         id: 'favorites',
         text: 'Favorites',
-        counter: movieList.main.filter((movie) => movie.userDetails.favorite).length,
+        counter: newStore[MovieStore.ALL].filter((movie) => movie.userDetails.favorite).length,
         isActive: false,
         isShowCounter: true,
       },
     ];
 
-    const userRankComponent = new UserRank(666);
+    const watchListCounter = menuData.find((item) => item.id === 'watchlist').counter || 0;
+
+    const userRankComponent = new UserRank(watchListCounter);
     const menuComponent = new Menu(menuData);
     const sorterComponent = new Sorter();
-    const moviePageComponent = new MoviePage();
     const movieMainListComponent = new MovieList({ title: 'All movies. Upcoming', hideTitle: true });
-    const movieTopRatedListComponent = new MovieList({ title: 'Top rated', modifiers: 'films-list--extra' });
-    const movieMostCommentedListComponent = new MovieList({ title: 'Most commented', modifiers: 'films-list--extra' });
-    const movieCounterComponent = new MovieCounter(movieList.main.length);
-    const showMoreMainListComponent = new ShowMore();
+
+    render(siteHeaderElement, userRankComponent);
+    render(siteMainElement, menuComponent);
+    render(siteMainElement, sorterComponent);
+    render(siteMainElement, moviePageComponent);
+    render(moviePageComponent, movieMainListComponent);
 
     const renderMovieCard = (movie) => {
       const movieCardComponent = new MovieCard(movie);
@@ -82,53 +79,70 @@ axios
       });
     };
 
-    render(siteHeaderElement, userRankComponent);
-
-    render(siteMainElement, menuComponent);
-
-    render(siteMainElement, sorterComponent);
-
-    render(siteMainElement, moviePageComponent);
-
-    render(moviePageComponent, movieMainListComponent);
-
-    movieList.main
-      .slice(0, Math.min(movieList.main.length, MOVIE_COUNT_PER_STEP))
+    newStore[MovieStore.ALL]
+      .slice(0, Math.min(newStore[MovieStore.ALL].length, MOVIE_COUNT_PER_STEP))
       .forEach((movie) => renderMovieCard(movie));
 
-    if (movieList.main.length > MOVIE_COUNT_PER_STEP) {
+    if (newStore[MovieStore.ALL].length > MOVIE_COUNT_PER_STEP) {
+      const showMoreMainListComponent = new ShowMore();
+
       let showingMovieCardCounter = MOVIE_COUNT_PER_STEP;
       render(movieMainListComponent, showMoreMainListComponent);
 
       showMoreMainListComponent.setClickHandler(() => {
-        movieList.main
+        newStore[MovieStore.ALL]
           .slice(showingMovieCardCounter, showingMovieCardCounter + MOVIE_COUNT_PER_STEP)
           .forEach((movie) => renderMovieCard(movie));
 
         showingMovieCardCounter += MOVIE_COUNT_PER_STEP;
 
-        if (showingMovieCardCounter >= movieList.main.length) {
+        if (showingMovieCardCounter >= newStore[MovieStore.ALL].length) {
           remove(showMoreMainListComponent);
         }
       });
     }
 
+    const movieCounterComponent = new MovieCounter(newStore[MovieStore.ALL].length);
+    render(siteFooterElement.querySelector('.footer__statistics'), movieCounterComponent);
+
+    previousStore[MovieStore.ALL] = newStore[MovieStore.ALL];
+  }
+};
+
+const changeTopRatedMoviesHandler = () => {
+  const newStore = movieStore.getState();
+  if (!isEqual(previousStore[MovieStore.TOP_RATED], newStore[MovieStore.TOP_RATED])) {
+
+    const movieTopRatedListComponent = new MovieList({ title: 'Top rated', modifiers: 'films-list--extra' });
     render(moviePageComponent, movieTopRatedListComponent);
 
-    movieList.topRated.forEach((movie) => {
+    newStore[MovieStore.TOP_RATED].forEach((movie) => {
       render(movieTopRatedListComponent.element.querySelector('.films-list__container'), new MovieCard(movie));
     });
 
+    previousStore[MovieStore.TOP_RATED] = newStore[MovieStore.TOP_RATED];
+  }
+};
+
+const changeMostCommentedMoviesHandler = () => {
+  const newStore = movieStore.getState();
+  if (!isEqual(previousStore[MovieStore.MOST_COMMENTED], newStore[MovieStore.MOST_COMMENTED])) {
+
+    const movieMostCommentedListComponent = new MovieList({ title: 'Most commented', modifiers: 'films-list--extra' });
     render(moviePageComponent, movieMostCommentedListComponent);
 
-    movieList.mostCommented.forEach((movie) => {
+    newStore[MovieStore.MOST_COMMENTED].forEach((movie) => {
       render(movieMostCommentedListComponent.element.querySelector('.films-list__container'), new MovieCard(movie));
     });
 
-    render(siteFooterElement.querySelector('.footer__statistics'), movieCounterComponent);
+    previousStore[MovieStore.MOST_COMMENTED] = newStore[MovieStore.MOST_COMMENTED];
+  }
+};
 
-    return response;
-  })
-  .catch((e) => {
-    throw new Error('Network error', e);
-  });
+movieStore.subscribe(() => {
+  changeMainMoviesHandler();
+  changeTopRatedMoviesHandler();
+  changeMostCommentedMoviesHandler();
+});
+
+movieStore.dispatch(MovieOperation.getAllMovies());

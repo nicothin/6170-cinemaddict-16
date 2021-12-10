@@ -15,3 +15,9 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
   AFTEREND: 'afterend',
 };
+
+export const MovieStore = {
+  ALL: 'allMovies',
+  TOP_RATED: 'topRatedMovies',
+  MOST_COMMENTED: 'mostCommentedMovies',
+};
