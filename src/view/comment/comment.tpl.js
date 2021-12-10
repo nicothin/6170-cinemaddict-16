@@ -19,5 +19,5 @@ export const createComment = (data) => {
       </p>
     </div>
   </li>
-`;
+`.trim();
 };

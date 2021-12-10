@@ -1,6 +1,5 @@
-import Component from '../abstract/component';
-
-const createShowMore = () => '<button class="films-list__show-more">Show more</button>';
+import Component from '../../abstract/component';
+import { createShowMore } from './show-more-button.tpl';
 
 export default class ShowMore extends Component {
   #clickHandler = (event) => {

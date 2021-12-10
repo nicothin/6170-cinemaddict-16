@@ -4,21 +4,21 @@ import { MovieStore, MOVIE_COUNT_PER_STEP, RenderPosition } from './constants';
 import { movieInitialState, Operation as MovieOperation } from './reducers/movie-reducer';
 import { movieStore } from './store';
 
-import UserRank from './view/user-rank';
-import Menu from './view/menu';
-import Sorter from './view/sorter';
-import MoviePage from './view/movies';
-import MovieList from './view/movie-list';
-import MovieCounter from './view/movie-counter';
-import MovieDetails from './view/movie-details';
-import MovieCard from './view/movie-card';
-import ShowMore from './view/show-more-button';
+import UserRank from './view/user-rank/user-rank';
+import Menu from './view/menu/menu';
+import Sorter from './view/sorter/sorter';
+import MoviesPage from './view/movies-page/movies-page';
+import MovieList from './view/movie-list/movie-list';
+import MovieCounter from './view/movie-counter/movie-counter';
+import MovieDetails from './view/movie-details/movie-details';
+import MovieCard from './view/movie-card/movie-card';
+import ShowMore from './view/show-more-button/show-more-button';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-const moviePageComponent = new MoviePage();
+const moviePageComponent = new MoviesPage();
 
 const previousStore = movieInitialState;
 
