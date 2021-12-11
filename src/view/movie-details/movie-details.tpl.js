@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import { EMOTIONS } from '../../constants';
-import { generateComment } from '../../mock/generate-comments';
+// import { generateComment } from '../../mock/generate-comments';
 import { getFormattedList, getFormattedRuntime } from '../../utils/common';
-import Comment from '../comment/comment';
+// import Comment from '../comment/comment';
 
 export const createMovieDetails = (movie) => {
   const { title, alternativeTitle, ageRating, totalRating, poster, description, director, writers, actors, genre, release, runtime } = movie.filmInfo;
@@ -28,11 +28,11 @@ export const createMovieDetails = (movie) => {
   const watchedActiveClassName = alreadyWatched ? ACTIVE_CLASSNAME : '';
   const favoriteActiveClassName = favorite ? ACTIVE_CLASSNAME : '';
 
-  const comments = movie.comments.map((comment) => new Comment(
-    generateComment(comment)
-  ));
-  // TODO[@nicothin]: допилить!
-  // console.log(comments);
+  // TODO[@nicothin]: допилить
+  const comments = '';
+  // const comments = movie.comments.map((comment) => new Comment(
+  //   generateComment(comment)
+  // ));
 
   const emotionsList = EMOTIONS.map((emotion) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
   <label class="film-details__emoji-label" for="emoji-${emotion}">
