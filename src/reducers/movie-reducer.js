@@ -1,4 +1,4 @@
-import { axios } from '../axios/axios';
+import { axios } from '../services/axios';
 import { StoreState, MOVIE_MOST_COMMENT_COUNT, MOVIE_TOP_RATED_COUNT } from '../constants';
 
 const ActionType = {
