@@ -1,16 +1,16 @@
 import { axios } from '../axios/axios';
-import { MovieStore, MOVIE_MOST_COMMENT_COUNT, MOVIE_TOP_RATED_COUNT } from '../constants';
-
-export const movieInitialState = {
-  [MovieStore.ALL]: [],
-  [MovieStore.TOP_RATED]: [],
-  [MovieStore.MOST_COMMENTED]: [],
-};
+import { StoreState, MOVIE_MOST_COMMENT_COUNT, MOVIE_TOP_RATED_COUNT } from '../constants';
 
 const ActionType = {
   SET_ALL_MOVIES: 'SET_ALL_MOVIES',
   SET_TOP_RATED_MOVIES: 'SET_TOP_RATED_MOVIES',
   SET_MOST_COMMENTED_MOVIES: 'SET_MOST_COMMENTED_MOVIES',
+};
+
+export const movieInitialState = {
+  [StoreState.ALL]: [],
+  [StoreState.TOP_RATED]: [],
+  [StoreState.MOST_COMMENTED]: [],
 };
 
 export const ActionCreator = {
@@ -34,8 +34,8 @@ export const Operation = {
       .get('movies')
       .then((response) => {
         const all = response.data;
-        const topRated = all.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1).slice(0, MOVIE_TOP_RATED_COUNT);
-        const mostCommented = all.sort((a, b) => a.comments.length < b.comments.length ? 1 : -1).slice(0, MOVIE_MOST_COMMENT_COUNT);
+        const topRated = response.data.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1).slice(0, MOVIE_TOP_RATED_COUNT);
+        const mostCommented = response.data.sort((a, b) => a.comments.length < b.comments.length ? 1 : -1).slice(0, MOVIE_MOST_COMMENT_COUNT);
         dispatch(ActionCreator.setAllMovies(all));
         dispatch(ActionCreator.setTopRatedMovies(topRated));
         dispatch(ActionCreator.setMostCommentedMovies(mostCommented));
@@ -50,11 +50,11 @@ export const Operation = {
 export const movieReducer = (state, action) => {
   switch (action.type) {
     case ActionType.SET_ALL_MOVIES:
-      return { ...state, allMovies: action.payload };
+      return { ...state, [StoreState.ALL]: action.payload };
     case ActionType.SET_TOP_RATED_MOVIES:
-      return { ...state, topRatedMovies: action.payload };
+      return { ...state, [StoreState.TOP_RATED]: action.payload };
     case ActionType.SET_MOST_COMMENTED_MOVIES:
-      return { ...state, mostCommentedMovies: action.payload };
+      return { ...state, [StoreState.MOST_COMMENTED]: action.payload };
     default:
       return state;
   }

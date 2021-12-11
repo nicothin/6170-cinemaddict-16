@@ -16,7 +16,7 @@ export const RenderPosition = {
   AFTEREND: 'afterend',
 };
 
-export const MovieStore = {
+export const StoreState = {
   ALL: 'allMovies',
   TOP_RATED: 'topRatedMovies',
   MOST_COMMENTED: 'mostCommentedMovies',
