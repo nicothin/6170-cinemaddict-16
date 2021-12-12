@@ -16,8 +16,22 @@ export const RenderPosition = {
   AFTEREND: 'afterend',
 };
 
+export const Filters = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
+};
+
+export const Sorting = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
+
 export const StoreState = {
-  ALL: 'allMovies',
-  TOP_RATED: 'topRatedMovies',
-  MOST_COMMENTED: 'mostCommentedMovies',
+  ALL_MOVIES: 'allMovies',
+  ACTIVE_FILTER: 'activeFilter',
+  ACTIVE_SORTING: 'activeSorting',
+  ACTIVE_MOVIE: 'activeMovie',
 };
