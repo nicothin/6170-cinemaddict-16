@@ -1,8 +1,5 @@
-import Component from '../abstract/component';
-
-export const createMovieCounter = (counter) => `
-  <p>${counter} movies inside</p>
-`.trim();
+import Component from '../../abstract/component';
+import { createMovieCounter } from './movie-counter.tpl';
 
 export default class MovieCounter extends Component {
   #counter;

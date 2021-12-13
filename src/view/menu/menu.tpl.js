@@ -1,6 +1,4 @@
-import Component from '../abstract/component';
-
-const createMenu = (menuData) => {
+export const createMenu = (menuData) => {
   const menuItems = menuData.map((item) => {
     const counter = item.isShowCounter ? ` <span class="main-navigation__item-count">${item.counter}</span>` : '';
     const activeClassName = item.isActive ? 'main-navigation__item--active' : '';
@@ -17,16 +15,3 @@ const createMenu = (menuData) => {
   </nav>
 `.trim();
 };
-
-export default class Menu extends Component {
-  #menuData;
-
-  constructor(menuData) {
-    super();
-    this.#menuData = menuData;
-  }
-
-  get template() {
-    return createMenu(this.#menuData);
-  }
-}

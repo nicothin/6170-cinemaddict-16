@@ -1,13 +1,10 @@
 import dayjs from 'dayjs';
-import Component from '../abstract/component';
-import { EMOTIONS } from '../constants';
-import { generateComment } from '../mock/generate-comments';
-import { getFormattedList, getFormattedRuntime } from '../utils/common';
-import { setPageScrollDisable } from '../utils/dom';
-import { remove } from '../utils/render';
-import { createComment } from './comment';
+import { EMOTIONS } from '../../constants';
+// import { generateComment } from '../../mock/generate-comments';
+import { getFormattedList, getFormattedRuntime } from '../../utils/common';
+// import Comment from '../comment/comment';
 
-const createMovieDetails = (movie) => {
+export const createMovieDetails = (movie) => {
   const { title, alternativeTitle, ageRating, totalRating, poster, description, director, writers, actors, genre, release, runtime } = movie.filmInfo;
   const { alreadyWatched, favorite, watchlist } = movie.userDetails;
 
@@ -31,9 +28,11 @@ const createMovieDetails = (movie) => {
   const watchedActiveClassName = alreadyWatched ? ACTIVE_CLASSNAME : '';
   const favoriteActiveClassName = favorite ? ACTIVE_CLASSNAME : '';
 
-  const comments = movie.comments.map((comment) => createComment(
-    generateComment(comment)
-  )).join(' ');
+  // TODO[@nicothin]: допилить
+  const comments = '';
+  // const comments = movie.comments.map((comment) => new Comment(
+  //   generateComment(comment)
+  // ));
 
   const emotionsList = EMOTIONS.map((emotion) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
   <label class="film-details__emoji-label" for="emoji-${emotion}">
@@ -133,33 +132,3 @@ const createMovieDetails = (movie) => {
   </section>
 `.trim();
 };
-
-export default class MovieDetails extends Component {
-  #movie = null;
-  #onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      this.close();
-    }
-  };
-
-  constructor(movie) {
-    super(movie);
-    this.#movie = movie;
-
-    setPageScrollDisable(true);
-    this.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
-      this.close();
-    });
-    document.addEventListener('keydown', this.#onEscKeyDown);
-  }
-
-  get template() {
-    return createMovieDetails(this.#movie);
-  }
-
-  close () {
-    setPageScrollDisable(false);
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-    remove(this);
-  }
-}
