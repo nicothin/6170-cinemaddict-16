@@ -6,7 +6,7 @@ export default class MovieCard extends Component {
 
   #linkClickHandler = (event) => {
     event.preventDefault();
-    this._callback.click();
+    this._callback.click(this.#movie.id);
   }
 
   constructor(movie) {

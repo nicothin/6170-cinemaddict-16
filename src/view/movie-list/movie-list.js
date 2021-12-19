@@ -24,8 +24,13 @@ export default class MovieList extends Component {
     return this.#element;
   }
 
-  renderMovieCard = (movie) => {
+  clearList = () => {
+    this.#element.querySelector('.films-list__container').replaceChildren(); // by-by, fucking IE
+  }
+
+  renderMovieCard = (movie, callback) => {
     const movieCardComponent = new MovieCard(movie);
+    movieCardComponent.setLinkClickHandler(callback);
     render(this.#element.querySelector('.films-list__container'), movieCardComponent);
   }
 }

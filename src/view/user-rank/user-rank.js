@@ -10,6 +10,6 @@ export default class UserRank extends Component {
   }
 
   get template() {
-    return this.#watchedMoviesCounter > 0 ? createUserRank(this.#watchedMoviesCounter) : null;
+    return createUserRank(this.#watchedMoviesCounter);
   }
 }
