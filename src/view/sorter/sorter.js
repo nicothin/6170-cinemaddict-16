@@ -1,6 +1,4 @@
 import Component from '../../abstract/component';
-// import { dispatch } from '../../main';
-// import { ActionCreator } from '../../reducers/reducer';
 import { createSorter } from './sorter.tpl';
 
 export default class Sorter extends Component {
@@ -18,9 +16,6 @@ export default class Sorter extends Component {
 
     this.element.querySelector('.sort__button--active').classList.remove('sort__button--active');
     evt.target.classList.add('sort__button--active');
-
-    // dispatch(ActionCreator.setActiveSorting(evt.target.dataset.sortType));
-    // console.log(dispatch);
   }
 
   setSortTypeChangeHandler = (callback) => {
