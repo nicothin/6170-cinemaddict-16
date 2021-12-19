@@ -17,7 +17,7 @@ export const RenderPosition = {
 };
 
 export const Filters = {
-  ALL: 'ALL',
+  ALL: 'all',
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
