@@ -50,6 +50,9 @@ export default class MovieDetailsPresenter {
     document.removeEventListener('keydown', this.#onEscKeyDown);
 
     remove(this.#movieDetailsComponent);
+
+    this.#movieDetailsComponent = null;
+    this.#currentMovieId = null;
   }
 
   #onEscKeyDown = (event) => {
