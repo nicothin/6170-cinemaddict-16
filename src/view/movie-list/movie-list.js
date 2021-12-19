@@ -1,6 +1,5 @@
 import Component from '../../abstract/component';
 import { createElement, render } from '../../utils/render';
-import MovieCard from '../movie-card/movie-card';
 import { createMovieList } from './movie-list.tpl';
 
 export default class MovieList extends Component {
@@ -28,9 +27,7 @@ export default class MovieList extends Component {
     this.#element.querySelector('.films-list__container').replaceChildren(); // by-by, fucking IE
   }
 
-  renderMovieCard = (movie, callback) => {
-    const movieCardComponent = new MovieCard(movie);
-    movieCardComponent.setLinkClickHandler(callback);
+  renderMovieCard = (movieCardComponent) => {
     render(this.#element.querySelector('.films-list__container'), movieCardComponent);
   }
 }

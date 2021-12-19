@@ -26,4 +26,34 @@ export default class MovieDetails extends Component {
   renderComments = (commentsComponent) => {
     render(this.#element.querySelector('.film-details__bottom-container'), commentsComponent);
   }
+
+  setAddToWatchlistClickHandler = (callback) => {
+    this._callback.addToWatchlist = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#addToWatchlistClickHandler);
+  }
+
+  setMarkAsWatchedClickHandler = (callback) => {
+    this._callback.markAsWatched = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#markAsWatchedClickHandler);
+  }
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favorite = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
+  }
+
+  #addToWatchlistClickHandler = (event) => {
+    event.preventDefault();
+    this._callback.addToWatchlist(this.#movie.id);
+  }
+
+  #markAsWatchedClickHandler = (event) => {
+    event.preventDefault();
+    this._callback.markAsWatched(this.#movie.id);
+  }
+
+  #favoriteClickHandler = (event) => {
+    event.preventDefault();
+    this._callback.favorite(this.#movie.id);
+  }
 }

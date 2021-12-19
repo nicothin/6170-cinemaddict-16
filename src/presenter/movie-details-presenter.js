@@ -1,7 +1,10 @@
+import _ from 'lodash';
+
 import Store from '../services/store';
 import { RenderPosition, StoreState } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
+import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAsWatched } from '../utils/movie';
 
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
@@ -10,7 +13,7 @@ import Comment from '../view/comment/comment';
 export default class MovieDetailsPresenter {
   #store = new Store();
 
-  #currentMovieId = null;
+  #currentMovie = null;
 
   #siteFooterElement = null;
   #movieDetailsComponent = null;
@@ -23,29 +26,46 @@ export default class MovieDetailsPresenter {
 
   init = () => {
     this.#store.subscribe(StoreState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
+    this.#store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #changeActiveMovieIdHandler = (newMovieId) => {
-    if (this.#movieDetailsComponent && (newMovieId === null || newMovieId !== this.#currentMovieId)) {
-      this.#removeMovieDetails();
+    this.#removeMovieDetails();
+
+    if (!newMovieId) {
+      return;
     }
-    if (newMovieId) {
-      const movie = this.#store.getState(StoreState.ALL_MOVIES).find((item) => item.id === newMovieId);
-      if (movie) {
-        this.#renderMovieDetails(movie);
+
+    const movie = this.#store.getState(StoreState.ALL_MOVIES).find((item) => item.id === newMovieId);
+    if (movie) {
+      this.#currentMovie = movie;
+      this.#renderMovieDetails();
+    }
+  }
+
+  #changeAllMoviesListHandler = (allMovies) => {
+    if (this.#currentMovie) {
+      const newCurrentMovie = allMovies.find((movie) => movie.id === this.#currentMovie.id);
+      if (newCurrentMovie && !_.isEqual(newCurrentMovie, this.#currentMovie)) {
+        this.#currentMovie = newCurrentMovie;
+        remove(this.#movieDetailsComponent);
+        this.#renderMovieDetails();
       }
     }
   }
 
-  #renderMovieDetails = (movie) => {
+  #renderMovieDetails = () => {
     setPageScrollDisable(true);
     document.addEventListener('click', this.#onClickCloseButton);
     document.addEventListener('keydown', this.#onEscKeyDown);
 
-    this.#movieDetailsComponent = new MovieDetails(movie);
+    this.#movieDetailsComponent = new MovieDetails(this.#currentMovie);
+    this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
+    this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
+    this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
     render(this.#siteFooterElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    this.#store.requestComments(movie.id).then((comments) => this.#renderComments(comments));
+    this.#store.requestComments(this.#currentMovie.id).then((comments) => this.#renderComments(comments));
   }
 
   #removeMovieDetails = () => {
@@ -53,23 +73,23 @@ export default class MovieDetailsPresenter {
     document.removeEventListener('click', this.#onClickCloseButton);
     document.removeEventListener('keydown', this.#onEscKeyDown);
 
-    remove(this.#movieDetailsComponent);
+    if (this.#movieDetailsComponent) {
+      remove(this.#movieDetailsComponent);
+    }
 
     this.#movieDetailsComponent = null;
-    this.#currentMovieId = null;
-
-    this.#store.setActiveMovieId(null);
+    this.#currentMovie = null;
   }
 
   #onEscKeyDown = (event) => {
     if (event.key === 'Escape' || event.key === 'Esc') {
-      this.#removeMovieDetails();
+      this.#store.setActiveMovieId(null);
     }
   };
 
   #onClickCloseButton = (event) => {
     if (event.target.classList.contains('film-details__close-btn')) {
-      this.#removeMovieDetails();
+      this.#store.setActiveMovieId(null);
     }
   }
 
@@ -85,4 +105,10 @@ export default class MovieDetailsPresenter {
       });
     }
   }
+
+  #addToWatchlistHandler = (movieId) => changeInStoreAddToWatchlist(movieId)
+
+  #markAsWatchedHandler = (movieId) => changeInStoreMarkAsWatched(movieId)
+
+  #favoriteHandler = (movieId) => changeInStoreFavorite(movieId)
 }
