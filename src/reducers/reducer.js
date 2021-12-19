@@ -31,15 +31,13 @@ export const ActionCreator = {
 };
 
 export const Operation = {
-  requestAllMovies: () => (dispatch) => {
-    axios
-      .get('movies')
-      .then((response) => {
-        const all = response.data;
-        dispatch(ActionCreator.setAllMovies(all));
-        return response;
-      });
-  },
+  requestAllMovies: () => (dispatch) => axios
+    .get('movies')
+    .then((response) => {
+      const all = response.data;
+      dispatch(ActionCreator.setAllMovies(all));
+      return response;
+    }),
 };
 
 export const reducer = (state, action) => {
