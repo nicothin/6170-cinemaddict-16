@@ -27,9 +27,7 @@ export default class Store {
     });
   }
 
-  dispatch(operation) {
-    this.#store.dispatch(operation);
-  }
+  dispatch = (operation) => this.#store.dispatch(operation);
 
   subscribe = (state, cb) => {
     this.#subscribers.push({ state, cb });
@@ -40,7 +38,7 @@ export default class Store {
     return currentState[state] === undefined ? undefined : currentState[state];
   }
 
-  requestAllMovies = () => {
-    this.#store.dispatch(Operation.requestAllMovies());
-  }
+  requestAllMovies = () => this.#store.dispatch(Operation.requestAllMovies())
+
+  requestComments = (MovieId) => this.#store.dispatch(Operation.requestComments(MovieId))
 }

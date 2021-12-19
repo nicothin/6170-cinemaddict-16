@@ -4,6 +4,8 @@ import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
 
 import MovieDetails from '../view/movie-details/movie-details';
+import Comments from '../view/comments/comments';
+import Comment from '../view/comment/comment';
 
 export default class MovieDetailsPresenter {
   #store = new Store();
@@ -42,6 +44,8 @@ export default class MovieDetailsPresenter {
 
     this.#movieDetailsComponent = new MovieDetails(movie);
     render(this.#siteFooterElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
+
+    this.#store.requestComments(movie.id).then((comments) => this.#renderComments(comments));
   }
 
   #removeMovieDetails = () => {
@@ -64,6 +68,19 @@ export default class MovieDetailsPresenter {
   #onClickCloseButton = (event) => {
     if (event.target.classList.contains('film-details__close-btn')) {
       this.#removeMovieDetails();
+    }
+  }
+
+  #renderComments = (comments) => {
+    // TODO[@nicothin]: доделать в рамках одного из следующих PR
+    if (comments.length) {
+      // TODO[@nicothin]: Прояснить. Плохо выглядит: рендерю Comments методом movieDetailsComponent → ...
+      const commentsComponent = new Comments(comments);
+      this.#movieDetailsComponent.renderComments(commentsComponent);
+      comments.forEach((comment) => {
+        const commentComponent = new Comment(comment);
+        commentsComponent.renderComment(commentComponent);
+      });
     }
   }
 }

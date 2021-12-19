@@ -570,7 +570,7 @@ button {
   background-color: #212126;
   box-shadow: -3px 2px 13px 0 #141628;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .film-details__inner {

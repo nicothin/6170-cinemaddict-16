@@ -38,6 +38,9 @@ export const Operation = {
       dispatch(ActionCreator.setAllMovies(all));
       return response;
     }),
+  requestComments: (movieId) => async () => axios
+    .get(`comments/${movieId}`)
+    .then((response) => response.data),
 };
 
 export const reducer = (state, action) => {
