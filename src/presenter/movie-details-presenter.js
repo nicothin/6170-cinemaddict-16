@@ -57,6 +57,8 @@ export default class MovieDetailsPresenter {
 
     this.#movieDetailsComponent = null;
     this.#currentMovieId = null;
+
+    this.#store.setActiveMovieId(null);
   }
 
   #onEscKeyDown = (event) => {
