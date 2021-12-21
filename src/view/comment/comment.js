@@ -2,14 +2,14 @@ import Component from '../../abstract/component';
 import { createComment } from './comment.tpl';
 
 export default class Comment extends Component {
-  #data = null;
+  #comment = null;
 
-  constructor(data) {
+  constructor(comment) {
     super();
-    this.#data = data;
+    this.#comment = comment;
   }
 
   get template() {
-    return createComment(this.#data);
+    return createComment(this.#comment);
   }
 }

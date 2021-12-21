@@ -1,18 +1,18 @@
 import { axios } from '../services/axios';
-import { Filters, Sorting, StoreState } from '../constants';
+import { Filters, StoreState } from '../constants';
 
 const ActionType = {
   SET_ALL_MOVIES: 'SET_ALL_MOVIES',
-  SET_ACTIVE_FILTER: 'SET_ACTIVE_FILTER',
-  SET_ACTIVE_SORTING: 'SET_ACTIVE_SORTING',
-  SET_ACTIVE_MOVIE: 'SET_ACTIVE_MOVIE',
+  SET_CURRENT_FILTER: 'SET_CURRENT_FILTER',
+  SET_ACTIVE_MOVIE_ID: 'SET_ACTIVE_MOVIE_ID',
 };
 
 export const initialState = {
+  // TODO[@nicothin]: подумать как будет откатываться изменение, если сервер ответит на PUT не 200
+  // [StoreState.ORIGINAL_MOVIES]: [], // возможно, хранением массива, мутируемого только после ответа 200
   [StoreState.ALL_MOVIES]: [],
-  [StoreState.ACTIVE_FILTER]: Filters.ALL,
-  [StoreState.ACTIVE_SORTING]: Sorting.DEFAULT,
-  [StoreState.ACTIVE_MOVIE]: null,
+  [StoreState.CURRENT_FILTER]: Filters.ALL,
+  [StoreState.ACTIVE_MOVIE_ID]: null,
 };
 
 export const ActionCreator = {
@@ -20,49 +20,37 @@ export const ActionCreator = {
     type: ActionType.SET_ALL_MOVIES,
     payload: state,
   }),
-  setActiveFilter: (state) => ({
-    type: ActionType.SET_ACTIVE_FILTER,
+  setCurrentFilter: (state) => ({
+    type: ActionType.SET_CURRENT_FILTER,
     payload: state,
   }),
-  setActiveSorting: (state) => ({
-    type: ActionType.SET_ACTIVE_SORTING,
-    payload: state,
-  }),
-  setActiveMovie: (state) => ({
-    type: ActionType.SET_ACTIVE_MOVIE,
-    payload: state,
+  setActiveMovieId: (id) => ({
+    type: ActionType.SET_ACTIVE_MOVIE_ID,
+    payload: id,
   }),
 };
 
 export const Operation = {
-  getAllMovies: () => (dispatch) => {
-    axios
-      .get('movies')
-      .then((response) => {
-        const all = response.data;
-        // const topRated = response.data.sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1).slice(0, MOVIE_TOP_RATED_COUNT);
-        // const mostCommented = response.data.sort((a, b) => a.comments.length < b.comments.length ? 1 : -1).slice(0, MOVIE_MOST_COMMENT_COUNT);
-        dispatch(ActionCreator.setAllMovies(all));
-        // dispatch(ActionCreator.setTopRatedMovies(topRated));
-        // dispatch(ActionCreator.setMostCommentedMovies(mostCommented));
-        return response;
-      })
-      .catch((e) => {
-        throw new Error('Ошибка сетевого обмена', e);
-      });
-  },
+  requestAllMovies: () => (dispatch) => axios
+    .get('movies')
+    .then((response) => {
+      const all = response.data;
+      dispatch(ActionCreator.setAllMovies(all));
+      return response;
+    }),
+  requestComments: (movieId) => async () => axios
+    .get(`comments/${movieId}`)
+    .then((response) => response.data),
 };
 
 export const reducer = (state, action) => {
   switch (action.type) {
     case ActionType.SET_ALL_MOVIES:
       return { ...state, [StoreState.ALL_MOVIES]: action.payload };
-    case ActionType.SET_ACTIVE_FILTER:
-      return { ...state, [StoreState.ACTIVE_FILTER]: action.payload };
-    case ActionType.SET_ACTIVE_SORTING:
-      return { ...state, [StoreState.ACTIVE_SORTING]: action.payload };
-    case ActionType.SET_ACTIVE_MOVIE:
-      return { ...state, [StoreState.ACTIVE_MOVIE]: action.payload };
+    case ActionType.SET_CURRENT_FILTER:
+      return { ...state, [StoreState.CURRENT_FILTER]: action.payload };
+    case ActionType.SET_ACTIVE_MOVIE_ID:
+      return { ...state, [StoreState.ACTIVE_MOVIE_ID]: action.payload };
     default:
       return state;
   }

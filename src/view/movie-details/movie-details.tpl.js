@@ -1,8 +1,5 @@
 import dayjs from 'dayjs';
-import { EMOTIONS } from '../../constants';
-// import { generateComment } from '../../mock/generate-comments';
 import { getFormattedList, getFormattedRuntime } from '../../utils/common';
-// import Comment from '../comment/comment';
 
 export const createMovieDetails = (movie) => {
   const { title, alternativeTitle, ageRating, totalRating, poster, description, director, writers, actors, genre, release, runtime } = movie.filmInfo;
@@ -22,23 +19,10 @@ export const createMovieDetails = (movie) => {
   const formattedGenres = genre.map((item) => `<span class="film-details__genre">${item}</span>`).join(' ');
   const formattedRelease = dayjs(release.date).format('DD MMMM YYYY');
   const formattedRuntime = getFormattedRuntime(runtime);
-  const commentsCounter = movie.comments.length;
 
   const watchlistActiveClassName = watchlist ? ACTIVE_CLASSNAME : '';
   const watchedActiveClassName = alreadyWatched ? ACTIVE_CLASSNAME : '';
   const favoriteActiveClassName = favorite ? ACTIVE_CLASSNAME : '';
-
-  // TODO[@nicothin]: допилить
-  const comments = '';
-  // const comments = movie.comments.map((comment) => new Comment(
-  //   generateComment(comment)
-  // ));
-
-  const emotionsList = EMOTIONS.map((emotion) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
-  <label class="film-details__emoji-label" for="emoji-${emotion}">
-    <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
-  </label>
-`).join(' ');
 
   return `
   <section class="film-details">
@@ -107,27 +91,7 @@ export const createMovieDetails = (movie) => {
         </section>
       </div>
 
-      <div class="film-details__bottom-container">
-        <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCounter}</span></h3>
-
-          <ul class="film-details__comments-list">
-            ${comments}
-          </ul>
-
-          <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
-
-            <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-            </label>
-
-            <div class="film-details__emoji-list">
-              ${emotionsList}
-            </div>
-          </div>
-        </section>
-      </div>
+      <div class="film-details__bottom-container"></div>
     </form>
   </section>
 `.trim();

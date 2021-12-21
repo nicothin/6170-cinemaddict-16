@@ -31,7 +31,6 @@ export const Sorting = {
 
 export const StoreState = {
   ALL_MOVIES: 'allMovies',
-  ACTIVE_FILTER: 'activeFilter',
-  ACTIVE_SORTING: 'activeSorting',
-  ACTIVE_MOVIE: 'activeMovie',
+  CURRENT_FILTER: 'currentFilter',
+  ACTIVE_MOVIE_ID: 'activeMovieId',
 };
