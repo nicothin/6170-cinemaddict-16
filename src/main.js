@@ -1,5 +1,6 @@
 import Store from './services/store';
 
+import { Operation } from './reducers/reducer';
 import GeneralPresenter from './presenter/general-presenter';
 import MainMenuPresenter from './presenter/main-menu-presenter';
 import MoviesPagePresenter from './presenter/movies-page-presenter';
@@ -19,4 +20,4 @@ new MoviesPagePresenter(siteMainElement);
 
 new MovieDetailsPresenter(siteFooterElement);
 
-store.requestAllMovies();
+store.dispatch(Operation.requestAllMovies());

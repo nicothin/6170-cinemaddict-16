@@ -9,6 +9,7 @@ import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAs
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
 import Comment from '../view/comment/comment';
+import { ActionCreator, Operation } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
   #store = new Store();
@@ -65,7 +66,9 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
     render(this.#siteFooterElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    this.#store.requestComments(this.#currentMovie.id).then((comments) => this.#renderComments(comments));
+    this.#store
+      .dispatch(Operation.requestComments(this.#currentMovie.id))
+      .then((comments) => this.#renderComments(comments));
   }
 
   #removeMovieDetails = () => {
@@ -83,13 +86,13 @@ export default class MovieDetailsPresenter {
 
   #onEscKeyDown = (event) => {
     if (event.key === 'Escape' || event.key === 'Esc') {
-      this.#store.setActiveMovieId(null);
+      this.#store.dispatch(ActionCreator.setActiveMovieId(null));
     }
   };
 
   #onClickCloseButton = (event) => {
     if (event.target.classList.contains('film-details__close-btn')) {
-      this.#store.setActiveMovieId(null);
+      this.#store.dispatch(ActionCreator.setActiveMovieId(null));
     }
   }
 

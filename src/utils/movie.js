@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { StoreState } from '../constants';
+import { ActionCreator } from '../reducers/reducer';
 import Store from '../services/store';
 
 export const changeInStoreAddToWatchlist = (movieId) => {
@@ -11,7 +12,7 @@ export const changeInStoreAddToWatchlist = (movieId) => {
     }
     return movie;
   });
-  store.setAllMovies(newAllMovies);
+  store.dispatch(ActionCreator.setAllMovies(newAllMovies));
 };
 
 export const changeInStoreMarkAsWatched = (movieId) => {
@@ -23,7 +24,7 @@ export const changeInStoreMarkAsWatched = (movieId) => {
     }
     return movie;
   });
-  store.setAllMovies(newAllMovies);
+  store.dispatch(ActionCreator.setAllMovies(newAllMovies));
 };
 
 export const changeInStoreFavorite = (movieId) => {
@@ -35,5 +36,5 @@ export const changeInStoreFavorite = (movieId) => {
     }
     return movie;
   });
-  store.setAllMovies(newAllMovies);
+  store.dispatch(ActionCreator.setAllMovies(newAllMovies));
 };

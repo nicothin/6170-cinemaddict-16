@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { initialState, reducer, Operation, ActionCreator } from '../reducers/reducer';
+import { initialState, reducer } from '../reducers/reducer';
 
 export default class Store {
   #store = {};
@@ -37,12 +37,4 @@ export default class Store {
     const currentState = this.#store.getState();
     return currentState[state] === undefined ? undefined : currentState[state];
   }
-
-  requestAllMovies = () => this.#store.dispatch(Operation.requestAllMovies())
-
-  requestComments = (movieId) => this.#store.dispatch(Operation.requestComments(movieId))
-
-  setAllMovies = (allMovies) => this.#store.dispatch(ActionCreator.setAllMovies(allMovies))
-
-  setActiveMovieId = (movieId) => this.#store.dispatch(ActionCreator.setActiveMovieId(movieId))
 }
