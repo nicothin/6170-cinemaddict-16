@@ -63,13 +63,13 @@ export default class MoviesPagePresenter {
       case Filters.FAVORITES:
         return allMovies.filter((movie) => movie.userDetails.favorite);
       default:
-        return _.clone(allMovies);
+        return _.cloneDeep(allMovies);
     }
   }
 
-  #getMovieListSortedByRating = (list) => _.clone(list).sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1);
+  #getMovieListSortedByRating = (list) => _.cloneDeep(list).sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1);
 
-  #getMovieListSortedByCommentsCount = (list) => _.clone(list).sort((a, b) => a.comments.length < b.comments.length ? 1 : -1);
+  #getMovieListSortedByCommentsCount = (list) => _.cloneDeep(list).sort((a, b) => a.comments.length < b.comments.length ? 1 : -1);
 
   #resetState = () => {
     this.#moviesList = [];
