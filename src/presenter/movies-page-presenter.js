@@ -12,8 +12,6 @@ import ShowMore from '../view/show-more-button/show-more-button';
 import Sorter from '../view/sorter/sorter';
 
 export default class MoviesPagePresenter {
-  #store = new Store()
-
   #container = null;
 
   #allMovies = [];
@@ -44,8 +42,8 @@ export default class MoviesPagePresenter {
 
     this.#renderMoviesPage();
 
-    this.#store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-    this.#store.subscribe(StoreState.CURRENT_FILTER, this.#changeFilterHandler);
+    Store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    Store.subscribe(StoreState.CURRENT_FILTER, this.#changeFilterHandler);
   }
 
   #changeFilterHandler = (newFilter) => {

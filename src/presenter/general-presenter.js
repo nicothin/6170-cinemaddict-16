@@ -6,8 +6,6 @@ import MovieCounter from '../view/movie-counter/movie-counter';
 import UserRank from '../view/user-rank/user-rank';
 
 export default class GeneralPresenter {
-  #store = new Store()
-
   #siteHeaderElement = null
   #siteFooterElement = null
 
@@ -26,7 +24,7 @@ export default class GeneralPresenter {
   }
 
   init = () => {
-    this.#store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    Store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #changeAllMoviesListHandler = (movies) => {

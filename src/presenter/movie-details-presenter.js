@@ -12,8 +12,6 @@ import Comment from '../view/comment/comment';
 import { ActionCreator, Operation } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
-  #store = new Store();
-
   #currentMovie = null;
 
   #siteFooterElement = null;
@@ -26,8 +24,8 @@ export default class MovieDetailsPresenter {
   }
 
   init = () => {
-    this.#store.subscribe(StoreState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
-    this.#store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    Store.subscribe(StoreState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
+    Store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #changeActiveMovieIdHandler = (newMovieId) => {
@@ -37,7 +35,7 @@ export default class MovieDetailsPresenter {
       return;
     }
 
-    const movie = this.#store.getState(StoreState.ALL_MOVIES).find((item) => item.id === newMovieId);
+    const movie = Store.getState(StoreState.ALL_MOVIES).find((item) => item.id === newMovieId);
     if (movie) {
       this.#currentMovie = movie;
       this.#renderMovieDetails();
@@ -66,7 +64,7 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
     render(this.#siteFooterElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    this.#store
+    Store
       .dispatch(Operation.requestComments(this.#currentMovie.id))
       .then((comments) => this.#renderComments(comments));
   }
@@ -86,13 +84,13 @@ export default class MovieDetailsPresenter {
 
   #onEscKeyDown = (event) => {
     if (event.key === 'Escape' || event.key === 'Esc') {
-      this.#store.dispatch(ActionCreator.setActiveMovieId(null));
+      Store.dispatch(ActionCreator.setActiveMovieId(null));
     }
   };
 
   #onClickCloseButton = (event) => {
     if (event.target.classList.contains('film-details__close-btn')) {
-      this.#store.dispatch(ActionCreator.setActiveMovieId(null));
+      Store.dispatch(ActionCreator.setActiveMovieId(null));
     }
   }
 

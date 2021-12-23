@@ -10,8 +10,6 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-const store = new Store();
-
 new GeneralPresenter(siteHeaderElement, siteFooterElement);
 
 new MainMenuPresenter(siteMainElement);
@@ -20,4 +18,4 @@ new MoviesPagePresenter(siteMainElement);
 
 new MovieDetailsPresenter(siteFooterElement);
 
-store.dispatch(Operation.requestAllMovies());
+Store.dispatch(Operation.requestAllMovies());

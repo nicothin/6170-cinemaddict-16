@@ -5,8 +5,6 @@ import { remove, render } from '../utils/render';
 import Menu from '../view/menu/menu';
 
 export default class MainMenuPresenter {
-  #store = new Store()
-
   #menuFilters = [
     {
       id: Filters.ALL,
@@ -50,7 +48,7 @@ export default class MainMenuPresenter {
 
   init = () => {
     this.#renderMenu();
-    this.#store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    Store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #renderMenu = () => {

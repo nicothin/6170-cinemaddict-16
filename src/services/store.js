@@ -3,18 +3,12 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { initialState, reducer } from '../reducers/reducer';
 
-export default class Store {
+class Store {
   #store = {};
   #previousStore = {};
   #subscribers = [];
 
   constructor() {
-    // TODO[@nicothin]: разобраться точнее как это работает. Прототипы?
-    if (Store._instance) {
-      return Store._instance;
-    }
-    Store._instance = this;
-
     this.#store = createStore(reducer, initialState, applyMiddleware(thunk));
     this.#store.subscribe(() => {
       const nowStore = this.#store.getState();
@@ -38,3 +32,5 @@ export default class Store {
     return currentState[state] === undefined ? undefined : currentState[state];
   }
 }
+
+export default new Store();
