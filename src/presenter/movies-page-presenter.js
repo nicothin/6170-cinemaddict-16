@@ -159,6 +159,7 @@ export default class MoviesPagePresenter {
 
   #renderTopRatedList = () => {
     render(this.#moviesPageInnerComponent, this.#topRatedListComponent);
+    this.#topRatedListComponent.clearList();
     this.#renderMovieCards(
       this.#topRatedListComponent,
       this.#topRatedList,
@@ -167,6 +168,7 @@ export default class MoviesPagePresenter {
 
   #renderMostCommentedList = () => {
     render(this.#moviesPageInnerComponent, this.#mostCommentedListComponent);
+    this.#mostCommentedListComponent.clearList();
     this.#renderMovieCards(
       this.#mostCommentedListComponent,
       this.#mostCommentedList,
