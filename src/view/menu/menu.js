@@ -13,7 +13,7 @@ export default class Menu extends SmartComponent {
    *   isActive: false,
    *   isShowCounter: true,
    * }],
-   * isStats: {boolean}
+   * isStats: boolean
    * }} props Список фильтров и флаг активности страницы статистика (ЧЕЛОДЛАНЬ)
    */
 
