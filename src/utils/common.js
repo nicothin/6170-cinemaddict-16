@@ -1,14 +1,9 @@
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-export const getUnique = (array) => [...new Set(array)];
-
+/**
+ * Получить строку, подрезанную по длине.
+ * @param {string} text Подрезаемая строка
+ * @param {number} length Длина строки
+ * @returns {string} Строка
+ */
 export const getSliceText = (text, length) => {
   let sliced = text.slice(0, length);
   if (sliced.length < text.length) {
@@ -17,8 +12,19 @@ export const getSliceText = (text, length) => {
   return sliced;
 };
 
+/**
+ * Склеить массив через запутую. Если прищла строка, её же и вернуть.
+ * @param {string|array} data Строка или массив
+ * @returns {string} Строка с результатом
+ */
+
 export const getFormattedList = (data) => typeof data === 'string' ? data : data.join(', ');
 
+/**
+ * Получить длительность в часах изи длительности в минутах
+ * @param {number} minutes Количество минут
+ * @returns {string} Длительность в формате ЧЧh ММm
+ */
 export const getFormattedRuntime = (minutes) => {
   const runtimeHours = Math.trunc(minutes / 60);
   return `${runtimeHours ? `${runtimeHours}h` : ''} ${minutes % 60}m`;
