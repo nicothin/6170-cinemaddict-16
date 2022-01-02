@@ -53,6 +53,10 @@ export default class MainMenuPresenter {
   init = () => {
     render(this.#wrapperElement, this.#menuComponent, RenderPosition.AFTERBEGIN);
 
+    this.#updateMenuData(
+      this.#model.getState(ModelState.HASH)
+    );
+
     this.#menuComponent.setLinkClickHandler(this.#linkClickHandler);
 
     this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
@@ -115,6 +119,11 @@ export default class MainMenuPresenter {
   }
 
   #changeHashHandler = (hash) => {
+    this.#updateMenuData(hash);
+    this.#menuComponent.updateData(this.#menuData);
+  }
+
+  #updateMenuData = (hash) => {
     if (hash === Hashes.STATS) {
       this.#menuData.isStats = true;
       this.#menuData.filters.forEach((filter) => {
@@ -127,7 +136,5 @@ export default class MainMenuPresenter {
         filter.isActive = filter.id === hash;
       });
     }
-
-    this.#menuComponent.updateData(this.#menuData);
   }
 }
