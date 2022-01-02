@@ -1,15 +1,22 @@
-import Component from '../../abstract/component';
+import SmartComponent from '../../abstract/smart-component';
 import { createUserRank } from './user-rank.tpl';
 
-export default class UserRank extends Component {
-  #watchedMoviesCounter = 0;
+export default class UserRank extends SmartComponent {
 
-  constructor(watchedMoviesCounter) {
+  /**
+   * Статус пользователя в зависимости от кол-ва просмотренных фильмов
+   * @param {{ counter: number }} props
+   */
+
+  constructor(props) {
     super();
-    this.#watchedMoviesCounter = watchedMoviesCounter;
+
+    this._data = props;
   }
 
   get template() {
-    return createUserRank(this.#watchedMoviesCounter);
+    return createUserRank(this._data);
   }
+
+  restoreHandlers = () => {}
 }

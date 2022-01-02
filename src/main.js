@@ -10,7 +10,7 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-new GeneralPresenter(siteHeaderElement, siteFooterElement);
+new GeneralPresenter(Model, siteHeaderElement, siteFooterElement);
 
 new MainMenuPresenter(Model, siteMainElement);
 
