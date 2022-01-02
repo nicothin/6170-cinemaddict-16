@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Store from '../services/store';
-import { MOVIE_COUNT_PER_STEP, MOVIE_TOP_RATED_COUNT, MOVIE_MOST_COMMENT_COUNT, RenderPosition, Filters, StoreState, Sorting } from '../constants';
+import { MOVIE_COUNT_PER_STEP, MOVIE_TOP_RATED_COUNT, MOVIE_MOST_COMMENT_COUNT, RenderPosition, Hashes, ModelState, Sorting } from '../constants';
 import { remove, render } from '../utils/render';
 
 import MovieCardPresenter from './movie-card-presenter';
@@ -18,7 +18,7 @@ export default class MoviesPagePresenter {
   #moviesList = [];
   #topRatedList = [];
   #mostCommentedList = [];
-  #currentFilter = Filters.ALL;
+  #currentFilter = Hashes.ALL;
   #currentSortType = Sorting.DEFAULT;
 
   #moviesPageInnerComponent = new MoviesPage();
@@ -42,8 +42,8 @@ export default class MoviesPagePresenter {
 
     this.#renderMoviesPage();
 
-    Store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-    Store.subscribe(StoreState.CURRENT_FILTER, this.#changeFilterHandler);
+    Store.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    Store.subscribe(ModelState.HASH, this.#changeFilterHandler);
   }
 
   #changeFilterHandler = (newFilter) => {
@@ -56,11 +56,11 @@ export default class MoviesPagePresenter {
 
   #getFilteredMovieList = (allMovies) => {
     switch (this.#currentFilter) {
-      case Filters.WATCHLIST:
+      case Hashes.WATCHLIST:
         return allMovies.filter((movie) => movie.userDetails.watchlist);
-      case Filters.HISTORY:
+      case Hashes.HISTORY:
         return allMovies.filter((movie) => movie.userDetails.alreadyWatched);
-      case Filters.FAVORITES:
+      case Hashes.FAVORITES:
         return allMovies.filter((movie) => movie.userDetails.favorite);
       default:
         return _.cloneDeep(allMovies);

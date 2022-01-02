@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import Store from '../services/store';
-import { RenderPosition, StoreState } from '../constants';
+import { RenderPosition, ModelState } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
 import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAsWatched } from '../utils/movie';
@@ -24,8 +24,8 @@ export default class MovieDetailsPresenter {
   }
 
   init = () => {
-    Store.subscribe(StoreState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
-    Store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    Store.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
+    Store.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #changeActiveMovieIdHandler = (newMovieId) => {
@@ -35,7 +35,7 @@ export default class MovieDetailsPresenter {
       return;
     }
 
-    const movie = Store.getState(StoreState.ALL_MOVIES).find((item) => item.id === newMovieId);
+    const movie = Store.getState(ModelState.ALL_MOVIES).find((item) => item.id === newMovieId);
     if (movie) {
       this.#currentMovie = movie;
       this.#renderMovieDetails();

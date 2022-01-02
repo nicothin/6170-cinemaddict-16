@@ -1,5 +1,5 @@
 import Store from '../services/store';
-import { StoreState } from '../constants';
+import { ModelState } from '../constants';
 import { remove, render } from '../utils/render';
 
 import MovieCounter from '../view/movie-counter/movie-counter';
@@ -24,7 +24,7 @@ export default class GeneralPresenter {
   }
 
   init = () => {
-    Store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    Store.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #changeAllMoviesListHandler = (movies) => {

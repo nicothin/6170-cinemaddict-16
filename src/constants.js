@@ -16,11 +16,12 @@ export const RenderPosition = {
   AFTEREND: 'afterend',
 };
 
-export const Filters = {
+export const Hashes = {
   ALL: 'all',
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
+  STATS: 'stats',
 };
 
 export const Sorting = {
@@ -29,8 +30,8 @@ export const Sorting = {
   RATING: 'rating',
 };
 
-export const StoreState = {
+export const ModelState = {
   ALL_MOVIES: 'allMovies',
-  CURRENT_FILTER: 'currentFilter',
+  HASH: 'hash',
   ACTIVE_MOVIE_ID: 'activeMovieId',
 };
