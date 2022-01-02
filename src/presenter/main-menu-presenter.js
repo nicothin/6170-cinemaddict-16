@@ -56,7 +56,7 @@ export default class MainMenuPresenter {
     this.#menuComponent.setLinkClickHandler(this.#linkClickHandler);
 
     this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-    this.#model.subscribe(ModelState.HASH, this.#changeHash);
+    this.#model.subscribe(ModelState.HASH, this.#changeHashHandler);
   }
 
   #changeAllMoviesListHandler = (movies) => {
@@ -114,7 +114,7 @@ export default class MainMenuPresenter {
     this.#model.dispatch(ActionCreator.setHash(newHash));
   }
 
-  #changeHash = (hash) => {
+  #changeHashHandler = (hash) => {
     if (hash === Hashes.STATS) {
       this.#menuData.isStats = true;
       this.#menuData.filters.forEach((filter) => {
