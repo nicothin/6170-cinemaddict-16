@@ -16,7 +16,7 @@ new MainMenuPresenter(Model, siteMainElement);
 
 new MoviesPagePresenter(siteMainElement);
 
-new MovieDetailsPresenter(siteFooterElement);
+new MovieDetailsPresenter(Model, siteFooterElement);
 
 Model.dispatch(Operation.requestAllMovies());
 

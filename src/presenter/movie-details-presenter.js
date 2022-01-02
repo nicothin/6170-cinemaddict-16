@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import Store from '../services/store';
 import { RenderPosition, ModelState } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
@@ -12,20 +11,22 @@ import Comment from '../view/comment/comment';
 import { ActionCreator, Operation } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
+  #model = null;
   #currentMovie = null;
 
-  #siteFooterElement = null;
+  #wrapperElement = null;
   #movieDetailsComponent = null;
 
-  constructor(siteFooterElement) {
-    this.#siteFooterElement = siteFooterElement;
+  constructor(model, wrapperElement) {
+    this.#model = model;
+    this.#wrapperElement = wrapperElement;
 
     this.init();
   }
 
   init = () => {
-    Store.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
-    Store.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    this.#model.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #changeActiveMovieIdHandler = (newMovieId) => {
@@ -35,7 +36,7 @@ export default class MovieDetailsPresenter {
       return;
     }
 
-    const movie = Store.getState(ModelState.ALL_MOVIES).find((item) => item.id === newMovieId);
+    const movie = this.#model.getState(ModelState.ALL_MOVIES).find((item) => item.id === newMovieId);
     if (movie) {
       this.#currentMovie = movie;
       this.#renderMovieDetails();
@@ -62,9 +63,9 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
     this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
-    render(this.#siteFooterElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
+    render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    Store
+    this.#model
       .dispatch(Operation.requestComments(this.#currentMovie.id))
       .then((comments) => this.#renderComments(comments));
   }
@@ -84,13 +85,13 @@ export default class MovieDetailsPresenter {
 
   #onEscKeyDown = (event) => {
     if (event.key === 'Escape' || event.key === 'Esc') {
-      Store.dispatch(ActionCreator.setActiveMovieId(null));
+      this.#model.dispatch(ActionCreator.setActiveMovieId(null));
     }
   };
 
   #onClickCloseButton = (event) => {
     if (event.target.classList.contains('film-details__close-btn')) {
-      Store.dispatch(ActionCreator.setActiveMovieId(null));
+      this.#model.dispatch(ActionCreator.setActiveMovieId(null));
     }
   }
 
