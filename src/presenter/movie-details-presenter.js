@@ -13,9 +13,13 @@ import { ActionCreator, Operation } from '../reducers/reducer';
 export default class MovieDetailsPresenter {
   #model = null;
   #currentMovie = null;
+  #currentMovieComments = [];
 
   #wrapperElement = null;
   #movieDetailsComponent = null;
+  #commentsComponent = new Comments(0);
+
+  #currentScroll = 0;
 
   constructor(model, wrapperElement) {
     this.#model = model;
@@ -65,9 +69,22 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
     render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
+    this.#renderComments(this.#currentMovieComments);
     this.#model
       .dispatch(Operation.requestComments(this.#currentMovie.id))
-      .then((comments) => this.#renderComments(comments));
+      .then((comments) => {
+        if (!_.isEqual(comments, this.#currentMovieComments)) {
+          this.#currentMovieComments = comments;
+          this.#renderComments(this.#currentMovieComments);
+        }
+      });
+
+    this.#scrollToCurrent();
+    this.#movieDetailsComponent.element.addEventListener('scroll', this.#onScroll);
+  }
+
+  #scrollToCurrent = () => {
+    this.#movieDetailsComponent.element.scrollTo(0, this.#currentScroll);
   }
 
   #removeMovieDetails = () => {
@@ -81,6 +98,7 @@ export default class MovieDetailsPresenter {
 
     this.#movieDetailsComponent = null;
     this.#currentMovie = null;
+    this.#currentScroll = 0;
   }
 
   #onEscKeyDown = (event) => {
@@ -95,16 +113,21 @@ export default class MovieDetailsPresenter {
     }
   }
 
+  #onScroll = (event) => {
+    this.#currentScroll = event.target.scrollTop;
+  }
+
   #renderComments = (comments) => {
-    // TODO[@nicothin]: доделать в рамках одного из следующих PR
     if (comments.length) {
-      // TODO[@nicothin]: Прояснить. Плохо выглядит: рендерю Comments методом movieDetailsComponent → ...
-      const commentsComponent = new Comments(comments);
-      this.#movieDetailsComponent.renderComments(commentsComponent);
+      this.#commentsComponent.updateData({commentsCounter: comments.length});
+      this.#commentsComponent.clearList();
+      this.#movieDetailsComponent.renderComments(this.#commentsComponent);
       comments.forEach((comment) => {
         const commentComponent = new Comment(comment);
-        commentsComponent.renderComment(commentComponent);
+        this.#commentsComponent.renderComment(commentComponent);
       });
+
+      this.#scrollToCurrent();
     }
   }
 

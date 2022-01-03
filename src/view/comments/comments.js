@@ -1,18 +1,17 @@
-import Component from '../../abstract/component';
+import SmartComponent from '../../abstract/smart-component';
 import { createElement, render } from '../../utils/render';
 import { createComments } from './comments.tpl';
 
-export default class Comments extends Component {
+export default class Comments extends SmartComponent {
   #element = null;
-  #comments = null;
 
-  constructor(comments) {
+  constructor(props) {
     super();
-    this.#comments = comments;
+    this._data = props;
   }
 
   get template() {
-    return createComments(this.#comments);
+    return createComments(this._data);
   }
 
   get element() {
@@ -23,7 +22,13 @@ export default class Comments extends Component {
     return this.#element;
   }
 
+  clearList = () => {
+    this.#element.querySelector('.film-details__comments-list').replaceChildren(); // by-by, fucking IE
+  }
+
   renderComment = (commentComponent) => {
     render(this.#element.querySelector('.film-details__comments-list'), commentComponent);
   }
+
+  restoreHandlers = () => {}
 }
