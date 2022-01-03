@@ -243,11 +243,6 @@ export default class MoviesPagePresenter {
     this.#currentSortType = sortType;
     this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentFilter);
     this.#renderMainList();
-
-    // this.#sortMoviesList();
-
-    // this.#mainListComponent.clearList();
-    // this.#renderMainList();
   }
 
   #sortMoviesList = (list, sortType) => {
