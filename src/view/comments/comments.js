@@ -23,11 +23,26 @@ export default class Comments extends SmartComponent {
   }
 
   clearList = () => {
-    this.#element.querySelector('.film-details__comments-list').replaceChildren(); // by-by, fucking IE
+    this.element.querySelector('.film-details__comments-list').replaceChildren();
   }
 
   renderComment = (commentComponent) => {
-    render(this.#element.querySelector('.film-details__comments-list'), commentComponent);
+    render(this.element.querySelector('.film-details__comments-list'), commentComponent);
+  }
+
+  setEmotion = (emotion) => {
+    const emotionWrapperElement = this.element.querySelector('.film-details__add-emoji-label');
+    const imgElement = createElement(`<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">`);
+    emotionWrapperElement.replaceChildren();
+    render(emotionWrapperElement, imgElement);
+  }
+
+  pseudoFormReset = () => {
+    this.element.querySelectorAll('.film-details__emoji-item').forEach((input) => {
+      input.checked = false;
+    });
+    this.element.querySelector('.film-details__comment-input').value = '';
+    this.element.querySelector('.film-details__add-emoji-label').replaceChildren();
   }
 
   restoreHandlers = () => {}

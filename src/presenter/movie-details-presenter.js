@@ -62,6 +62,7 @@ export default class MovieDetailsPresenter {
     setPageScrollDisable(true);
     document.addEventListener('click', this.#onClickCloseButton);
     document.addEventListener('keydown', this.#onEscKeyDown);
+    document.addEventListener('change', this.#onSelectEmotion);
 
     this.#movieDetailsComponent = new MovieDetails(this.#currentMovie);
     this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
@@ -91,6 +92,7 @@ export default class MovieDetailsPresenter {
     setPageScrollDisable(false);
     document.removeEventListener('click', this.#onClickCloseButton);
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    document.removeEventListener('change', this.#onSelectEmotion);
 
     if (this.#movieDetailsComponent) {
       remove(this.#movieDetailsComponent);
@@ -99,6 +101,8 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent = null;
     this.#currentMovie = null;
     this.#currentScroll = 0;
+
+    this.#commentsComponent.pseudoFormReset();
   }
 
   #onEscKeyDown = (event) => {
@@ -110,6 +114,12 @@ export default class MovieDetailsPresenter {
   #onClickCloseButton = (event) => {
     if (event.target.classList.contains('film-details__close-btn')) {
       this.#model.dispatch(ActionCreator.setActiveMovieId(null));
+    }
+  }
+
+  #onSelectEmotion = (event) => {
+    if (event.target.classList.contains('film-details__emoji-item')) {
+      this.#commentsComponent.setEmotion(event.target.value);
     }
   }
 
