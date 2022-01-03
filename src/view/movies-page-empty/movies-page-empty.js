@@ -1,15 +1,18 @@
 import Component from '../../abstract/component';
-import { createMoviesPageEmpty } from './movies-page-empty.tpl';
 
 export default class MoviesPageEmpty extends Component {
-  #props;
+  #text = '';
 
-  constructor(props) {
+  constructor(text = 'Something is wrong...') {
     super();
-    this.#props = props;
+
+    this.#text = text;
   }
 
   get template() {
-    return createMoviesPageEmpty();
+    return `
+      <section class="films-list">
+        <h2 class="films-list__title">${this.#text}</h2>
+      </section>`.trim();
   }
 }

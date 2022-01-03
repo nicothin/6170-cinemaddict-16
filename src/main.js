@@ -10,17 +10,18 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-new GeneralPresenter(Model, siteHeaderElement, siteFooterElement);
-
-new MainMenuPresenter(Model, siteMainElement);
-
-new MoviesPagePresenter(siteMainElement);
-
-new MovieDetailsPresenter(Model, siteFooterElement);
-
-Model.dispatch(Operation.requestAllMovies());
-
 const hash = window.location.hash.replace('#', '');
 if (hash) {
   Model.dispatch(ActionCreator.setHash(hash));
 }
+
+new GeneralPresenter(Model, siteHeaderElement, siteFooterElement);
+
+new MainMenuPresenter(Model, siteMainElement);
+
+new MovieDetailsPresenter(Model, siteFooterElement);
+
+const moviesPage = new MoviesPagePresenter(Model, siteMainElement);
+
+Model.dispatch(Operation.requestAllMovies());
+moviesPage.showLoading();
