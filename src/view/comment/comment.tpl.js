@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 
+// TODO[@nicothin]: убедиться, что я еще использую этот компонент
+
 export const createComment = (data) => {
   const { id, author, comment, date, emotion } = data;
 
-  const formattedDate = dayjs(date).format('YYYY/M/D H:m');
+  const formattedDate = dayjs(date).format('YYYY/M/D H:mm');
 
   return `
   <li class="film-details__comment" data-comment-id="${id}">

@@ -3,7 +3,6 @@ import { createElement, render } from '../../utils/render';
 import { createComments } from './comments.tpl';
 
 export default class Comments extends SmartComponent {
-  #element = null;
 
   constructor(props) {
     super();
@@ -14,30 +13,9 @@ export default class Comments extends SmartComponent {
     return createComments(this._data);
   }
 
-  // get element() {
-  //   if (!this.element) {
-  //     this.element = createElement(this.template);
-  //   }
-
-  //   // console.log('this._data', this._data);
-  //   return this.element;
-  // }
-
-  clearList = () => {
-    this.element.querySelector('.film-details__comments-list').replaceChildren();
-  }
-
-  renderComment = (commentComponent) => {
-    render(this.element.querySelector('.film-details__comments-list'), commentComponent);
-  }
-
-  formReset = () => {
-    this.element.querySelectorAll('.film-details__emoji-item').forEach((input) => {
-      input.checked = false;
-    });
-    this.element.querySelector('.film-details__add-emoji-label').replaceChildren();
-
-    this.element.querySelector('.film-details__comment-input').value = '';
+  showFail = (reason) => {
+    this.element.querySelector('.film-details__comments-title').innerHTML = 'Loading comments failed';
+    throw new Error(reason);
   }
 
   restoreHandlers = () => {

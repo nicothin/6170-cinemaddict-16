@@ -7,16 +7,16 @@ import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAs
 
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
-import { ActionCreator } from '../reducers/reducer';
+import { ActionCreator, Operation } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
   #model = null;
   #currentMovie = null;
-  #currentMovieComments = [];
+  #currentMovieComments = { list: [], isLoading: false };
 
   #wrapperElement = null;
   #movieDetailsComponent = new MovieDetails(this.#currentMovie);
-  #commentsComponent = new Comments(0);
+  #commentsComponent = new Comments(this.#currentMovieComments);
 
   #currentScroll = 0;
 
@@ -58,6 +58,7 @@ export default class MovieDetailsPresenter {
       if (newCurrentMovie && !_.isEqual(newCurrentMovie, this.#currentMovie)) {
         this.#currentMovie = newCurrentMovie;
         this.#movieDetailsComponent.updateData(this.#currentMovie);
+        this.#movieDetailsComponent.renderComments(this.#commentsComponent);
         this.#scrollMovieDetailToCurrent();
       }
     }
@@ -70,40 +71,34 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.updateData(this.#currentMovie);
     render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    // this.#renderComments();
+    this.#currentMovieComments = { list: [], isLoading: true };
+    this.#commentsComponent.updateData(this.#currentMovieComments);
+    this.#movieDetailsComponent.renderComments(this.#commentsComponent);
 
-    // if (this.#currentMovieComments.length) {
-    //   this.#renderComments(this.#currentMovieComments);
-    // }
-    // else {
-    //   this.#model
-    //     .dispatch(Operation.requestComments(this.#currentMovie.id))
-    //     .then((comments) => {
-    //       if (!_.isEqual(comments, this.#currentMovieComments)) {
-    //         this.#currentMovieComments = comments;
-    //         this.#renderComments(this.#currentMovieComments);
-    //       }
-    //     });
-    // }
-
-    // this.#scrollMovieDetailToCurrent();
-    // this.#movieDetailsComponent.element.addEventListener('scroll', this.#onScroll);
+    this.#model
+      .dispatch(Operation.requestComments(this.#currentMovie.id))
+      .then((comments) => {
+        if (!_.isEqual(comments, this.#currentMovieComments.list)) {
+          this.#currentMovieComments = { list: comments, isLoading: false };
+          this.#commentsComponent.updateData(this.#currentMovieComments);
+        }
+      })
+      .catch((reason) => this.#commentsComponent.showFail(reason));
   }
 
   #removeMovieDetails = () => {
     setPageScrollDisable(false);
     document.removeEventListener('keydown', this.#onEscKeyDown);
 
+    this.#currentMovie = null;
+    this.#currentScroll = 0;
+    this.#currentMovieComments = { list: [], isLoading: false };
+
+    this.#commentsComponent.updateData(this.#currentMovieComments);
+
     if (this.#movieDetailsComponent) {
       remove(this.#movieDetailsComponent);
     }
-
-    // this.#movieDetailsComponent = null;
-    this.#currentMovie = null;
-    this.#currentScroll = 0;
-    // this.#currentMovieComments = [];
-
-    // this.#commentsComponent.formReset();
   }
 
   #scrollMovieDetailToCurrent = () => {
@@ -122,25 +117,6 @@ export default class MovieDetailsPresenter {
 
   #onScroll = (scrollTop) => {
     this.#currentScroll = scrollTop;
-  }
-
-  #renderComments = () => {
-    this.#commentsComponent.updateData({ commentsCounter: this.#currentMovieComments.length });
-    this.#movieDetailsComponent.renderComments(this.#commentsComponent);
-    // if (this.#currentMovieComments.length) {}
-
-    // this.#commentsComponent.clearList();
-    // this.#movieDetailsComponent.renderComments(this.#commentsComponent);
-
-    // if (comments.length) {
-    //   this.#movieDetailsComponent.renderComments(this.#commentsComponent);
-    //   comments.forEach((comment) => {
-    //     const commentComponent = new Comment(comment);
-    //     this.#commentsComponent.renderComment(commentComponent);
-    //   });
-    // }
-
-    // this.#scrollToCurrent();
   }
 
   #addToWatchlistHandler = (movieId) => changeInStoreAddToWatchlist(movieId)

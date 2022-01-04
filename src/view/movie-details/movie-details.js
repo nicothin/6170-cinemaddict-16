@@ -3,8 +3,6 @@ import { render } from '../../utils/render';
 import { createMovieDetails } from './movie-details.tpl';
 
 export default class MovieDetails extends SmartComponent {
-  // #element = null;
-  #movie = null;
 
   constructor(data) {
     super();
@@ -14,14 +12,6 @@ export default class MovieDetails extends SmartComponent {
   get template() {
     return createMovieDetails(this._data);
   }
-
-  // get element() {
-  //   if (!this.#element) {
-  //     this.#element = createElement(this.template);
-  //   }
-
-  //   return this.#element;
-  // }
 
   renderComments = (commentsComponent) => {
     render(this.element.querySelector('.film-details__bottom-container'), commentsComponent);
