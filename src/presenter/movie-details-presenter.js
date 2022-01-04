@@ -60,10 +60,10 @@ export default class MovieDetailsPresenter {
 
   #renderMovieDetails = () => {
     setPageScrollDisable(true);
-    // document.addEventListener('click', this.#onClickCloseButton);
     document.addEventListener('keydown', this.#onEscKeyDown);
 
     this.#movieDetailsComponent = new MovieDetails(this.#currentMovie);
+    this.#movieDetailsComponent.setCloseClickHandler(this.#clickCloseButton);
     this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
     this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
@@ -89,7 +89,6 @@ export default class MovieDetailsPresenter {
 
   #removeMovieDetails = () => {
     setPageScrollDisable(false);
-    // document.removeEventListener('click', this.#onClickCloseButton);
     document.removeEventListener('keydown', this.#onEscKeyDown);
 
     if (this.#movieDetailsComponent) {
@@ -109,12 +108,9 @@ export default class MovieDetailsPresenter {
     }
   };
 
-  // // NOTE[@nicothin]: плохо: завязывает презентер на вьюху
-  // #onClickCloseButton = (event) => {
-  //   if (event.target.classList.contains('film-details__close-btn')) {
-  //     this.#model.dispatch(ActionCreator.setActiveMovieId(null));
-  //   }
-  // }
+  #clickCloseButton = () => {
+    this.#model.dispatch(ActionCreator.setActiveMovieId(null));
+  }
 
   #onScroll = (event) => {
     this.#currentScroll = event.target.scrollTop;

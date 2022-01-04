@@ -27,6 +27,11 @@ export default class MovieDetails extends Component {
     render(this.#element.querySelector('.film-details__bottom-container'), commentsComponent);
   }
 
+  setCloseClickHandler = (callback) => {
+    this._callback.close = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler);
+  }
+
   setAddToWatchlistClickHandler = (callback) => {
     this._callback.addToWatchlist = callback;
     this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#addToWatchlistClickHandler);
@@ -40,6 +45,11 @@ export default class MovieDetails extends Component {
   setFavoriteClickHandler = (callback) => {
     this._callback.favorite = callback;
     this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
+  }
+
+  #closeClickHandler = () => {
+    event.preventDefault();
+    this._callback.close();
   }
 
   #addToWatchlistClickHandler = (event) => {
