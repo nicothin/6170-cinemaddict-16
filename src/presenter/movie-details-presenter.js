@@ -8,7 +8,7 @@ import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAs
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
 import Comment from '../view/comment/comment';
-import { Operation } from '../reducers/reducer';
+import { ActionCreator, Operation } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
   #model = null;
@@ -61,7 +61,7 @@ export default class MovieDetailsPresenter {
   #renderMovieDetails = () => {
     setPageScrollDisable(true);
     // document.addEventListener('click', this.#onClickCloseButton);
-    // document.addEventListener('keydown', this.#onEscKeyDown);
+    document.addEventListener('keydown', this.#onEscKeyDown);
 
     this.#movieDetailsComponent = new MovieDetails(this.#currentMovie);
     this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
@@ -90,7 +90,7 @@ export default class MovieDetailsPresenter {
   #removeMovieDetails = () => {
     setPageScrollDisable(false);
     // document.removeEventListener('click', this.#onClickCloseButton);
-    // document.removeEventListener('keydown', this.#onEscKeyDown);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
 
     if (this.#movieDetailsComponent) {
       remove(this.#movieDetailsComponent);
@@ -103,11 +103,11 @@ export default class MovieDetailsPresenter {
     this.#commentsComponent.formReset();
   }
 
-  // #onEscKeyDown = (event) => {
-  //   if (event.key === 'Escape' || event.key === 'Esc') {
-  //     this.#model.dispatch(ActionCreator.setActiveMovieId(null));
-  //   }
-  // };
+  #onEscKeyDown = (event) => {
+    if (event.key === 'Escape' || event.key === 'Esc') {
+      this.#model.dispatch(ActionCreator.setActiveMovieId(null));
+    }
+  };
 
   // // NOTE[@nicothin]: плохо: завязывает презентер на вьюху
   // #onClickCloseButton = (event) => {
