@@ -36,7 +36,7 @@ export const render = (container, element, place = RenderPosition.BEFOREEND) => 
  * @param {string} template Строка с разметкой
  * @returns {Element} DOM-узел
  */
-export const createElement = (template) => {
+export const createElement = (template = '') => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
