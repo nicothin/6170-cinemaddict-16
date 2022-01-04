@@ -30,20 +30,31 @@ export default class Comments extends SmartComponent {
     render(this.element.querySelector('.film-details__comments-list'), commentComponent);
   }
 
-  setEmotion = (emotion) => {
-    const emotionWrapperElement = this.element.querySelector('.film-details__add-emoji-label');
-    const imgElement = createElement(`<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">`);
-    emotionWrapperElement.replaceChildren();
-    render(emotionWrapperElement, imgElement);
-  }
-
-  pseudoFormReset = () => {
+  formReset = () => {
     this.element.querySelectorAll('.film-details__emoji-item').forEach((input) => {
       input.checked = false;
     });
-    this.element.querySelector('.film-details__comment-input').value = '';
     this.element.querySelector('.film-details__add-emoji-label').replaceChildren();
+
+    this.element.querySelector('.film-details__comment-input').value = '';
   }
 
-  restoreHandlers = () => {}
+  restoreHandlers = () => {
+    this.#setEmotionInputChangeHandler(this._callback.changeEmotion);
+  }
+
+  #setEmotionInputChangeHandler = (callback) => {
+    this._callback.changeEmotion = callback;
+    this.element.addEventListener('change', this.#setEmotion);
+  }
+
+  #setEmotion = (event) => {
+    if (event.target.classList.contains('film-details__emoji-item')) {
+      const emotion = event.target.value;
+      const emotionWrapperElement = this.element.querySelector('.film-details__add-emoji-label');
+      const imgElement = createElement(`<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">`);
+      emotionWrapperElement.replaceChildren();
+      render(emotionWrapperElement, imgElement);
+    }
+  }
 }

@@ -8,7 +8,7 @@ import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAs
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
 import Comment from '../view/comment/comment';
-import { ActionCreator, Operation } from '../reducers/reducer';
+import { Operation } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
   #model = null;
@@ -60,9 +60,8 @@ export default class MovieDetailsPresenter {
 
   #renderMovieDetails = () => {
     setPageScrollDisable(true);
-    document.addEventListener('click', this.#onClickCloseButton);
-    document.addEventListener('keydown', this.#onEscKeyDown);
-    document.addEventListener('change', this.#onSelectEmotion);
+    // document.addEventListener('click', this.#onClickCloseButton);
+    // document.addEventListener('keydown', this.#onEscKeyDown);
 
     this.#movieDetailsComponent = new MovieDetails(this.#currentMovie);
     this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
@@ -90,9 +89,8 @@ export default class MovieDetailsPresenter {
 
   #removeMovieDetails = () => {
     setPageScrollDisable(false);
-    document.removeEventListener('click', this.#onClickCloseButton);
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-    document.removeEventListener('change', this.#onSelectEmotion);
+    // document.removeEventListener('click', this.#onClickCloseButton);
+    // document.removeEventListener('keydown', this.#onEscKeyDown);
 
     if (this.#movieDetailsComponent) {
       remove(this.#movieDetailsComponent);
@@ -102,26 +100,21 @@ export default class MovieDetailsPresenter {
     this.#currentMovie = null;
     this.#currentScroll = 0;
 
-    this.#commentsComponent.pseudoFormReset();
+    this.#commentsComponent.formReset();
   }
 
-  #onEscKeyDown = (event) => {
-    if (event.key === 'Escape' || event.key === 'Esc') {
-      this.#model.dispatch(ActionCreator.setActiveMovieId(null));
-    }
-  };
+  // #onEscKeyDown = (event) => {
+  //   if (event.key === 'Escape' || event.key === 'Esc') {
+  //     this.#model.dispatch(ActionCreator.setActiveMovieId(null));
+  //   }
+  // };
 
-  #onClickCloseButton = (event) => {
-    if (event.target.classList.contains('film-details__close-btn')) {
-      this.#model.dispatch(ActionCreator.setActiveMovieId(null));
-    }
-  }
-
-  #onSelectEmotion = (event) => {
-    if (event.target.classList.contains('film-details__emoji-item')) {
-      this.#commentsComponent.setEmotion(event.target.value);
-    }
-  }
+  // // NOTE[@nicothin]: плохо: завязывает презентер на вьюху
+  // #onClickCloseButton = (event) => {
+  //   if (event.target.classList.contains('film-details__close-btn')) {
+  //     this.#model.dispatch(ActionCreator.setActiveMovieId(null));
+  //   }
+  // }
 
   #onScroll = (event) => {
     this.#currentScroll = event.target.scrollTop;
