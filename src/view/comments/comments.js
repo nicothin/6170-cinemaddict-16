@@ -14,13 +14,14 @@ export default class Comments extends SmartComponent {
     return createComments(this._data);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  // get element() {
+  //   if (!this.element) {
+  //     this.element = createElement(this.template);
+  //   }
 
-    return this.#element;
-  }
+  //   // console.log('this._data', this._data);
+  //   return this.element;
+  // }
 
   clearList = () => {
     this.element.querySelector('.film-details__comments-list').replaceChildren();

@@ -1,7 +1,7 @@
 import { EMOTIONS } from '../../constants';
 
-export const createComments = (comments) => {
-  const { commentsCounter } = comments;
+export const createComments = (data) => {
+  const { commentsCounter } = data;
 
   const emotionsList = EMOTIONS.map((emotion) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
   <label class="film-details__emoji-label" for="emoji-${emotion}">

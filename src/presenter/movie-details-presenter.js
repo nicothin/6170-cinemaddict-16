@@ -7,8 +7,7 @@ import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAs
 
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
-import Comment from '../view/comment/comment';
-import { ActionCreator, Operation } from '../reducers/reducer';
+import { ActionCreator } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
   #model = null;
@@ -16,7 +15,7 @@ export default class MovieDetailsPresenter {
   #currentMovieComments = [];
 
   #wrapperElement = null;
-  #movieDetailsComponent = null;
+  #movieDetailsComponent = new MovieDetails(this.#currentMovie);
   #commentsComponent = new Comments(0);
 
   #currentScroll = 0;
@@ -29,6 +28,12 @@ export default class MovieDetailsPresenter {
   }
 
   init = () => {
+    this.#movieDetailsComponent.setCloseClickHandler(this.#clickCloseButton);
+    this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
+    this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
+    this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
+    this.#movieDetailsComponent.setScrollHandler(this.#onScroll);
+
     this.#model.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
     this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
@@ -52,8 +57,8 @@ export default class MovieDetailsPresenter {
       const newCurrentMovie = allMovies.find((movie) => movie.id === this.#currentMovie.id);
       if (newCurrentMovie && !_.isEqual(newCurrentMovie, this.#currentMovie)) {
         this.#currentMovie = newCurrentMovie;
-        remove(this.#movieDetailsComponent);
-        this.#renderMovieDetails();
+        this.#movieDetailsComponent.updateData(this.#currentMovie);
+        this.#scrollMovieDetailToCurrent();
       }
     }
   }
@@ -62,29 +67,27 @@ export default class MovieDetailsPresenter {
     setPageScrollDisable(true);
     document.addEventListener('keydown', this.#onEscKeyDown);
 
-    this.#movieDetailsComponent = new MovieDetails(this.#currentMovie);
-    this.#movieDetailsComponent.setCloseClickHandler(this.#clickCloseButton);
-    this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
-    this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
-    this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
+    this.#movieDetailsComponent.updateData(this.#currentMovie);
     render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    if (this.#currentMovieComments.length) {
-      this.#renderComments(this.#currentMovieComments);
-    }
-    else {
-      this.#model
-        .dispatch(Operation.requestComments(this.#currentMovie.id))
-        .then((comments) => {
-          if (!_.isEqual(comments, this.#currentMovieComments)) {
-            this.#currentMovieComments = comments;
-            this.#renderComments(this.#currentMovieComments);
-          }
-        });
-    }
+    // this.#renderComments();
 
-    this.#scrollToCurrent();
-    this.#movieDetailsComponent.element.addEventListener('scroll', this.#onScroll);
+    // if (this.#currentMovieComments.length) {
+    //   this.#renderComments(this.#currentMovieComments);
+    // }
+    // else {
+    //   this.#model
+    //     .dispatch(Operation.requestComments(this.#currentMovie.id))
+    //     .then((comments) => {
+    //       if (!_.isEqual(comments, this.#currentMovieComments)) {
+    //         this.#currentMovieComments = comments;
+    //         this.#renderComments(this.#currentMovieComments);
+    //       }
+    //     });
+    // }
+
+    // this.#scrollMovieDetailToCurrent();
+    // this.#movieDetailsComponent.element.addEventListener('scroll', this.#onScroll);
   }
 
   #removeMovieDetails = () => {
@@ -95,15 +98,15 @@ export default class MovieDetailsPresenter {
       remove(this.#movieDetailsComponent);
     }
 
-    this.#movieDetailsComponent = null;
+    // this.#movieDetailsComponent = null;
     this.#currentMovie = null;
     this.#currentScroll = 0;
-    this.#currentMovieComments = [];
+    // this.#currentMovieComments = [];
 
-    this.#commentsComponent.formReset();
+    // this.#commentsComponent.formReset();
   }
 
-  #scrollToCurrent = () => {
+  #scrollMovieDetailToCurrent = () => {
     this.#movieDetailsComponent.element.scrollTo(0, this.#currentScroll);
   }
 
@@ -117,22 +120,27 @@ export default class MovieDetailsPresenter {
     this.#model.dispatch(ActionCreator.setActiveMovieId(null));
   }
 
-  #onScroll = (event) => {
-    this.#currentScroll = event.target.scrollTop;
+  #onScroll = (scrollTop) => {
+    this.#currentScroll = scrollTop;
   }
 
-  #renderComments = (comments) => {
-    if (comments.length) {
-      this.#commentsComponent.updateData({commentsCounter: comments.length});
-      this.#commentsComponent.clearList();
-      this.#movieDetailsComponent.renderComments(this.#commentsComponent);
-      comments.forEach((comment) => {
-        const commentComponent = new Comment(comment);
-        this.#commentsComponent.renderComment(commentComponent);
-      });
+  #renderComments = () => {
+    this.#commentsComponent.updateData({ commentsCounter: this.#currentMovieComments.length });
+    this.#movieDetailsComponent.renderComments(this.#commentsComponent);
+    // if (this.#currentMovieComments.length) {}
 
-      this.#scrollToCurrent();
-    }
+    // this.#commentsComponent.clearList();
+    // this.#movieDetailsComponent.renderComments(this.#commentsComponent);
+
+    // if (comments.length) {
+    //   this.#movieDetailsComponent.renderComments(this.#commentsComponent);
+    //   comments.forEach((comment) => {
+    //     const commentComponent = new Comment(comment);
+    //     this.#commentsComponent.renderComment(commentComponent);
+    //   });
+    // }
+
+    // this.#scrollToCurrent();
   }
 
   #addToWatchlistHandler = (movieId) => changeInStoreAddToWatchlist(movieId)

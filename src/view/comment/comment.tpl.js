@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
 
 export const createComment = (data) => {
-  const { author, comment, date, emotion } = data;
+  const { id, author, comment, date, emotion } = data;
 
   const formattedDate = dayjs(date).format('YYYY/M/D H:m');
 
   return `
-  <li class="film-details__comment">
+  <li class="film-details__comment" data-comment-id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
     </span>

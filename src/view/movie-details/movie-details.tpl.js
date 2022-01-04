@@ -2,8 +2,31 @@ import dayjs from 'dayjs';
 import { getFormattedList, getFormattedRuntime } from '../../utils/common';
 
 export const createMovieDetails = (movie) => {
-  const { title, alternativeTitle, ageRating, totalRating, poster, description, director, writers, actors, genre, release, runtime } = movie.filmInfo;
-  const { alreadyWatched, favorite, watchlist } = movie.userDetails;
+  const filmInfo = movie?.filmInfo ? movie.filmInfo : {};
+  const userDetails = movie?.userDetails ? movie.userDetails : {};
+
+  const {
+    title,
+    alternativeTitle,
+    ageRating = 0,
+    totalRating = 0,
+    poster,
+    description,
+    director = '',
+    writers = [],
+    actors = [],
+    genre = [],
+    release = {
+      date: dayjs(),
+    },
+    runtime = 0,
+  } = filmInfo;
+
+  const {
+    alreadyWatched = false,
+    favorite = false,
+    watchlist = false,
+  } = userDetails;
 
   const ACTIVE_CLASSNAME = 'film-details__control-button--active';
 
@@ -73,7 +96,7 @@ export const createMovieDetails = (movie) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
-                <td class="film-details__cell">USA</td>
+                <td class="film-details__cell">${release.releaseCountry}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">${infoText.genre}</td>
