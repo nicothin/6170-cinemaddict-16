@@ -69,22 +69,22 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
     render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    this.#renderComments(this.#currentMovieComments);
-    this.#model
-      .dispatch(Operation.requestComments(this.#currentMovie.id))
-      .then((comments) => {
-        if (!_.isEqual(comments, this.#currentMovieComments)) {
-          this.#currentMovieComments = comments;
-          this.#renderComments(this.#currentMovieComments);
-        }
-      });
+    if (this.#currentMovieComments.length) {
+      this.#renderComments(this.#currentMovieComments);
+    }
+    else {
+      this.#model
+        .dispatch(Operation.requestComments(this.#currentMovie.id))
+        .then((comments) => {
+          if (!_.isEqual(comments, this.#currentMovieComments)) {
+            this.#currentMovieComments = comments;
+            this.#renderComments(this.#currentMovieComments);
+          }
+        });
+    }
 
     this.#scrollToCurrent();
     this.#movieDetailsComponent.element.addEventListener('scroll', this.#onScroll);
-  }
-
-  #scrollToCurrent = () => {
-    this.#movieDetailsComponent.element.scrollTo(0, this.#currentScroll);
   }
 
   #removeMovieDetails = () => {
@@ -98,8 +98,13 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent = null;
     this.#currentMovie = null;
     this.#currentScroll = 0;
+    this.#currentMovieComments = [];
 
     this.#commentsComponent.formReset();
+  }
+
+  #scrollToCurrent = () => {
+    this.#movieDetailsComponent.element.scrollTo(0, this.#currentScroll);
   }
 
   #onEscKeyDown = (event) => {
