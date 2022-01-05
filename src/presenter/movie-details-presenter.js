@@ -8,6 +8,7 @@ import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAs
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
 import { ActionCreator, Operation } from '../reducers/reducer';
+import { isEscPressed } from '../utils/common';
 
 export default class MovieDetailsPresenter {
   #model = null;
@@ -106,7 +107,7 @@ export default class MovieDetailsPresenter {
   }
 
   #onEscKeyDown = (event) => {
-    if (event.key === 'Escape' || event.key === 'Esc') {
+    if (isEscPressed(event)) {
       this.#model.dispatch(ActionCreator.setActiveMovieId(null));
     }
   };

@@ -29,3 +29,5 @@ export const getFormattedRuntime = (minutes) => {
   const runtimeHours = Math.trunc(minutes / 60);
   return `${runtimeHours ? `${runtimeHours}h` : ''} ${minutes % 60}m`;
 };
+
+export const isEscPressed = (event) => event.key === 'Escape' || event.key === 'Esc';
