@@ -8,8 +8,6 @@ const ActionType = {
 };
 
 export const initialState = {
-  // TODO[@nicothin]: подумать как будет откатываться изменение, если сервер ответит на PUT не 200
-  // [StoreState.ORIGINAL_MOVIES]: [], // возможно, хранением массива, мутируемого только после ответа 200
   [ModelState.ALL_MOVIES]: [],
   [ModelState.HASH]: Hashes.ALL,
   [ModelState.ACTIVE_MOVIE_ID]: null,
@@ -20,10 +18,12 @@ export const ActionCreator = {
     type: ActionType.SET_ALL_MOVIES,
     payload: state,
   }),
+
   setHash: (state) => ({
     type: ActionType.SET_HASH,
     payload: state,
   }),
+
   setActiveMovieId: (id) => ({
     type: ActionType.SET_ACTIVE_MOVIE_ID,
     payload: id,
@@ -38,9 +38,13 @@ export const Operation = {
       dispatch(ActionCreator.setAllMovies(all));
       return response;
     }),
+
   requestComments: (movieId) => async () => axios
     .get(`comments/${movieId}`)
     .then((response) => response.data),
+
+  deleteComment: (commentId) => async () => axios
+    .delete(`comments/${commentId}`),
 };
 
 export const reducer = (state, action) => {

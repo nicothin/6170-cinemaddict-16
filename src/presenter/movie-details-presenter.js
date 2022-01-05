@@ -35,6 +35,8 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
     this.#movieDetailsComponent.setScrollHandler(this.#onScroll);
 
+    this.#commentsComponent.setDeleteCommentHandler(this.#deleteComment);
+
     this.#model.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
     this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
@@ -125,4 +127,17 @@ export default class MovieDetailsPresenter {
   #markAsWatchedHandler = (movieId) => changeInStoreMarkAsWatched(movieId)
 
   #favoriteHandler = (movieId) => changeInStoreFavorite(movieId)
+
+  #deleteComment = (commentId) => {
+    this.#commentsComponent.setDeleteButtonToRequestState(commentId);
+    this.#model.dispatch(Operation.deleteComment(commentId))
+      .then(() => {
+        this.#currentMovieComments.list = this.#currentMovieComments.list.filter((comment) => comment.id !== commentId);
+        this.#commentsComponent.updateData(this.#currentMovieComments);
+      })
+      .catch((reason) => {
+        this.#commentsComponent.setDeleteButtonToDefaultState(commentId);
+        throw new Error(reason);
+      });
+  }
 }

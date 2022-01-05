@@ -18,8 +18,30 @@ export default class Comments extends SmartComponent {
     throw new Error(reason);
   }
 
-  restoreHandlers = () => {
-    this.#setEmotionInputChangeHandler(this._callback.changeEmotion);
+  setDeleteButtonToRequestState = (commentId) => {
+    const button = this.element.querySelector(`.film-details__comment[data-comment-id="${commentId}"] .film-details__comment-delete`);
+    button.setAttribute('disabled', 'disabled');
+    button.innerHTML = button.dataset.requestText;
+  }
+
+  setDeleteButtonToDefaultState = (commentId) => {
+    const button = this.element.querySelector(`.film-details__comment[data-comment-id="${commentId}"] .film-details__comment-delete`);
+    button.removeAttribute('disabled');
+    button.innerHTML = button.dataset.defaultText;
+  }
+
+  setDeleteCommentHandler = (callback) => {
+    this._callback.deleteComment = callback;
+    this.element.addEventListener('click', this.#deleteClickHandler);
+  }
+
+  #deleteClickHandler = (event) => {
+    if (event.target.classList.contains('film-details__comment-delete')) {
+      event.preventDefault();
+      this._callback.deleteComment(
+        event.target.closest('.film-details__comment').dataset.commentId
+      );
+    }
   }
 
   #setEmotionInputChangeHandler = (callback) => {
@@ -35,5 +57,10 @@ export default class Comments extends SmartComponent {
       emotionWrapperElement.replaceChildren();
       render(emotionWrapperElement, imgElement);
     }
+  }
+
+  restoreHandlers = () => {
+    this.#setEmotionInputChangeHandler(this._callback.changeEmotion);
+    this.setDeleteCommentHandler(this._callback.deleteComment);
   }
 }
