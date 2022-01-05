@@ -36,17 +36,19 @@ export const createComments = (data) => {
 `).join(' ');
 
   const realForm = !isLoading ? `
-    <div class="film-details__new-comment">
-      <div class="film-details__add-emoji-label"></div>
+    <form class="film-details__new-comment" action="" method="get">
+      <fieldset class="film-details__new-comment-inner">
+        <div class="film-details__add-emoji-label"></div>
 
-      <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-      </label>
+        <label class="film-details__comment-label">
+          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+        </label>
 
-      <div class="film-details__emoji-list">
-        ${emotionsList}
-      </div>
-    </div>`.trim() :
+        <div class="film-details__emoji-list">
+          ${emotionsList}
+        </div>
+      </fieldset>
+    </form>`.trim() :
     '';
 
   return `

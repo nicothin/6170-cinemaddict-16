@@ -45,6 +45,9 @@ export const Operation = {
 
   deleteComment: (commentId) => async () => axios
     .delete(`comments/${commentId}`),
+
+  sendComment: (movieId, data) => async () => axios
+    .post(`comments/${movieId}`, data),
 };
 
 export const reducer = (state, action) => {

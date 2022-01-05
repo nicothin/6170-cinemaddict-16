@@ -784,11 +784,30 @@ button {
   margin-right: 20px;
   margin-left: 7px;
 }
-.film-details__new-comment {
+.film-details__new-comment--shake {
+  animation: shakeX 0.8s 0s 1 both;
+}
+.film-details__new-comment-inner {
   display: flex;
   align-items: center;
-  padding-bottom: 60px;
   position: relative;
+  margin: 0;
+  border: none;
+  padding: 0 0 60px;
+}
+.film-details__new-comment-inner:after {
+  content: '';
+  position: absolute;
+  background-color: rgba(33, 33, 38, 0.3);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.film-details__new-comment-inner:disabled:after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 1;
 }
 .film-details__add-emoji-label {
   width: 79px;
@@ -1112,4 +1131,27 @@ button {
   min-height: 300px;
   padding-top: 50px;
   padding-bottom: 50px;
+}
+
+
+@keyframes shakeX {
+  from,
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translate3d(10px, 0, 0);
+  }
 }

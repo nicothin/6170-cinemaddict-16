@@ -1,6 +1,7 @@
+import he from 'he';
 import _ from 'lodash';
 
-import { RenderPosition, ModelState } from '../constants';
+import { RenderPosition, ModelState, EMOTIONS } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
 import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAsWatched } from '../utils/movie';
@@ -36,6 +37,7 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.setScrollHandler(this.#onScroll);
 
     this.#commentsComponent.setDeleteCommentHandler(this.#deleteComment);
+    this.#commentsComponent.setSubmitCommentHandler(this.#submitComment);
 
     this.#model.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
     this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
@@ -70,6 +72,7 @@ export default class MovieDetailsPresenter {
   #renderMovieDetails = () => {
     setPageScrollDisable(true);
     document.addEventListener('keydown', this.#onEscKeyDown);
+    document.addEventListener('keydown', this.#onCtrlEnterDown);
 
     this.#movieDetailsComponent.updateData(this.#currentMovie);
     render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
@@ -92,6 +95,7 @@ export default class MovieDetailsPresenter {
   #removeMovieDetails = () => {
     setPageScrollDisable(false);
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    document.removeEventListener('keydown', this.#onCtrlEnterDown);
 
     this.#currentMovie = null;
     this.#currentScroll = 0;
@@ -111,6 +115,12 @@ export default class MovieDetailsPresenter {
   #onEscKeyDown = (event) => {
     if (isEscPressed(event)) {
       this.#model.dispatch(ActionCreator.setActiveMovieId(null));
+    }
+  };
+
+  #onCtrlEnterDown = (event) => {
+    if (event.code === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      this.#commentsComponent.submitForm();
     }
   };
 
@@ -139,5 +149,31 @@ export default class MovieDetailsPresenter {
         this.#commentsComponent.setDeleteButtonToDefaultState(commentId);
         throw new Error(reason);
       });
+  }
+
+  #submitComment = (formData) => {
+    const data = {
+      comment: he.encode(formData.get('comment')),
+      emotion: formData.get('comment-emoji'),
+    };
+
+    if (!data.comment || !EMOTIONS.find((item) => item === data.emotion)) {
+      this.#commentsComponent.shakeYourFormBaby();
+    }
+
+    else {
+      this.#commentsComponent.disableForm();
+      this.#model.dispatch(Operation.sendComment(this.#currentMovie.id, data))
+        .then((response) => {
+          this.#currentMovieComments = { list: response.data.comments, isLoading: false };
+          this.#commentsComponent.updateData(this.#currentMovieComments);
+          this.#commentsComponent.enableForm();
+        })
+        .catch((reason) => {
+          this.#commentsComponent.shakeYourFormBaby();
+          this.#commentsComponent.enableForm();
+          throw new Error(reason);
+        });
+    }
   }
 }

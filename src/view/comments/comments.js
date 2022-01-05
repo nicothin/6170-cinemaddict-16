@@ -35,6 +35,32 @@ export default class Comments extends SmartComponent {
     this.element.addEventListener('click', this.#deleteClickHandler);
   }
 
+  setSubmitCommentHandler = (callback) => {
+    this._callback.submitComment = callback;
+    this.element.addEventListener('submit', this.#submitHandler);
+  }
+
+  shakeYourFormBaby = () => {
+    const className = 'film-details__new-comment--shake';
+    const form = this.element.querySelector('.film-details__new-comment');
+    form.classList.add(className);
+    setTimeout(() => form.classList.remove(className), 1000);
+  }
+
+  disableForm = () => {
+    const fieldset = this.element.querySelector('.film-details__new-comment-inner');
+    fieldset.setAttribute('disabled', 'disabled');
+  }
+
+  enableForm = () => {
+    const fieldset = this.element.querySelector('.film-details__new-comment-inner');
+    fieldset.removeAttribute('disabled');
+  }
+
+  submitForm = () => {
+    this.#submitHandler();
+  }
+
   #deleteClickHandler = (event) => {
     if (event.target.classList.contains('film-details__comment-delete')) {
       event.preventDefault();
@@ -59,8 +85,18 @@ export default class Comments extends SmartComponent {
     }
   }
 
+  #submitHandler = (event) => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const form = this.element.querySelector('.film-details__new-comment');
+    this._callback.submitComment(new FormData(form));
+  }
+
   restoreHandlers = () => {
     this.#setEmotionInputChangeHandler(this._callback.changeEmotion);
     this.setDeleteCommentHandler(this._callback.deleteComment);
+    this.setSubmitCommentHandler(this._callback.submitComment);
   }
 }

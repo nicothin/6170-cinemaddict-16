@@ -49,7 +49,7 @@ export const createMovieDetails = (movie) => {
 
   return `
   <section class="film-details">
-    <form class="film-details__inner" action="" method="get">
+    <div class="film-details__inner">
       <div class="film-details__top-container">
         <div class="film-details__close">
           <button class="film-details__close-btn" type="button">close</button>
@@ -115,7 +115,7 @@ export const createMovieDetails = (movie) => {
       </div>
 
       <div class="film-details__bottom-container"></div>
-    </form>
+    </div>
   </section>
 `.trim();
 };
