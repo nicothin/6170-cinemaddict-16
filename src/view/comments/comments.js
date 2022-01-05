@@ -13,7 +13,7 @@ export default class Comments extends SmartComponent {
     return createComments(this._data);
   }
 
-  showFail = (reason) => {
+  showFailTitle = (reason) => {
     this.element.querySelector('.film-details__comments-title').innerHTML = 'Loading comments failed';
     throw new Error(reason);
   }

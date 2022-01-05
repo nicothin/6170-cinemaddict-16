@@ -86,7 +86,7 @@ export default class MovieDetailsPresenter {
           this.#commentsComponent.updateData(this.#currentMovieComments);
         }
       })
-      .catch((reason) => this.#commentsComponent.showFail(reason));
+      .catch((reason) => this.#commentsComponent.showFailTitle(reason));
   }
 
   #removeMovieDetails = () => {
