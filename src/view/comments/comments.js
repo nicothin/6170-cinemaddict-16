@@ -1,4 +1,5 @@
 import SmartComponent from '../../abstract/smart-component';
+import { SHAKE_CLASSNAME, SHAKE_CLASSNAME_REMOVE_DELAY } from '../../constants';
 import { createElement, render } from '../../utils/render';
 import { createComments } from './comments.tpl';
 
@@ -41,10 +42,9 @@ export default class Comments extends SmartComponent {
   }
 
   shakeYourFormBaby = () => {
-    const className = 'film-details__new-comment--shake';
     const form = this.element.querySelector('.film-details__new-comment');
-    form.classList.add(className);
-    setTimeout(() => form.classList.remove(className), 1000);
+    form.classList.add(SHAKE_CLASSNAME);
+    setTimeout(() => form.classList.remove(SHAKE_CLASSNAME), SHAKE_CLASSNAME_REMOVE_DELAY);
   }
 
   disableForm = () => {

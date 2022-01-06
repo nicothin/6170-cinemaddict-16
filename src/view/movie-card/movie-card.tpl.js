@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { typeOfActionOnMovie } from '../../constants';
 import { getFormattedRuntime, getSliceText } from '../../utils/common';
 
 export const createMovieCard = (movie) => {
@@ -18,7 +19,7 @@ export const createMovieCard = (movie) => {
   const favoriteActiveClassName = favorite ? ACTIVE_CLASSNAME : '';
 
   return `
-  <article class="film-card">
+  <article id="movie-${movie.id}" class="film-card">
     <a class="film-card__link">
       <h3 class="film-card__title">${title}</h3>
       <p class="film-card__rating">${totalRating}</p>
@@ -32,9 +33,9 @@ export const createMovieCard = (movie) => {
       <span class="film-card__comments">${commentsCounter} comments</span>
     </a>
     <div class="film-card__controls">
-      <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${watchlistActiveClassName}" type="button">Add to watchlist</button>
-      <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${watchedActiveClassName}" type="button">Mark as watched</button>
-      <button class="film-card__controls-item film-card__controls-item--favorite ${favoriteActiveClassName}" type="button">Mark as favorite</button>
+      <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${watchlistActiveClassName}" data-action-type="${typeOfActionOnMovie.WATCHLIST}" type="button">Add to watchlist</button>
+      <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${watchedActiveClassName}" data-action-type="${typeOfActionOnMovie.HISTORY}" type="button">Mark as watched</button>
+      <button class="film-card__controls-item film-card__controls-item--favorite ${favoriteActiveClassName}" data-action-type="${typeOfActionOnMovie.FAVORITES}" type="button">Mark as favorite</button>
     </div>
   </article>
 `.trim();

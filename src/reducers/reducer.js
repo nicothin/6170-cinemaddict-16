@@ -37,17 +37,35 @@ export const Operation = {
       const all = response.data;
       dispatch(ActionCreator.setAllMovies(all));
       return response;
+    })
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
+
+  changeMovieUserDetails: (movieId, data) => async () => axios
+    .put(`movies/${movieId}`, data)
+    .catch((reason) => {
+      throw new Error(reason);
     }),
 
   requestComments: (movieId) => async () => axios
     .get(`comments/${movieId}`)
-    .then((response) => response.data),
+    .then((response) => response.data)
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
 
   deleteComment: (commentId) => async () => axios
-    .delete(`comments/${commentId}`),
+    .delete(`comments/${commentId}`)
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
 
   sendComment: (movieId, data) => async () => axios
-    .post(`comments/${movieId}`, data),
+    .post(`comments/${movieId}`, data)
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
 };
 
 export const reducer = (state, action) => {

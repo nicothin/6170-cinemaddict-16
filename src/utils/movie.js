@@ -1,49 +1,37 @@
+import dayjs from 'dayjs';
 import _ from 'lodash';
-import { ModelState } from '../constants';
-import { ActionCreator } from '../reducers/reducer';
-import Model from '../services/store';
+import snakecaseKeys from 'snakecase-keys';
+import { ModelState, typeOfActionOnMovie } from '../constants';
+import { ActionCreator, Operation } from '../reducers/reducer';
 
 /**
- * Переключить метку Добавлено в лист просмотра в модели
- * @param {string} movieId Идентификатор фильма
+ * Изменить пользовательские данные фильма
+ * @param {object} model Модель, с которой пообщаться
+ * @param {string} action Тип действия (см. typeOfActionOnMovie)
+ * @param {string} movieId Идентификатор изменяемого фильма
+ * @returns {Promise}
  */
-export const changeInStoreAddToWatchlist = (movieId) => {
-  const allMovies = Model.getState(ModelState.ALL_MOVIES);
-  const newAllMovies = _.cloneDeep(allMovies).map((movie) => {
-    if (movie.id === movieId) {
+export const changeMovieUserDetails = (model, action, movieId) => {
+  const allMovies = _.cloneDeep(model.getState(ModelState.ALL_MOVIES));
+  const movie = allMovies.find((item) => item.id === movieId);
+
+  switch (action) {
+    case typeOfActionOnMovie.WATCHLIST:
       movie.userDetails.watchlist = !movie.userDetails.watchlist;
-    }
-    return movie;
-  });
-  Model.dispatch(ActionCreator.setAllMovies(newAllMovies));
-};
-
-/**
- * Переключить метку Просмотрено в модели
- * @param {string} movieId Идентификатор фильма
- */
-export const changeInStoreMarkAsWatched = (movieId) => {
-  const allMovies = Model.getState(ModelState.ALL_MOVIES);
-  const newAllMovies = _.cloneDeep(allMovies).map((movie) => {
-    if (movie.id === movieId) {
+      break;
+    case typeOfActionOnMovie.HISTORY:
       movie.userDetails.alreadyWatched = !movie.userDetails.alreadyWatched;
-    }
-    return movie;
-  });
-  Model.dispatch(ActionCreator.setAllMovies(newAllMovies));
-};
-
-/**
- * Переключить метку Избранное в модели
- * @param {string} movieId Идентификатор фильма
- */
-export const changeInStoreFavorite = (movieId) => {
-  const allMovies = Model.getState(ModelState.ALL_MOVIES);
-  const newAllMovies = _.cloneDeep(allMovies).map((movie) => {
-    if (movie.id === movieId) {
+      movie.userDetails.watchingDate = movie.userDetails.alreadyWatched ? dayjs().format('YYYY-MM-DDTHH:mm:ss[Z]') : null;
+      break;
+    case typeOfActionOnMovie.FAVORITES:
       movie.userDetails.favorite = !movie.userDetails.favorite;
-    }
-    return movie;
-  });
-  Model.dispatch(ActionCreator.setAllMovies(newAllMovies));
+      break;
+  }
+
+  const data = snakecaseKeys(movie);
+  return model
+    .dispatch(Operation.changeMovieUserDetails(movieId, data))
+    .then(() => {
+      model.dispatch(ActionCreator.setAllMovies(allMovies));
+    });
 };

@@ -2,6 +2,9 @@ export const MOVIE_COUNT_PER_STEP = 5;
 export const MOVIE_TOP_RATED_COUNT = 2;
 export const MOVIE_MOST_COMMENT_COUNT = 2;
 
+export const SHAKE_CLASSNAME = 'shake-it-baby';
+export const SHAKE_CLASSNAME_REMOVE_DELAY = 1000;
+
 export const EMOTIONS = [
   'smile',
   'sleeping',
@@ -34,4 +37,10 @@ export const ModelState = {
   ALL_MOVIES: 'allMovies',
   HASH: 'hash',
   ACTIVE_MOVIE_ID: 'activeMovieId',
+};
+
+export const typeOfActionOnMovie = {
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
 };

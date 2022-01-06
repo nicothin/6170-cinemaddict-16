@@ -1,13 +1,16 @@
-import Store from '../services/store';
 import { ActionCreator } from '../reducers/reducer';
+import { typeOfActionOnMovie } from '../constants';
+import { changeMovieUserDetails } from '../utils/movie';
 import MovieCard from '../view/movie-card/movie-card';
-import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAsWatched } from '../utils/movie';
 
 export default class MovieCardPresenter {
+  #model = null;
   #wrapperComponent = null;
+  #movieCardComponent = null;
   #movie = null;
 
-  constructor(wrapperComponent, movie) {
+  constructor(model, wrapperComponent, movie) {
+    this.#model = model;
     this.#wrapperComponent = wrapperComponent;
     this.#movie = movie;
 
@@ -15,22 +18,37 @@ export default class MovieCardPresenter {
   }
 
   init = () => {
-    const movieCardComponent = new MovieCard(this.#movie);
-    movieCardComponent.setLinkClickHandler(this.#linkClickHandler);
-    movieCardComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
-    movieCardComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
-    movieCardComponent.setFavoriteClickHandler(this.#favoriteHandler);
+    this.#movieCardComponent = new MovieCard(this.#movie);
+    this.#movieCardComponent.setLinkClickHandler(this.#linkClickHandler);
+    this.#movieCardComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
+    this.#movieCardComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
+    this.#movieCardComponent.setFavoriteClickHandler(this.#favoriteHandler);
 
-    this.#wrapperComponent.renderMovieCard(movieCardComponent);
+    this.#wrapperComponent.renderMovieCard(this.#movieCardComponent);
   }
 
   #linkClickHandler = (movieId) => {
-    Store.dispatch(ActionCreator.setActiveMovieId(movieId));
+    this.#model.dispatch(ActionCreator.setActiveMovieId(movieId));
   }
 
-  #addToWatchlistHandler = (movieId) => changeInStoreAddToWatchlist(movieId)
+  #addToWatchlistHandler = (movieId) => {
+    changeMovieUserDetails(this.#model, typeOfActionOnMovie.WATCHLIST, movieId)
+      .catch(() => {
+        this.#movieCardComponent.shakeYourButtonBaby(typeOfActionOnMovie.WATCHLIST);
+      });
+  }
 
-  #markAsWatchedHandler = (movieId) => changeInStoreMarkAsWatched(movieId)
+  #markAsWatchedHandler = (movieId) => {
+    changeMovieUserDetails(this.#model, typeOfActionOnMovie.HISTORY, movieId)
+      .catch(() => {
+        this.#movieCardComponent.shakeYourButtonBaby(typeOfActionOnMovie.HISTORY);
+      });
+  }
 
-  #favoriteHandler = (movieId) => changeInStoreFavorite(movieId)
+  #favoriteHandler = (movieId) => {
+    changeMovieUserDetails(this.#model, typeOfActionOnMovie.FAVORITES, movieId)
+      .catch(() => {
+        this.#movieCardComponent.shakeYourButtonBaby(typeOfActionOnMovie.FAVORITES);
+      });
+  }
 }

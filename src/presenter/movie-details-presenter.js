@@ -1,15 +1,15 @@
 import he from 'he';
 import _ from 'lodash';
 
-import { RenderPosition, ModelState, EMOTIONS } from '../constants';
+import { RenderPosition, ModelState, EMOTIONS, typeOfActionOnMovie } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
-import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAsWatched } from '../utils/movie';
+import { changeMovieUserDetails } from '../utils/movie';
+import { isEscPressed } from '../utils/common';
+import { ActionCreator, Operation } from '../reducers/reducer';
 
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
-import { ActionCreator, Operation } from '../reducers/reducer';
-import { isEscPressed } from '../utils/common';
 
 export default class MovieDetailsPresenter {
   #model = null;
@@ -132,11 +132,26 @@ export default class MovieDetailsPresenter {
     this.#currentScroll = scrollTop;
   }
 
-  #addToWatchlistHandler = (movieId) => changeInStoreAddToWatchlist(movieId)
+  #addToWatchlistHandler = (movieId) => {
+    changeMovieUserDetails(this.#model, typeOfActionOnMovie.WATCHLIST, movieId)
+      .catch(() => {
+        this.#movieDetailsComponent.shakeYourButtonBaby(typeOfActionOnMovie.WATCHLIST);
+      });
+  }
 
-  #markAsWatchedHandler = (movieId) => changeInStoreMarkAsWatched(movieId)
+  #markAsWatchedHandler = (movieId) => {
+    changeMovieUserDetails(this.#model, typeOfActionOnMovie.HISTORY, movieId)
+      .catch(() => {
+        this.#movieDetailsComponent.shakeYourButtonBaby(typeOfActionOnMovie.HISTORY);
+      });
+  }
 
-  #favoriteHandler = (movieId) => changeInStoreFavorite(movieId)
+  #favoriteHandler = (movieId) => {
+    changeMovieUserDetails(this.#model, typeOfActionOnMovie.FAVORITES, movieId)
+      .catch(() => {
+        this.#movieDetailsComponent.shakeYourButtonBaby(typeOfActionOnMovie.FAVORITES);
+      });
+  }
 
   #deleteComment = (commentId) => {
     this.#commentsComponent.setDeleteButtonToRequestState(commentId);

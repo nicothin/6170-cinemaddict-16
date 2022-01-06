@@ -194,7 +194,7 @@ export default class MoviesPagePresenter {
   #renderMovieCards = (wrapperComponent, list, from = 0, to = list.length) => {
     list
       .slice(from, to)
-      .forEach((movie) => new MovieCardPresenter(wrapperComponent, movie));
+      .forEach((movie) => new MovieCardPresenter(this.#model, wrapperComponent, movie));
   }
 
   #renderShowMoreMainList = () => {

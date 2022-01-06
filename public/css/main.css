@@ -784,9 +784,7 @@ button {
   margin-right: 20px;
   margin-left: 7px;
 }
-.film-details__new-comment--shake {
-  animation: shakeX 0.8s 0s 1 both;
-}
+
 .film-details__new-comment-inner {
   display: flex;
   align-items: center;
@@ -1131,6 +1129,10 @@ button {
   min-height: 300px;
   padding-top: 50px;
   padding-bottom: 50px;
+}
+
+.shake-it-baby {
+  animation: shakeX 0.8s 0s 1 both;
 }
 
 

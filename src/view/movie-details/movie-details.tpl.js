@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { typeOfActionOnMovie } from '../../constants';
 import { getFormattedList, getFormattedRuntime } from '../../utils/common';
 
 export const createMovieDetails = (movie) => {
@@ -108,9 +109,9 @@ export const createMovieDetails = (movie) => {
         </div>
 
         <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistActiveClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--watched ${watchedActiveClassName}" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteActiveClassName}" id="favorite" name="favorite">Add to favorites</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistActiveClassName}" data-action-type="${typeOfActionOnMovie.WATCHLIST}">Add to watchlist</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watched ${watchedActiveClassName}" data-action-type="${typeOfActionOnMovie.HISTORY}">Already watched</button>
+          <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteActiveClassName}" data-action-type="${typeOfActionOnMovie.FAVORITES}">Add to favorites</button>
         </section>
       </div>
 
