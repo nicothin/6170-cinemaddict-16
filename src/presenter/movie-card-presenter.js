@@ -1,10 +1,9 @@
 import Store from '../services/store';
+import { ActionCreator } from '../reducers/reducer';
 import MovieCard from '../view/movie-card/movie-card';
 import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAsWatched } from '../utils/movie';
 
 export default class MovieCardPresenter {
-  #store = new Store();
-
   #wrapperComponent = null;
   #movie = null;
 
@@ -26,7 +25,7 @@ export default class MovieCardPresenter {
   }
 
   #linkClickHandler = (movieId) => {
-    this.#store.setActiveMovieId(movieId);
+    Store.dispatch(ActionCreator.setActiveMovieId(movieId));
   }
 
   #addToWatchlistHandler = (movieId) => changeInStoreAddToWatchlist(movieId)

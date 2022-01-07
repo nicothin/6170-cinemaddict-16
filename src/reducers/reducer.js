@@ -1,18 +1,18 @@
 import { axios } from '../services/axios';
-import { Filters, StoreState } from '../constants';
+import { Hashes, ModelState } from '../constants';
 
 const ActionType = {
   SET_ALL_MOVIES: 'SET_ALL_MOVIES',
-  SET_CURRENT_FILTER: 'SET_CURRENT_FILTER',
+  SET_HASH: 'SET_HASH',
   SET_ACTIVE_MOVIE_ID: 'SET_ACTIVE_MOVIE_ID',
 };
 
 export const initialState = {
   // TODO[@nicothin]: подумать как будет откатываться изменение, если сервер ответит на PUT не 200
   // [StoreState.ORIGINAL_MOVIES]: [], // возможно, хранением массива, мутируемого только после ответа 200
-  [StoreState.ALL_MOVIES]: [],
-  [StoreState.CURRENT_FILTER]: Filters.ALL,
-  [StoreState.ACTIVE_MOVIE_ID]: null,
+  [ModelState.ALL_MOVIES]: [],
+  [ModelState.HASH]: Hashes.ALL,
+  [ModelState.ACTIVE_MOVIE_ID]: null,
 };
 
 export const ActionCreator = {
@@ -20,8 +20,8 @@ export const ActionCreator = {
     type: ActionType.SET_ALL_MOVIES,
     payload: state,
   }),
-  setCurrentFilter: (state) => ({
-    type: ActionType.SET_CURRENT_FILTER,
+  setHash: (state) => ({
+    type: ActionType.SET_HASH,
     payload: state,
   }),
   setActiveMovieId: (id) => ({
@@ -46,11 +46,11 @@ export const Operation = {
 export const reducer = (state, action) => {
   switch (action.type) {
     case ActionType.SET_ALL_MOVIES:
-      return { ...state, [StoreState.ALL_MOVIES]: action.payload };
-    case ActionType.SET_CURRENT_FILTER:
-      return { ...state, [StoreState.CURRENT_FILTER]: action.payload };
+      return { ...state, [ModelState.ALL_MOVIES]: action.payload };
+    case ActionType.SET_HASH:
+      return { ...state, [ModelState.HASH]: action.payload };
     case ActionType.SET_ACTIVE_MOVIE_ID:
-      return { ...state, [StoreState.ACTIVE_MOVIE_ID]: action.payload };
+      return { ...state, [ModelState.ACTIVE_MOVIE_ID]: action.payload };
     default:
       return state;
   }

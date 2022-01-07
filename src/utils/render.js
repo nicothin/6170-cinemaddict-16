@@ -2,7 +2,7 @@ import { RenderPosition } from '../constants';
 import Component from '../abstract/component';
 
 /**
- * Вставляет элемент в элемент.
+ * Вставить элемент в элемент.
  * @param {Element} container Родительский элемент
  * @param {Element} element Вставляемый элемент
  * @param {string} place Позиция вставляемого элемента относительно родительского
@@ -32,11 +32,11 @@ export const render = (container, element, place = RenderPosition.BEFOREEND) => 
 };
 
 /**
- * Создаёт DOM-элемент из строки
+ * Создать DOM-элемент из строки
  * @param {string} template Строка с разметкой
  * @returns {Element} DOM-узел
  */
-export const createElement = (template) => {
+export const createElement = (template = '') => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
@@ -44,7 +44,7 @@ export const createElement = (template) => {
 };
 
 /**
- * Убивает компонент
+ * Убить компонент
  * @param {object} component Компонент, который больше не нужен
  */
 export const remove = (component) => {

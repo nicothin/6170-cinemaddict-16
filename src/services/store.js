@@ -1,23 +1,17 @@
 import { isEqual } from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { initialState, reducer, Operation, ActionCreator } from '../reducers/reducer';
+import { initialState, reducer } from '../reducers/reducer';
 
-export default class Store {
-  #store = {};
+class Store {
+  #reduxStore = {};
   #previousStore = {};
-  #subscribers = [];
+  #subscribers = new Set();
 
   constructor() {
-    // TODO[@nicothin]: разобраться точнее как это работает. Прототипы?
-    if (Store._instance) {
-      return Store._instance;
-    }
-    Store._instance = this;
-
-    this.#store = createStore(reducer, initialState, applyMiddleware(thunk));
-    this.#store.subscribe(() => {
-      const nowStore = this.#store.getState();
+    this.#reduxStore = createStore(reducer, initialState, applyMiddleware(thunk));
+    this.#reduxStore.subscribe(() => {
+      const nowStore = this.#reduxStore.getState();
       this.#subscribers.forEach((subscriber) => {
         if (!isEqual(nowStore[subscriber.state], this.#previousStore[subscriber.state])) {
           subscriber.cb(nowStore[subscriber.state]);
@@ -27,22 +21,16 @@ export default class Store {
     });
   }
 
-  dispatch = (operation) => this.#store.dispatch(operation);
+  dispatch = (operation) => this.#reduxStore.dispatch(operation);
 
   subscribe = (state, cb) => {
-    this.#subscribers.push({ state, cb });
+    this.#subscribers.add({ state, cb });
   }
 
   getState = (state) => {
-    const currentState = this.#store.getState();
+    const currentState = this.#reduxStore.getState();
     return currentState[state] === undefined ? undefined : currentState[state];
   }
-
-  requestAllMovies = () => this.#store.dispatch(Operation.requestAllMovies())
-
-  requestComments = (movieId) => this.#store.dispatch(Operation.requestComments(movieId))
-
-  setAllMovies = (allMovies) => this.#store.dispatch(ActionCreator.setAllMovies(allMovies))
-
-  setActiveMovieId = (movieId) => this.#store.dispatch(ActionCreator.setActiveMovieId(movieId))
 }
+
+export default new Store();

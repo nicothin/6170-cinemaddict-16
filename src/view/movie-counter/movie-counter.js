@@ -1,15 +1,22 @@
-import Component from '../../abstract/component';
+import SmartComponent from '../../abstract/smart-component';
 import { createMovieCounter } from './movie-counter.tpl';
 
-export default class MovieCounter extends Component {
-  #counter;
+export default class MovieCounter extends SmartComponent {
 
-  constructor(counter) {
+  /**
+   * Счётчик просмотренных фильмов
+   * @param {{ counter: number }} props
+   */
+
+  constructor(props) {
     super();
-    this.#counter = counter;
+
+    this._data = props;
   }
 
   get template() {
-    return createMovieCounter(this.#counter);
+    return createMovieCounter(this._data);
   }
+
+  restoreHandlers = () => {}
 }

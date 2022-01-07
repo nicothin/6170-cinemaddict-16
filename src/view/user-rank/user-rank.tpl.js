@@ -1,4 +1,6 @@
-export const createUserRank = (counter) => {
+export const createUserRank = (data) => {
+  const { counter } = data;
+
   let rank = 'novice';
 
   if (counter >= 11 && counter <= 20) {
@@ -8,10 +10,10 @@ export const createUserRank = (counter) => {
     rank = 'movie buff';
   }
 
-  return `
-<section class="header__profile profile">
-  <p class="profile__rating">${rank}</p>
-  <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-</section>
-`.trim();
+  const content = (!!counter && counter > 0) ?
+    `<p class="profile__rating">${rank}</p><img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">` :
+    '';
+
+  return `<section class="header__profile profile">${content}</section>`;
+
 };

@@ -1,32 +1,41 @@
 import _ from 'lodash';
 
-import Store from '../services/store';
-import { RenderPosition, StoreState } from '../constants';
+import { RenderPosition, ModelState } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
 import { changeInStoreAddToWatchlist, changeInStoreFavorite, changeInStoreMarkAsWatched } from '../utils/movie';
 
 import MovieDetails from '../view/movie-details/movie-details';
 import Comments from '../view/comments/comments';
-import Comment from '../view/comment/comment';
+import { ActionCreator, Operation } from '../reducers/reducer';
 
 export default class MovieDetailsPresenter {
-  #store = new Store();
-
+  #model = null;
   #currentMovie = null;
+  #currentMovieComments = { list: [], isLoading: false };
 
-  #siteFooterElement = null;
-  #movieDetailsComponent = null;
+  #wrapperElement = null;
+  #movieDetailsComponent = new MovieDetails(this.#currentMovie);
+  #commentsComponent = new Comments(this.#currentMovieComments);
 
-  constructor(siteFooterElement) {
-    this.#siteFooterElement = siteFooterElement;
+  #currentScroll = 0;
+
+  constructor(model, wrapperElement) {
+    this.#model = model;
+    this.#wrapperElement = wrapperElement;
 
     this.init();
   }
 
   init = () => {
-    this.#store.subscribe(StoreState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
-    this.#store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    this.#movieDetailsComponent.setCloseClickHandler(this.#clickCloseButton);
+    this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
+    this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
+    this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
+    this.#movieDetailsComponent.setScrollHandler(this.#onScroll);
+
+    this.#model.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
   }
 
   #changeActiveMovieIdHandler = (newMovieId) => {
@@ -36,7 +45,7 @@ export default class MovieDetailsPresenter {
       return;
     }
 
-    const movie = this.#store.getState(StoreState.ALL_MOVIES).find((item) => item.id === newMovieId);
+    const movie = this.#model.getState(ModelState.ALL_MOVIES).find((item) => item.id === newMovieId);
     if (movie) {
       this.#currentMovie = movie;
       this.#renderMovieDetails();
@@ -48,62 +57,66 @@ export default class MovieDetailsPresenter {
       const newCurrentMovie = allMovies.find((movie) => movie.id === this.#currentMovie.id);
       if (newCurrentMovie && !_.isEqual(newCurrentMovie, this.#currentMovie)) {
         this.#currentMovie = newCurrentMovie;
-        remove(this.#movieDetailsComponent);
-        this.#renderMovieDetails();
+        this.#movieDetailsComponent.updateData(this.#currentMovie);
+        this.#movieDetailsComponent.renderComments(this.#commentsComponent);
+        this.#scrollMovieDetailToCurrent();
       }
     }
   }
 
   #renderMovieDetails = () => {
     setPageScrollDisable(true);
-    document.addEventListener('click', this.#onClickCloseButton);
     document.addEventListener('keydown', this.#onEscKeyDown);
 
-    this.#movieDetailsComponent = new MovieDetails(this.#currentMovie);
-    this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
-    this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
-    this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
-    render(this.#siteFooterElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
+    this.#movieDetailsComponent.updateData(this.#currentMovie);
+    render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
 
-    this.#store.requestComments(this.#currentMovie.id).then((comments) => this.#renderComments(comments));
+    this.#currentMovieComments = { list: [], isLoading: true };
+    this.#commentsComponent.updateData(this.#currentMovieComments);
+    this.#movieDetailsComponent.renderComments(this.#commentsComponent);
+
+    this.#model
+      .dispatch(Operation.requestComments(this.#currentMovie.id))
+      .then((comments) => {
+        if (!_.isEqual(comments, this.#currentMovieComments.list)) {
+          this.#currentMovieComments = { list: comments, isLoading: false };
+          this.#commentsComponent.updateData(this.#currentMovieComments);
+        }
+      })
+      .catch((reason) => this.#commentsComponent.showFail(reason));
   }
 
   #removeMovieDetails = () => {
     setPageScrollDisable(false);
-    document.removeEventListener('click', this.#onClickCloseButton);
     document.removeEventListener('keydown', this.#onEscKeyDown);
+
+    this.#currentMovie = null;
+    this.#currentScroll = 0;
+    this.#currentMovieComments = { list: [], isLoading: false };
+
+    this.#commentsComponent.updateData(this.#currentMovieComments);
 
     if (this.#movieDetailsComponent) {
       remove(this.#movieDetailsComponent);
     }
+  }
 
-    this.#movieDetailsComponent = null;
-    this.#currentMovie = null;
+  #scrollMovieDetailToCurrent = () => {
+    this.#movieDetailsComponent.element.scrollTo(0, this.#currentScroll);
   }
 
   #onEscKeyDown = (event) => {
     if (event.key === 'Escape' || event.key === 'Esc') {
-      this.#store.setActiveMovieId(null);
+      this.#model.dispatch(ActionCreator.setActiveMovieId(null));
     }
   };
 
-  #onClickCloseButton = (event) => {
-    if (event.target.classList.contains('film-details__close-btn')) {
-      this.#store.setActiveMovieId(null);
-    }
+  #clickCloseButton = () => {
+    this.#model.dispatch(ActionCreator.setActiveMovieId(null));
   }
 
-  #renderComments = (comments) => {
-    // TODO[@nicothin]: доделать в рамках одного из следующих PR
-    if (comments.length) {
-      // TODO[@nicothin]: Прояснить. Плохо выглядит: рендерю Comments методом movieDetailsComponent → ...
-      const commentsComponent = new Comments(comments);
-      this.#movieDetailsComponent.renderComments(commentsComponent);
-      comments.forEach((comment) => {
-        const commentComponent = new Comment(comment);
-        commentsComponent.renderComment(commentComponent);
-      });
-    }
+  #onScroll = (scrollTop) => {
+    this.#currentScroll = scrollTop;
   }
 
   #addToWatchlistHandler = (movieId) => changeInStoreAddToWatchlist(movieId)

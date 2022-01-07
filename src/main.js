@@ -1,5 +1,6 @@
-import Store from './services/store';
+import Model from './services/store';
 
+import { ActionCreator, Operation } from './reducers/reducer';
 import GeneralPresenter from './presenter/general-presenter';
 import MainMenuPresenter from './presenter/main-menu-presenter';
 import MoviesPagePresenter from './presenter/movies-page-presenter';
@@ -9,14 +10,18 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-const store = new Store();
+const hash = window.location.hash.replace('#', '');
+if (hash) {
+  Model.dispatch(ActionCreator.setHash(hash));
+}
 
-new GeneralPresenter(siteHeaderElement, siteFooterElement);
+new GeneralPresenter(Model, siteHeaderElement, siteFooterElement);
 
-new MainMenuPresenter(siteMainElement);
+new MainMenuPresenter(Model, siteMainElement);
 
-new MoviesPagePresenter(siteMainElement);
+new MovieDetailsPresenter(Model, siteFooterElement);
 
-new MovieDetailsPresenter(siteFooterElement);
+const moviesPage = new MoviesPagePresenter(Model, siteMainElement);
 
-store.requestAllMovies();
+Model.dispatch(Operation.requestAllMovies());
+moviesPage.showLoading();

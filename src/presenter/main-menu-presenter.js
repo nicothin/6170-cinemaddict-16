@@ -1,110 +1,140 @@
-import Store from '../services/store';
-import { Filters, RenderPosition, StoreState } from '../constants';
-import { remove, render } from '../utils/render';
+import { Hashes, RenderPosition, ModelState } from '../constants';
+import { ActionCreator } from '../reducers/reducer';
+import { render } from '../utils/render';
 
 import Menu from '../view/menu/menu';
 
 export default class MainMenuPresenter {
-  #store = new Store()
+  #menuData = {
+    filters: [
+      {
+        id: Hashes.ALL,
+        text: 'All movies',
+        counter: 0,
+        isActive: false,
+        isShowCounter: false,
+      },
+      {
+        id: Hashes.WATCHLIST,
+        text: 'Watchlist',
+        counter: 0,
+        isActive: false,
+        isShowCounter: true,
+      },
+      {
+        id: Hashes.HISTORY,
+        text: 'History',
+        counter: 0,
+        isActive: false,
+        isShowCounter: true,
+      },
+      {
+        id: Hashes.FAVORITES,
+        text: 'Favorites',
+        counter: 0,
+        isActive: false,
+        isShowCounter: true,
+      },
+    ],
+    isStats: false,
+  };
 
-  #menuFilters = [
-    {
-      id: Filters.ALL,
-      text: 'All movies',
-      counter: 0,
-      isActive: true,
-      isShowCounter: false,
-    },
-    {
-      id: Filters.WATCHLIST,
-      text: 'Watchlist',
-      counter: 0,
-      isActive: false,
-      isShowCounter: true,
-    },
-    {
-      id: Filters.HISTORY,
-      text: 'History',
-      counter: 0,
-      isActive: false,
-      isShowCounter: true,
-    },
-    {
-      id: Filters.FAVORITES,
-      text: 'Favorites',
-      counter: 0,
-      isActive: false,
-      isShowCounter: true,
-    },
-  ];
+  #model = null;
+  #wrapperElement = null;
+  #menuComponent = new Menu(this.#menuData);
 
-  #siteMainElement = null
-
-  #menuComponent = null
-
-  constructor(siteMainElement)  {
-    this.#siteMainElement = siteMainElement;
+  constructor(model, wrapperElement)  {
+    this.#model = model;
+    this.#wrapperElement = wrapperElement;
 
     this.init();
   }
 
   init = () => {
-    this.#renderMenu();
-    this.#store.subscribe(StoreState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-  }
+    render(this.#wrapperElement, this.#menuComponent, RenderPosition.AFTERBEGIN);
 
-  #renderMenu = () => {
-    if (this.#menuComponent) {
-      remove(this.#menuComponent);
-    }
-    this.#menuComponent = new Menu(this.#menuFilters);
-    render(this.#siteMainElement, this.#menuComponent, RenderPosition.AFTERBEGIN);
+    this.#updateMenuData(
+      this.#model.getState(ModelState.HASH)
+    );
+
+    this.#menuComponent.setLinkClickHandler(this.#linkClickHandler);
+
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    this.#model.subscribe(ModelState.HASH, this.#changeHashHandler);
   }
 
   #changeAllMoviesListHandler = (movies) => {
     let hasChange = false;
-    const newMenu = this.#menuFilters.map((item) => {
+    this.#menuData.filters.forEach((item) => {
       switch (item.id) {
-        case Filters.ALL: {
+        case Hashes.ALL: {
           const newCounter = movies.length;
           if (newCounter !== item.counter) {
             hasChange = true;
-            return {...item, counter: newCounter};
+            item.counter = newCounter;
           }
-          return item;
+          break;
         }
-        case Filters.WATCHLIST: {
+        case Hashes.WATCHLIST: {
           const newCounter = movies.filter((movie) => movie.userDetails.watchlist).length;
           if (newCounter !== item.counter) {
             hasChange = true;
-            return { ...item, counter: newCounter };
+            item.counter = newCounter;
           }
-          return item;
+          break;
         }
-        case Filters.HISTORY: {
+        case Hashes.HISTORY: {
           const newCounter = movies.filter((movie) => movie.userDetails.alreadyWatched).length;
           if (newCounter !== item.counter) {
             hasChange = true;
-            return { ...item, counter: newCounter };
+            item.counter = newCounter;
           }
-          return item;
+          break;
         }
-        case Filters.FAVORITES: {
+        case Hashes.FAVORITES: {
           const newCounter = movies.filter((movie) => movie.userDetails.favorite).length;
           if (newCounter !== item.counter) {
             hasChange = true;
-            return { ...item, counter: newCounter };
+            item.counter = newCounter;
           }
-          return item;
-        }
-        default: {
-          return item;
+          break;
         }
       }
     });
+
     if (hasChange) {
-      this.#menuFilters = newMenu;
-      this.#renderMenu();
+      this.#menuComponent.updateData(this.#menuData);
+    }
+  }
+
+  #linkClickHandler = (hash) => {
+    const oldHash = this.#model.getState(ModelState.HASH);
+    const newHash = hash.replace('#', '');
+
+    if (oldHash === newHash) {
+      return;
+    }
+
+    this.#model.dispatch(ActionCreator.setHash(newHash));
+  }
+
+  #changeHashHandler = (hash) => {
+    this.#updateMenuData(hash);
+    this.#menuComponent.updateData(this.#menuData);
+  }
+
+  #updateMenuData = (hash) => {
+    if (hash === Hashes.STATS) {
+      this.#menuData.isStats = true;
+      this.#menuData.filters.forEach((filter) => {
+        filter.isActive = false;
+      });
+    }
+    else {
+      this.#menuData.isStats = false;
+      this.#menuData.filters.forEach((filter) => {
+        filter.isActive = filter.id === hash;
+      });
     }
   }
 }

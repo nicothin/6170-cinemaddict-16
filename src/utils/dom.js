@@ -10,6 +10,10 @@ const getScrollSize = () => {
   return scrollbarSize;
 };
 
+/**
+ * Переключить скролл страницы
+ * @param {boolean} disableScroll ФлагЖ включить или выключить
+ */
 export const setPageScrollDisable = (disableScroll = true) => {
   const body = document.body;
   const scrollSize = getScrollSize();
