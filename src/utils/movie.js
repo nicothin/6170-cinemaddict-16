@@ -26,6 +26,8 @@ export const changeMovieUserDetails = (model, action, movieId) => {
     case typeOfActionOnMovie.FAVORITES:
       movie.userDetails.favorite = !movie.userDetails.favorite;
       break;
+    default:
+      break;
   }
 
   const data = snakecaseKeys(movie);

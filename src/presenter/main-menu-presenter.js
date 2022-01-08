@@ -99,6 +99,8 @@ export default class MainMenuPresenter {
           }
           break;
         }
+        default:
+          break;
       }
     });
 
