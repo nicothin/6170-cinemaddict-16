@@ -3,15 +3,16 @@ import { MOVIE_COUNT_PER_STEP, MOVIE_TOP_RATED_COUNT, MOVIE_MOST_COMMENT_COUNT, 
 import { remove, render } from '../utils/render';
 
 import MovieCardPresenter from './movie-card-presenter';
+import StatsPresenter from './stats-presenter';
 
 import MovieList from '../view/movie-list/movie-list';
-import MoviesPageEmpty from '../view/movies-page-empty/movies-page-empty';
+import PageContentEmpty from '../view/page-content-empty/page-content-empty';
 import MoviesPage from '../view/movies-page/movies-page';
 import ShowMore from '../view/show-more-button/show-more-button';
 import Sorter from '../view/sorter/sorter';
 import dayjs from 'dayjs';
 
-export default class MoviesPagePresenter {
+export default class PageContentPresenter {
   #model = null;
   #container = null;
 
@@ -20,20 +21,24 @@ export default class MoviesPagePresenter {
   #topRatedList = [];
   #mostCommentedList = [];
 
-  #currentFilter = Hashes.ALL;
+  #currentHash = Hashes.ALL;
   #currentSortType = Sorting.DEFAULT;
 
+  // TODO[@nicothin]: вынести все, что касается вывода киношек в movies-reducer
+
   #moviesPageInnerComponent = new MoviesPage();
-  #noMoviesComponent = new MoviesPageEmpty('There are no movies in our database');
-  #loadingComponent = new MoviesPageEmpty('Loading...');
-  #noWatchlistComponent = new MoviesPageEmpty('There are no watchlist movies now');
-  #noHistoryComponent = new MoviesPageEmpty('There are no history movies now');
-  #noFavoritesComponent = new MoviesPageEmpty('There are no favorite movies now');
+  #loadingComponent = new PageContentEmpty('Loading...');
+  #noMoviesComponent = new PageContentEmpty('There are no movies in our database');
+  #noWatchlistComponent = new PageContentEmpty('There are no watchlist movies now');
+  #noHistoryComponent = new PageContentEmpty('There are no history movies now');
+  #noFavoritesComponent = new PageContentEmpty('There are no favorite movies now');
   #sorterComponent = new Sorter();
   #mainListComponent = new MovieList({ title: 'All movies. Upcoming', hideTitle: true });
   #topRatedListComponent = new MovieList({ title: 'Top rated', modifiers: 'films-list--extra' });;
   #mostCommentedListComponent = new MovieList({ title: 'Most commented', modifiers: 'films-list--extra' });
   #showMoreMainListComponent = new ShowMore();
+
+  #statsPagePresenter = null;
 
   #renderedMovieCardCounter = MOVIE_COUNT_PER_STEP;
 
@@ -41,23 +46,39 @@ export default class MoviesPagePresenter {
     this.#model = model;
     this.#container = container;
 
+    this.#statsPagePresenter = new StatsPresenter(model, container);
+
     this.init();
   }
 
   init = () => {
-    render(this.#container, this.#moviesPageInnerComponent);
-
-    this.#currentFilter = this.#model.getState(ModelState.HASH);
+    this.#currentHash = this.#model.getState(ModelState.HASH);
 
     this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
     this.#model.subscribe(ModelState.HASH, this.#changeHashHandler);
   }
 
   showLoading = () => {
+    render(this.#container, this.#moviesPageInnerComponent);
     render(this.#moviesPageInnerComponent, this.#loadingComponent);
   }
 
-  #renderMoviesPage = () => {
+  #renderPageContent = () => {
+    // NOTE[@nicothin]: роутер, ѣ
+    if (this.#currentHash === Hashes.STATS) {
+      this.#removeMoviesContent();
+      this.#renderStatsContent();
+    }
+
+    else {
+      this.#removeStatsContent();
+      this.#renderMoviesContent();
+    }
+  }
+
+  #renderMoviesContent = () => {
+    render(this.#container, this.#moviesPageInnerComponent);
+
     if (this.#allMovies.length === 0) {
       remove(this.#mainListComponent);
       remove(this.#topRatedListComponent);
@@ -69,10 +90,24 @@ export default class MoviesPagePresenter {
 
     this.#removeAllEmptyText();
 
+    // TODO[@nicothin]: поправить работу сортировки: при смене фильтра не сбрасывается
     this.#renderSorter();
     this.#renderMainList();
     this.#renderTopRatedList();
     this.#renderMostCommentedList();
+  }
+
+  #renderStatsContent = () => {
+    this.#statsPagePresenter.render();
+  }
+
+  #removeMoviesContent = () => {
+    remove(this.#sorterComponent);
+    remove(this.#moviesPageInnerComponent);
+  }
+
+  #removeStatsContent = () => {
+    this.#statsPagePresenter.remove();
   }
 
   #removeAllEmptyText = () => {
@@ -113,7 +148,7 @@ export default class MoviesPagePresenter {
       remove(this.#sorterComponent);
       remove(this.#mainListComponent);
 
-      switch (this.#currentFilter) {
+      switch (this.#currentHash) {
         case Hashes.WATCHLIST:
           render(this.#moviesPageInnerComponent, this.#noWatchlistComponent, RenderPosition.AFTERBEGIN);
           break;
@@ -138,25 +173,26 @@ export default class MoviesPagePresenter {
     }
     else {
       this.#allMovies = allMovies;
-      this.#moviesList = this.#getMovieList(allMovies, this.#currentFilter);
+      this.#moviesList = this.#getMovieList(allMovies, this.#currentHash);
       this.#topRatedList = this.#getMovieListSortedByRating(allMovies).slice(0, MOVIE_TOP_RATED_COUNT);
       this.#mostCommentedList = this.#getMovieListSortedByCommentsCount(allMovies).slice(0, MOVIE_MOST_COMMENT_COUNT);
     }
 
-    this.#renderMoviesPage();
+    this.#renderPageContent();
   }
 
   #changeHashHandler = (hash) => {
-    if (hash === this.#currentFilter) {
+    if (hash === this.#currentHash) {
       return;
     }
 
-    this.#currentFilter = hash;
+    this.#currentHash = hash;
     this.#renderedMovieCardCounter = MOVIE_COUNT_PER_STEP;
     this.#currentSortType = Sorting.DEFAULT;
-    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentFilter);
+    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentHash);
 
-    this.#renderMainList();
+    // this.#renderMainList();
+    this.#renderPageContent();
   }
 
   #getMovieList = (allMovies, currentFilter) => {
@@ -241,7 +277,7 @@ export default class MoviesPagePresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentFilter);
+    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentHash);
     this.#renderMainList();
   }
 

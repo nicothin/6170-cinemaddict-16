@@ -1,6 +1,6 @@
 import Component from '../../abstract/component';
 
-export default class MoviesPageEmpty extends Component {
+export default class PageContentEmpty extends Component {
   #text = '';
 
   constructor(text = 'Something is wrong...') {
