@@ -34,7 +34,7 @@ export default class GeneralPresenter {
     if (newMoviesCounter !== this.#moviesCounter) {
       this.#moviesCounter = newMoviesCounter;
       this.#userRankComponent.updateData({ counter: newMoviesCounter });
-      this.#movieCounterComponent.updateData({ counter: newMoviesCounter });
+      this.#movieCounterComponent.updateData({ counter: movies.length });
     }
   }
 }
