@@ -31,3 +31,24 @@ export const getFormattedRuntime = (minutes) => {
 };
 
 export const isEscPressed = (event) => event.key === 'Escape' || event.key === 'Esc';
+
+/**
+ * Получить статус юзера
+ * @param {number} moviesCounter Количество просмотренных фильмов
+ * @returns {string} Соответствующий статус
+ */
+export const getUserRank = (moviesCounter) => {
+  let rank = '';
+
+  if (moviesCounter >= 1 && moviesCounter <= 10) {
+    rank = 'novice';
+  }
+  if (moviesCounter >= 11 && moviesCounter <= 20) {
+    rank = 'fan';
+  }
+  if (moviesCounter >= 21) {
+    rank = 'movie buff';
+  }
+
+  return rank;
+};
