@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import snakecaseKeys from 'snakecase-keys';
-import { ModelState, typeOfActionOnMovie } from '../constants';
-import { ActionCreator, Operation } from '../reducers/reducer';
+import { ModelState, typeOfActionOnMovie } from '../../constants';
+import { ActionCreator, Operation } from '../../reducers/reducer';
 
 /**
  * Изменить пользовательские данные фильма

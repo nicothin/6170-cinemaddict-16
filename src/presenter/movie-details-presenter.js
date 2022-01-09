@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { RenderPosition, ModelState, EMOTIONS, typeOfActionOnMovie } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
-import { changeMovieUserDetails } from '../utils/movie';
+import { changeMovieUserDetails } from './helpers/change-movie-user-details';
 import { isEscPressed } from '../utils/common';
 import { ActionCreator, Operation } from '../reducers/reducer';
 

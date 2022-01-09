@@ -1,6 +1,6 @@
 import { ActionCreator } from '../reducers/reducer';
 import { typeOfActionOnMovie } from '../constants';
-import { changeMovieUserDetails } from '../utils/movie';
+import { changeMovieUserDetails } from './helpers/change-movie-user-details';
 import MovieCard from '../view/movie-card/movie-card';
 
 export default class MovieCardPresenter {
