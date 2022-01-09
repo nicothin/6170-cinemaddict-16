@@ -25,8 +25,8 @@ export default class MoviesPresenter {
 
   #moviesPageInnerComponent = new MoviesPage();
   #noMoviesComponent = new PageContentEmpty('There are no movies in our database');
-  #noWatchlistComponent = new PageContentEmpty('There are no watchlist movies now');
-  #noHistoryComponent = new PageContentEmpty('There are no history movies now');
+  #noWatchlistComponent = new PageContentEmpty('There are no movies to watch now');
+  #noHistoryComponent = new PageContentEmpty('There are no watched movies now');
   #noFavoritesComponent = new PageContentEmpty('There are no favorite movies now');
   #sorterComponent = new Sorter();
   #mainListComponent = new MovieList({ title: 'All movies. Upcoming', hideTitle: true });
