@@ -11,7 +11,7 @@ import ShowMore from '../view/show-more-button/show-more-button';
 import Sorter from '../view/sorter/sorter';
 import dayjs from 'dayjs';
 
-export default class MoviesPresenter {
+export default class MoviesPagePresenter {
   #model = null;
   #container = null;
 

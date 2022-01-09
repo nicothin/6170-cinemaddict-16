@@ -2,7 +2,7 @@ import { ModelState } from '../constants';
 import { remove, render } from '../utils/render';
 import StatsPage from '../view/stats-page/stats-page';
 
-export default class StatsPresenter {
+export default class StatsPagePresenter {
   #model = null;
   #container = null;
   #statsPageComponent = null;

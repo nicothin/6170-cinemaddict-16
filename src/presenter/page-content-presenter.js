@@ -1,8 +1,8 @@
 import { Hashes, ModelState } from '../constants';
 import { remove, render } from '../utils/render';
 
-import MoviesPresenter from './movies-presenter';
-import StatsPresenter from './stats-presenter';
+import MoviesPagePresenter from './movies-page-presenter';
+import StatsPagePresenter from './stats-page-presenter';
 
 import PageContentEmpty from '../view/page-content-empty/page-content-empty';
 import MoviesPage from '../view/movies-page/movies-page';
@@ -22,8 +22,8 @@ export default class PageContentPresenter {
     this.#model = model;
     this.#container = container;
 
-    this.#moviesPagePresenter = new MoviesPresenter(model, container);
-    this.#statsPagePresenter = new StatsPresenter(model, container);
+    this.#moviesPagePresenter = new MoviesPagePresenter(model, container);
+    this.#statsPagePresenter = new StatsPagePresenter(model, container);
 
     this.init();
   }
