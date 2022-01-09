@@ -1,25 +1,32 @@
-import Component from '../../abstract/component';
+import SmartComponent from '../../abstract/smart-component';
 import { createSorter } from './sorter.tpl';
 
-export default class Sorter extends Component {
-  get template() {
-    return createSorter();
+export default class Sorter extends SmartComponent {
+
+  constructor(props) {
+    super();
+    this._data = props;
   }
 
-  #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
-      return;
-    }
-
-    evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
-
-    this.element.querySelector('.sort__button--active').classList.remove('sort__button--active');
-    evt.target.classList.add('sort__button--active');
+  get template() {
+    return createSorter(this._data);
   }
 
   setSortTypeChangeHandler = (callback) => {
     this._callback.sortTypeChange = callback;
     this.element.addEventListener('click', this.#sortTypeChangeHandler);
+  }
+
+  #sortTypeChangeHandler = (event) => {
+    if (event.target.tagName !== 'A') {
+      return;
+    }
+
+    event.preventDefault();
+    this._callback.sortTypeChange(event.target.dataset.sortType);
+  }
+
+  restoreHandlers = () => {
+    this.setSortTypeChangeHandler(this._callback.sortTypeChange);
   }
 }

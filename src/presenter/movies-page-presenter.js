@@ -28,7 +28,7 @@ export default class MoviesPagePresenter {
   #noWatchlistComponent = new PageContentEmpty('There are no movies to watch now');
   #noHistoryComponent = new PageContentEmpty('There are no watched movies now');
   #noFavoritesComponent = new PageContentEmpty('There are no favorite movies now');
-  #sorterComponent = new Sorter();
+  #sorterComponent = new Sorter({ type: this.#currentSortType });
   #mainListComponent = new MovieList({ title: 'All movies. Upcoming', hideTitle: true });
   #topRatedListComponent = new MovieList({ title: 'Top rated', modifiers: 'films-list--extra' });;
   #mostCommentedListComponent = new MovieList({ title: 'Most commented', modifiers: 'films-list--extra' });
@@ -64,7 +64,6 @@ export default class MoviesPagePresenter {
 
     this.#removeAllEmptyText();
 
-    // TODO[@nicothin]: поправить работу сортировки: при смене фильтра не сбрасывается
     this.#renderSorter();
     this.#renderMainList();
     this.#renderTopRatedList();
@@ -88,7 +87,7 @@ export default class MoviesPagePresenter {
     if (this.#moviesList.length > 0) {
       this.#removeAllEmptyText();
 
-      this.#renderSorter();
+      this.#sorterComponent.updateData({ type: this.#currentSortType });
 
       render(this.#moviesPageInnerComponent, this.#mainListComponent, RenderPosition.AFTERBEGIN);
 
