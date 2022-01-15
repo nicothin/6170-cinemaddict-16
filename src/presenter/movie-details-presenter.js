@@ -178,7 +178,8 @@ export default class MovieDetailsPresenter {
 
     else {
       this.#commentsComponent.disableForm();
-      this.#model.dispatch(Operation.sendComment(this.#currentMovie.id, data))
+      this.#model
+        .dispatch(Operation.sendComment(this.#currentMovie.id, data))
         .then((response) => {
           this.#currentMovieComments = { list: response.data.comments, isLoading: false };
           this.#commentsComponent.updateData(this.#currentMovieComments);

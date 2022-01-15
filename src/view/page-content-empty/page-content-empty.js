@@ -13,6 +13,7 @@ export default class PageContentEmpty extends Component {
     return `
       <section class="films-list">
         <h2 class="films-list__title">${this.#text}</h2>
-      </section>`.trim();
+      </section>
+    `.trim();
   }
 }

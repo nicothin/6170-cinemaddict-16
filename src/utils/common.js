@@ -21,7 +21,7 @@ export const getSliceText = (text, length) => {
 export const getFormattedList = (data) => typeof data === 'string' ? data : data.join(', ');
 
 /**
- * Получить длительность в часах изи длительности в минутах
+ * Получить длительность в часах или минутах
  * @param {number} minutes Количество минут
  * @param {string} letterWrapperClassName Класс обертки букв в форматированной длительности
  * @param {string} letterWrapperTag Тег обертки букв в форматированной длительности

@@ -7,7 +7,7 @@ const ActionType = {
   SET_ACTIVE_MOVIE_ID: 'SET_ACTIVE_MOVIE_ID',
 };
 
-export const initialState = {
+export const InitialState = {
   [ModelState.ALL_MOVIES]: null,
   [ModelState.HASH]: Hashes.ALL,
   [ModelState.ACTIVE_MOVIE_ID]: null,
@@ -36,8 +36,6 @@ export const Operation = {
     .then((response) => {
       const all = response.data;
       dispatch(ActionCreator.setAllMovies(all));
-      // NOTE[@nicothin]: имитатор пустоты пришедшего ответа:
-      // dispatch(ActionCreator.setAllMovies([]));
       return response;
     })
     .catch((reason) => {

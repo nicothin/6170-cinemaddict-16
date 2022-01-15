@@ -9,11 +9,11 @@ export const createMenu = (props) => {
   }).join(' ');
 
   return `
-  <nav class="main-navigation">
-    <div class="main-navigation__items">
-      ${menuItems}
-    </div>
-    <a href="#stats" class="main-navigation__additional ${isStats ? 'main-navigation__additional--active' : ''}">Stats</a>
-  </nav>
-`.trim();
+    <nav class="main-navigation">
+      <div class="main-navigation__items">
+        ${menuItems}
+      </div>
+      <a href="#stats" class="main-navigation__additional ${isStats ? 'main-navigation__additional--active' : ''}">Stats</a>
+    </nav>
+  `.trim();
 };

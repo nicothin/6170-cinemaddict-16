@@ -13,8 +13,8 @@ export const createStatsPage = (data) => {
     </p>`.trim() :
     '';
 
-  const infoText = {
-    movies: counter === 1 ? 'movie' : 'movies',
+  const InfoText = {
+    MOVIES: counter === 1 ? 'movie' : 'movies',
   };
 
   const formattedDuration = getFormattedRuntime(duration, 'statistic__item-description');
@@ -67,7 +67,7 @@ export const createStatsPage = (data) => {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">${counter} <span class="statistic__item-description">${infoText.movies}</span></p>
+          <p class="statistic__item-text">${counter} <span class="statistic__item-description">${InfoText.MOVIES}</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>

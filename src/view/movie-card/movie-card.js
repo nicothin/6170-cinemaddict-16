@@ -43,7 +43,6 @@ export default class MovieCard extends Component {
   }
 
   shakeYourButtonBaby = (buttonType) => {
-    // TODO[@nicothin]: переделать взаимодействие с кнопками карточки и деталей с классов на [data-action-type
     const button = this.element.querySelector(`.film-card__controls-item[data-action-type="${buttonType}"]`);
     button.classList.add(SHAKE_CLASSNAME);
     setTimeout(() => button.classList.remove(SHAKE_CLASSNAME), SHAKE_CLASSNAME_REMOVE_DELAY);
