@@ -1,6 +1,8 @@
-import { EMOTIONS } from '../constants';
+import { Emotions } from '../constants';
 import { getRandomInteger } from '../utils/common';
 import { generateHumanName, generateText } from './utils';
+
+// TODO[@nicothin]: убедиться, что я использую этот файл
 
 export const generateCommentsIds = () => {
   const counter = getRandomInteger(0, 5);
@@ -18,5 +20,5 @@ export const generateComment = (id) => ({
   author: generateHumanName(),
   comment: generateText(),
   date: '2019-05-11T16:12:32.554Z',
-  emotion: EMOTIONS[getRandomInteger(0, EMOTIONS.length - 1)],
+  emotion: Emotions[getRandomInteger(0, Emotions.length - 1)],
 });

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { EMOTIONS } from '../../constants';
+import { Emotions } from '../../constants';
 
 dayjs.extend(relativeTime);
 
@@ -31,7 +31,7 @@ export const createComments = (data) => {
     `.trim();
   }).join(' ');
 
-  const emotionsList = EMOTIONS.map((emotion) => `
+  const emotionsList = Emotions.map((emotion) => `
   <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
   <label class="film-details__emoji-label" for="emoji-${emotion}">
     <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">

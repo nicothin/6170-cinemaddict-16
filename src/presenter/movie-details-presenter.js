@@ -1,7 +1,7 @@
 import he from 'he';
 import _ from 'lodash';
 
-import { RenderPosition, ModelState, EMOTIONS, TypeOfActionOnMovie } from '../constants';
+import { RenderPosition, ModelState, Emotions, TypeOfActionOnMovie } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
 import { changeMovieUserDetails } from './helpers/change-movie-user-details';
@@ -172,7 +172,7 @@ export default class MovieDetailsPresenter {
       emotion: formData.get('comment-emoji'),
     };
 
-    if (!data.comment || !EMOTIONS.find((item) => item === data.emotion)) {
+    if (!data.comment || !Emotions.find((item) => item === data.emotion)) {
       this.#commentsComponent.shakeYourFormBaby();
     }
 

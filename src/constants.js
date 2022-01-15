@@ -5,7 +5,7 @@ export const MOVIE_MOST_COMMENT_COUNT = 2;
 export const SHAKE_CLASSNAME = 'shake-it-baby';
 export const SHAKE_CLASSNAME_REMOVE_DELAY = 1000;
 
-export const EMOTIONS = [
+export const Emotions = [
   'smile',
   'sleeping',
   'puke',
