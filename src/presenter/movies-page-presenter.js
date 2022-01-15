@@ -138,8 +138,18 @@ export default class MoviesPagePresenter {
     else {
       this.#allMovies = allMovies;
       this.#moviesList = this.#getMovieList(allMovies, this.#currentHash);
+
       this.#topRatedList = this.#getMovieListSortedByRating(allMovies).slice(0, MOVIE_TOP_RATED_COUNT);
+      const haveOnlyZeroRatedMovies = this.#topRatedList.length === this.#topRatedList.filter((movie) => movie.filmInfo.totalRating === 0).length;
+      if (haveOnlyZeroRatedMovies) {
+        this.#topRatedList = [];
+      }
+
       this.#mostCommentedList = this.#getMovieListSortedByCommentsCount(allMovies).slice(0, MOVIE_MOST_COMMENT_COUNT);
+      const haveOnlyMoviesWithoutComments = this.#mostCommentedList.length === this.#mostCommentedList.filter((movie) => movie.comments.length === 0).length;
+      if (haveOnlyMoviesWithoutComments) {
+        this.#mostCommentedList = [];
+      }
     }
   }
 
@@ -213,21 +223,25 @@ export default class MoviesPagePresenter {
   }
 
   #renderTopRatedList = () => {
-    render(this.#moviesPageInnerComponent, this.#topRatedListComponent);
-    this.#topRatedListComponent.clearList();
-    this.#renderMovieCards(
-      this.#topRatedListComponent,
-      this.#topRatedList,
-    );
+    if (this.#topRatedList.length) {
+      render(this.#moviesPageInnerComponent, this.#topRatedListComponent);
+      this.#topRatedListComponent.clearList();
+      this.#renderMovieCards(
+        this.#topRatedListComponent,
+        this.#topRatedList,
+      );
+    }
   }
 
   #renderMostCommentedList = () => {
-    render(this.#moviesPageInnerComponent, this.#mostCommentedListComponent);
-    this.#mostCommentedListComponent.clearList();
-    this.#renderMovieCards(
-      this.#mostCommentedListComponent,
-      this.#mostCommentedList,
-    );
+    if (this.#mostCommentedList.length) {
+      render(this.#moviesPageInnerComponent, this.#mostCommentedListComponent);
+      this.#mostCommentedListComponent.clearList();
+      this.#renderMovieCards(
+        this.#mostCommentedListComponent,
+        this.#mostCommentedList,
+      );
+    }
   }
 
   #handleSortTypeChange = (sortType) => {
