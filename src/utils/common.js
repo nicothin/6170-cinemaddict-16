@@ -30,7 +30,7 @@ export const getFormattedList = (data) => typeof data === 'string' ? data : data
 export const getFormattedRuntime = (minutes, letterWrapperClassName, letterWrapperTag = 'span') => {
   const runtimeHours = Math.trunc(minutes / 60);
   const hoursMarkup = letterWrapperClassName ? `<${letterWrapperTag} class="${letterWrapperClassName}">h</${letterWrapperTag}>` : 'h';
-  const minutesMarkup = letterWrapperClassName ? `<${letterWrapperTag} class="${letterWrapperClassName}">m</${letterWrapperTag}>` : 'h';
+  const minutesMarkup = letterWrapperClassName ? `<${letterWrapperTag} class="${letterWrapperClassName}">m</${letterWrapperTag}>` : 'm';
   return `${runtimeHours ? `${runtimeHours}${hoursMarkup}` : ''} ${minutes % 60}${minutesMarkup}`;
 };
 
