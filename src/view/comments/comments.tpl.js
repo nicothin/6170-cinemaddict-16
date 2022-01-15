@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { EMOTIONS } from '../../constants';
+
+dayjs.extend(relativeTime);
 
 export const createComments = (data) => {
   const { list, isLoading } = data;
@@ -9,7 +12,7 @@ export const createComments = (data) => {
   const comments = list.map((item) => {
     const { id, author, comment, date, emotion } = item;
 
-    const formattedDate = dayjs(date).format('YYYY/M/D H:mm');
+    const formattedDate = dayjs(date).fromNow();
 
     return `
       <li class="film-details__comment" data-comment-id="${id}">
