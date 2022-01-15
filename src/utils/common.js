@@ -5,7 +5,7 @@
  * @returns {string} Строка
  */
 export const getSliceText = (text, length) => {
-  let sliced = text.slice(0, length);
+  let sliced = text.slice(0, length - 1);
   if (sliced.length < text.length) {
     sliced += '…';
   }
