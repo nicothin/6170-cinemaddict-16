@@ -1,7 +1,7 @@
 import he from 'he';
 import _ from 'lodash';
 
-import { RenderPosition, ModelState, EMOTIONS, typeOfActionOnMovie } from '../constants';
+import { RenderPosition, ModelState, EMOTIONS, TypeOfActionOnMovie } from '../constants';
 import { remove, render } from '../utils/render';
 import { setPageScrollDisable } from '../utils/dom';
 import { changeMovieUserDetails } from './helpers/change-movie-user-details';
@@ -133,23 +133,23 @@ export default class MovieDetailsPresenter {
   }
 
   #addToWatchlistHandler = (movieId) => {
-    changeMovieUserDetails(this.#model, typeOfActionOnMovie.WATCHLIST, movieId)
+    changeMovieUserDetails(this.#model, TypeOfActionOnMovie.WATCHLIST, movieId)
       .catch(() => {
-        this.#movieDetailsComponent.shakeYourButtonBaby(typeOfActionOnMovie.WATCHLIST);
+        this.#movieDetailsComponent.shakeYourButtonBaby(TypeOfActionOnMovie.WATCHLIST);
       });
   }
 
   #markAsWatchedHandler = (movieId) => {
-    changeMovieUserDetails(this.#model, typeOfActionOnMovie.HISTORY, movieId)
+    changeMovieUserDetails(this.#model, TypeOfActionOnMovie.HISTORY, movieId)
       .catch(() => {
-        this.#movieDetailsComponent.shakeYourButtonBaby(typeOfActionOnMovie.HISTORY);
+        this.#movieDetailsComponent.shakeYourButtonBaby(TypeOfActionOnMovie.HISTORY);
       });
   }
 
   #favoriteHandler = (movieId) => {
-    changeMovieUserDetails(this.#model, typeOfActionOnMovie.FAVORITES, movieId)
+    changeMovieUserDetails(this.#model, TypeOfActionOnMovie.FAVORITES, movieId)
       .catch(() => {
-        this.#movieDetailsComponent.shakeYourButtonBaby(typeOfActionOnMovie.FAVORITES);
+        this.#movieDetailsComponent.shakeYourButtonBaby(TypeOfActionOnMovie.FAVORITES);
       });
   }
 

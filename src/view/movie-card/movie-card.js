@@ -1,5 +1,5 @@
 import Component from '../../abstract/component';
-import { SHAKE_CLASSNAME, SHAKE_CLASSNAME_REMOVE_DELAY, typeOfActionOnMovie } from '../../constants';
+import { SHAKE_CLASSNAME, SHAKE_CLASSNAME_REMOVE_DELAY, TypeOfActionOnMovie } from '../../constants';
 import { createMovieCard } from './movie-card.tpl';
 
 export default class MovieCard extends Component {
@@ -24,21 +24,21 @@ export default class MovieCard extends Component {
   setAddToWatchlistClickHandler = (callback) => {
     this._callback.addToWatchlist = callback;
     this.element
-      .querySelector(`.film-card__controls-item[data-action-type="${typeOfActionOnMovie.WATCHLIST}"]`)
+      .querySelector(`.film-card__controls-item[data-action-type="${TypeOfActionOnMovie.WATCHLIST}"]`)
       .addEventListener('click', this.#addToWatchlistClickHandler);
   }
 
   setMarkAsWatchedClickHandler = (callback) => {
     this._callback.markAsWatched = callback;
     this.element
-      .querySelector(`.film-card__controls-item[data-action-type="${typeOfActionOnMovie.HISTORY}"]`)
+      .querySelector(`.film-card__controls-item[data-action-type="${TypeOfActionOnMovie.HISTORY}"]`)
       .addEventListener('click', this.#markAsWatchedClickHandler);
   }
 
   setFavoriteClickHandler = (callback) => {
     this._callback.favorite = callback;
     this.element
-      .querySelector(`.film-card__controls-item[data-action-type="${typeOfActionOnMovie.FAVORITES}"]`)
+      .querySelector(`.film-card__controls-item[data-action-type="${TypeOfActionOnMovie.FAVORITES}"]`)
       .addEventListener('click', this.#favoriteClickHandler);
   }
 

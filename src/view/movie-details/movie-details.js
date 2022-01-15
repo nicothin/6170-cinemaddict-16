@@ -1,5 +1,5 @@
 import SmartComponent from '../../abstract/smart-component';
-import { SHAKE_CLASSNAME, SHAKE_CLASSNAME_REMOVE_DELAY, typeOfActionOnMovie } from '../../constants';
+import { SHAKE_CLASSNAME, SHAKE_CLASSNAME_REMOVE_DELAY, TypeOfActionOnMovie } from '../../constants';
 import { render } from '../../utils/render';
 import { createMovieDetails } from './movie-details.tpl';
 
@@ -28,21 +28,21 @@ export default class MovieDetails extends SmartComponent {
   setAddToWatchlistClickHandler = (callback) => {
     this._callback.addToWatchlist = callback;
     this.element
-      .querySelector(`.film-details__control-button[data-action-type="${typeOfActionOnMovie.WATCHLIST}"]`)
+      .querySelector(`.film-details__control-button[data-action-type="${TypeOfActionOnMovie.WATCHLIST}"]`)
       .addEventListener('click', this.#addToWatchlistClickHandler);
   }
 
   setMarkAsWatchedClickHandler = (callback) => {
     this._callback.markAsWatched = callback;
     this.element
-      .querySelector(`.film-details__control-button[data-action-type="${typeOfActionOnMovie.HISTORY}"]`)
+      .querySelector(`.film-details__control-button[data-action-type="${TypeOfActionOnMovie.HISTORY}"]`)
       .addEventListener('click', this.#markAsWatchedClickHandler);
   }
 
   setFavoriteClickHandler = (callback) => {
     this._callback.favorite = callback;
     this.element
-      .querySelector(`.film-details__control-button[data-action-type="${typeOfActionOnMovie.FAVORITES}"]`)
+      .querySelector(`.film-details__control-button[data-action-type="${TypeOfActionOnMovie.FAVORITES}"]`)
       .addEventListener('click', this.#favoriteClickHandler);
   }
 

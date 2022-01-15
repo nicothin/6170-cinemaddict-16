@@ -47,7 +47,7 @@ export const ModelState = {
   ACTIVE_MOVIE_ID: 'activeMovieId',
 };
 
-export const typeOfActionOnMovie = {
+export const TypeOfActionOnMovie = {
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',

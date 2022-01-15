@@ -1,5 +1,5 @@
 import { ActionCreator } from '../reducers/reducer';
-import { typeOfActionOnMovie } from '../constants';
+import { TypeOfActionOnMovie } from '../constants';
 import { changeMovieUserDetails } from './helpers/change-movie-user-details';
 import MovieCard from '../view/movie-card/movie-card';
 
@@ -32,23 +32,23 @@ export default class MovieCardPresenter {
   }
 
   #addToWatchlistHandler = (movieId) => {
-    changeMovieUserDetails(this.#model, typeOfActionOnMovie.WATCHLIST, movieId)
+    changeMovieUserDetails(this.#model, TypeOfActionOnMovie.WATCHLIST, movieId)
       .catch(() => {
-        this.#movieCardComponent.shakeYourButtonBaby(typeOfActionOnMovie.WATCHLIST);
+        this.#movieCardComponent.shakeYourButtonBaby(TypeOfActionOnMovie.WATCHLIST);
       });
   }
 
   #markAsWatchedHandler = (movieId) => {
-    changeMovieUserDetails(this.#model, typeOfActionOnMovie.HISTORY, movieId)
+    changeMovieUserDetails(this.#model, TypeOfActionOnMovie.HISTORY, movieId)
       .catch(() => {
-        this.#movieCardComponent.shakeYourButtonBaby(typeOfActionOnMovie.HISTORY);
+        this.#movieCardComponent.shakeYourButtonBaby(TypeOfActionOnMovie.HISTORY);
       });
   }
 
   #favoriteHandler = (movieId) => {
-    changeMovieUserDetails(this.#model, typeOfActionOnMovie.FAVORITES, movieId)
+    changeMovieUserDetails(this.#model, TypeOfActionOnMovie.FAVORITES, movieId)
       .catch(() => {
-        this.#movieCardComponent.shakeYourButtonBaby(typeOfActionOnMovie.FAVORITES);
+        this.#movieCardComponent.shakeYourButtonBaby(TypeOfActionOnMovie.FAVORITES);
       });
   }
 }
