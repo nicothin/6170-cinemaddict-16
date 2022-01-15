@@ -183,6 +183,11 @@ export default class MovieDetailsPresenter {
           this.#currentMovieComments = { list: response.data.comments, isLoading: false };
           this.#commentsComponent.updateData(this.#currentMovieComments);
           this.#commentsComponent.enableForm();
+
+          const updatedMovie = response.data.movie;
+          const oldAllMovies = this.#model.getState(ModelState.ALL_MOVIES);
+          const newAllMovies = oldAllMovies.map((movie) => movie.id === updatedMovie.id ? updatedMovie : movie);
+          this.#model.dispatch(ActionCreator.setAllMovies(newAllMovies));
         })
         .catch((reason) => {
           this.#commentsComponent.shakeYourFormBaby();
