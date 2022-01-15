@@ -23,6 +23,8 @@ export const createMovieDetails = (movie) => {
     runtime = 0,
   } = filmInfo;
 
+  const image = poster ? `<img class="film-details__poster-img" src="${poster}" alt="${title}">` : '';
+
   const {
     alreadyWatched = false,
     favorite = false,
@@ -57,7 +59,7 @@ export const createMovieDetails = (movie) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="${poster}" alt="${title}">
+            ${image}
 
             <p class="film-details__age">${ageRating}+</p>
           </div>
