@@ -3,7 +3,7 @@ import { getFormattedRuntime } from '../../utils/common';
 
 export const createStatsPage = (data) => {
 
-  const { user, counter, duration, topGenre, activeFilter } = data;
+  const { user, counter, duration, topGenre, activeFilter, chartData } = data;
 
   const userTemplate = user ? `
     <p class="statistic__rank">
@@ -18,6 +18,18 @@ export const createStatsPage = (data) => {
   };
 
   const formattedDuration = getFormattedRuntime(duration, 'statistic__item-description');
+
+  const statRows = chartData.map((item) => `
+    <tr>
+      <td class="statistic__chart-table-genre">${item.genre}</td>
+      <td class="statistic__chart-table-counter">${item.counter}</td>
+      <td class="statistic__chart-table-percent">
+        <span style="width: ${item.barSize}%" class="statistic__chart-table-percent-bar">
+          <span class="visually-hidden">${item.barSize}%</span>
+        </span>
+      </td>
+    </tr>
+    `.trim()).join('');
 
   return `
   <section class="statistic">
@@ -58,7 +70,7 @@ export const createStatsPage = (data) => {
     </ul>
 
     <div class="statistic__chart-wrap">
-      <canvas class="statistic__chart" width="1000"></canvas>
+      <table class="statistic__chart-table">${statRows}</table>
     </div>
 
   </section>

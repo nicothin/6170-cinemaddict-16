@@ -17,7 +17,7 @@ export default class StatsPagePresenter {
     duration: 0,
     topGenre: '',
     activeFilter: StatsFilter.ALL_TIME,
-    chartData: null
+    chartData: []
   };
 
   constructor(model, container)  {
@@ -97,7 +97,7 @@ export default class StatsPagePresenter {
 
     total.list.sort((a, b) => b.counter - a.counter);
 
-    // TODO[@nicothin]: chartData
+    const chartDataBar100Percent = total.list[0].counter;
 
     this.#statsData = {
       user: getUserData(this.#getAllWatchedMovies().length),
@@ -105,7 +105,7 @@ export default class StatsPagePresenter {
       duration: total.duration,
       topGenre: total.list[0].genre,
       activeFilter,
-      chartData: null
+      chartData: total.list.map((item) => ({ ...item, barSize: Math.round(item.counter * 100 / chartDataBar100Percent) })),
     };
   }
 

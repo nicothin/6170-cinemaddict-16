@@ -1122,8 +1122,34 @@ button {
   padding: 0 5px;
 }
 .statistic__chart-wrap {
-  margin-left: 30px;
   width: 1000px;
+  margin-left: 30px;
+  padding: 32px 0;
+}
+.statistic__chart-table {
+  width: 100%;
+  border: 0;
+  border-collapse: collapse;
+  font-size: 20px;
+}
+.statistic__chart-table td {
+  padding: 9px 0;
+  vertical-align: middle;
+}
+.statistic__chart-table-genre {
+  width: 138px;
+  text-align: right;
+}
+.statistic__chart-table-counter {
+  text-align: center;
+}
+.statistic__chart-table-percent {
+  width: 740px;
+}
+.statistic__chart-table-percent-bar {
+  display: inline-block;
+  height: 22px;
+  background-color: var(--text-color-active);
 }
 .no-result {
   min-height: 300px;
