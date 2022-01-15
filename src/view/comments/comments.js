@@ -19,6 +19,26 @@ export default class Comments extends SmartComponent {
     throw new Error(reason);
   }
 
+  shakeYourFormBaby = () => {
+    const form = this.element.querySelector('.film-details__new-comment');
+    form.classList.add(SHAKE_CLASSNAME);
+    setTimeout(() => form.classList.remove(SHAKE_CLASSNAME), SHAKE_CLASSNAME_REMOVE_DELAY);
+  }
+
+  disableForm = () => {
+    const fieldset = this.element.querySelector('.film-details__new-comment-inner');
+    fieldset.setAttribute('disabled', 'disabled');
+  }
+
+  enableForm = () => {
+    const fieldset = this.element.querySelector('.film-details__new-comment-inner');
+    fieldset.removeAttribute('disabled');
+  }
+
+  submitForm = () => {
+    this.#submitHandler();
+  }
+
   setDeleteButtonToRequestState = (commentId) => {
     const button = this.element.querySelector(`.film-details__comment[data-comment-id="${commentId}"] .film-details__comment-delete`);
     button.setAttribute('disabled', 'disabled');
@@ -39,26 +59,6 @@ export default class Comments extends SmartComponent {
   setSubmitCommentHandler = (callback) => {
     this._callback.submitComment = callback;
     this.element.addEventListener('submit', this.#submitHandler);
-  }
-
-  shakeYourFormBaby = () => {
-    const form = this.element.querySelector('.film-details__new-comment');
-    form.classList.add(SHAKE_CLASSNAME);
-    setTimeout(() => form.classList.remove(SHAKE_CLASSNAME), SHAKE_CLASSNAME_REMOVE_DELAY);
-  }
-
-  disableForm = () => {
-    const fieldset = this.element.querySelector('.film-details__new-comment-inner');
-    fieldset.setAttribute('disabled', 'disabled');
-  }
-
-  enableForm = () => {
-    const fieldset = this.element.querySelector('.film-details__new-comment-inner');
-    fieldset.removeAttribute('disabled');
-  }
-
-  submitForm = () => {
-    this.#submitHandler();
   }
 
   #deleteClickHandler = (event) => {

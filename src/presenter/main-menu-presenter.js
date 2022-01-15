@@ -63,6 +63,21 @@ export default class MainMenuPresenter {
     this.#model.subscribe(ModelState.HASH, this.#modelHashChangeHandler);
   }
 
+  #updateMenuData = (hash) => {
+    if (hash === Hashes.STATS) {
+      this.#menuData.isStats = true;
+      this.#menuData.filters.forEach((filter) => {
+        filter.isActive = false;
+      });
+    }
+    else {
+      this.#menuData.isStats = false;
+      this.#menuData.filters.forEach((filter) => {
+        filter.isActive = filter.id === hash;
+      });
+    }
+  }
+
   #modelAllMoviesListChangeHandler = (movies) => {
     let hasChange = false;
     this.#menuData.filters.forEach((item) => {
@@ -123,20 +138,5 @@ export default class MainMenuPresenter {
   #modelHashChangeHandler = (hash) => {
     this.#updateMenuData(hash);
     this.#menuComponent.updateData(this.#menuData);
-  }
-
-  #updateMenuData = (hash) => {
-    if (hash === Hashes.STATS) {
-      this.#menuData.isStats = true;
-      this.#menuData.filters.forEach((filter) => {
-        filter.isActive = false;
-      });
-    }
-    else {
-      this.#menuData.isStats = false;
-      this.#menuData.filters.forEach((filter) => {
-        filter.isActive = filter.id === hash;
-      });
-    }
   }
 }

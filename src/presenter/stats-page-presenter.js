@@ -43,39 +43,6 @@ export default class StatsPagePresenter {
     remove(this.#statsPageComponent);
   }
 
-  #modelAllMoviesListChangeHandler = (movies) => {
-    const watchedMovies = movies.filter((movie) => movie.userDetails.alreadyWatched);
-    this.#updateStatsData(watchedMovies);
-    this.#statsPageComponent.updateData(this.#statsData);
-  }
-
-  #statsFilterChangeHandler = (filter) => {
-    let watchedMovies = this.#getAllWatchedMovies();
-    const now = dayjs();
-
-    switch (filter) {
-      case StatsFilter.TODAY:
-        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'day') === 0);
-        break;
-      case StatsFilter.WEEK:
-        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'week') === 0);
-        break;
-      case StatsFilter.MONTH:
-        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'month') === 0);
-        break;
-      case StatsFilter.YEAR:
-        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'year') === 0);
-        break;
-
-      default:
-        watchedMovies = this.#getAllWatchedMovies();
-        break;
-    }
-
-    this.#updateStatsData(watchedMovies, filter);
-    this.#statsPageComponent.updateData(this.#statsData);
-  }
-
   #updateStatsData = (watchedMovies, activeFilter = StatsFilter.ALL_TIME) => {
     const total = watchedMovies.reduce((data, movie) => {
       movie.filmInfo.genre.forEach((genre) => {
@@ -113,4 +80,37 @@ export default class StatsPagePresenter {
   #getAllWatchedMovies = () => this.#model
     .getState(ModelState.ALL_MOVIES)
     .filter((movie) => movie.userDetails.alreadyWatched);
+
+  #modelAllMoviesListChangeHandler = (movies) => {
+    const watchedMovies = movies.filter((movie) => movie.userDetails.alreadyWatched);
+    this.#updateStatsData(watchedMovies);
+    this.#statsPageComponent.updateData(this.#statsData);
+  }
+
+  #statsFilterChangeHandler = (filter) => {
+    let watchedMovies = this.#getAllWatchedMovies();
+    const now = dayjs();
+
+    switch (filter) {
+      case StatsFilter.TODAY:
+        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'day') === 0);
+        break;
+      case StatsFilter.WEEK:
+        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'week') === 0);
+        break;
+      case StatsFilter.MONTH:
+        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'month') === 0);
+        break;
+      case StatsFilter.YEAR:
+        watchedMovies = watchedMovies.filter((movie) => now.diff(movie.userDetails.watchingDate, 'year') === 0);
+        break;
+
+      default:
+        watchedMovies = this.#getAllWatchedMovies();
+        break;
+    }
+
+    this.#updateStatsData(watchedMovies, filter);
+    this.#statsPageComponent.updateData(this.#statsData);
+  }
 }

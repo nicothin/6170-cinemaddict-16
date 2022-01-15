@@ -43,32 +43,6 @@ export default class MovieDetailsPresenter {
     this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
   }
 
-  #modelActiveMovieIdChangeHandler = (newMovieId) => {
-    this.#removeMovieDetails();
-
-    if (!newMovieId) {
-      return;
-    }
-
-    const movie = this.#model.getState(ModelState.ALL_MOVIES).find((item) => item.id === newMovieId);
-    if (movie) {
-      this.#currentMovie = movie;
-      this.#renderMovieDetails();
-    }
-  }
-
-  #modelAllMoviesListChangeHandler = (allMovies) => {
-    if (this.#currentMovie) {
-      const newCurrentMovie = allMovies.find((movie) => movie.id === this.#currentMovie.id);
-      if (newCurrentMovie && !_.isEqual(newCurrentMovie, this.#currentMovie)) {
-        this.#currentMovie = newCurrentMovie;
-        this.#movieDetailsComponent.updateData(this.#currentMovie);
-        this.#movieDetailsComponent.renderComments(this.#commentsComponent);
-        this.#scrollMovieDetailToCurrent();
-      }
-    }
-  }
-
   #renderMovieDetails = () => {
     setPageScrollDisable(true);
     document.addEventListener('keydown', this.#onEscKeyDown);
@@ -123,6 +97,32 @@ export default class MovieDetailsPresenter {
       this.#commentsComponent.submitForm();
     }
   };
+
+  #modelActiveMovieIdChangeHandler = (newMovieId) => {
+    this.#removeMovieDetails();
+
+    if (!newMovieId) {
+      return;
+    }
+
+    const movie = this.#model.getState(ModelState.ALL_MOVIES).find((item) => item.id === newMovieId);
+    if (movie) {
+      this.#currentMovie = movie;
+      this.#renderMovieDetails();
+    }
+  }
+
+  #modelAllMoviesListChangeHandler = (allMovies) => {
+    if (this.#currentMovie) {
+      const newCurrentMovie = allMovies.find((movie) => movie.id === this.#currentMovie.id);
+      if (newCurrentMovie && !_.isEqual(newCurrentMovie, this.#currentMovie)) {
+        this.#currentMovie = newCurrentMovie;
+        this.#movieDetailsComponent.updateData(this.#currentMovie);
+        this.#movieDetailsComponent.renderComments(this.#commentsComponent);
+        this.#scrollMovieDetailToCurrent();
+      }
+    }
+  }
 
   #movieDetailsCloseButtonClickHandler = () => {
     this.#model.dispatch(ActionCreator.setActiveMovieId(null));

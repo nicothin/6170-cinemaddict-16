@@ -18,6 +18,12 @@ export default class MovieDetails extends SmartComponent {
     render(this.element.querySelector('.film-details__bottom-container'), commentsComponent);
   }
 
+  shakeYourButtonBaby = (buttonType) => {
+    const button = this.element.querySelector(`.film-details__control-button[data-action-type="${buttonType}"]`);
+    button.classList.add(SHAKE_CLASSNAME);
+    setTimeout(() => button.classList.remove(SHAKE_CLASSNAME), SHAKE_CLASSNAME_REMOVE_DELAY);
+  }
+
   setCloseClickHandler = (callback) => {
     this._callback.close = callback;
     this.element
@@ -49,12 +55,6 @@ export default class MovieDetails extends SmartComponent {
   setScrollHandler = (callback) => {
     this._callback.scroll = callback;
     this.element.addEventListener('scroll', this.#onScroll);
-  }
-
-  shakeYourButtonBaby = (buttonType) => {
-    const button = this.element.querySelector(`.film-details__control-button[data-action-type="${buttonType}"]`);
-    button.classList.add(SHAKE_CLASSNAME);
-    setTimeout(() => button.classList.remove(SHAKE_CLASSNAME), SHAKE_CLASSNAME_REMOVE_DELAY);
   }
 
   #closeClickHandler = (event) => {
