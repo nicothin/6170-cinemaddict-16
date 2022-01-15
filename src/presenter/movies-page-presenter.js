@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 
 export default class MoviesPagePresenter {
   #model = null;
-  #container = null;
+  #wrapperElement = null;
 
   #allMovies = [];
   #moviesList = [];
@@ -36,9 +36,9 @@ export default class MoviesPagePresenter {
 
   #renderedMovieCardCounter = MOVIE_COUNT_PER_STEP;
 
-  constructor(model, container) {
+  constructor(model, wrapperElement) {
     this.#model = model;
-    this.#container = container;
+    this.#wrapperElement = wrapperElement;
 
     this.init();
   }
@@ -51,7 +51,7 @@ export default class MoviesPagePresenter {
   }
 
   render = () => {
-    render(this.#container, this.#moviesPageInnerComponent);
+    render(this.#wrapperElement, this.#moviesPageInnerComponent);
 
     if (this.#allMovies.length === 0) {
       remove(this.#mainListComponent);

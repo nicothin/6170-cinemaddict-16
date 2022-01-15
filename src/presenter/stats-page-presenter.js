@@ -9,7 +9,7 @@ dayjs.extend(isSameOrAfter);
 
 export default class StatsPagePresenter {
   #model = null;
-  #container = null;
+  #wrapperElement = null;
   #statsPageComponent = null;
   #statsData = {
     user: null,
@@ -20,9 +20,9 @@ export default class StatsPagePresenter {
     chartData: []
   };
 
-  constructor(model, container)  {
+  constructor(model, wrapperElement)  {
     this.#model = model;
-    this.#container = container;
+    this.#wrapperElement = wrapperElement;
     this.#statsPageComponent = new StatsPage(this.#statsData);
 
     this.init();
@@ -35,7 +35,7 @@ export default class StatsPagePresenter {
   }
 
   render = () => {
-    render(this.#container, this.#statsPageComponent);
+    render(this.#wrapperElement, this.#statsPageComponent);
     this.#statsPageComponent.setFilterChangeHandler(this.#statsFilterChangeHandler);
   }
 

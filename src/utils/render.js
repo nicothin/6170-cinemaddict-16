@@ -3,12 +3,12 @@ import Component from '../abstract/component';
 
 /**
  * Вставить элемент в элемент.
- * @param {Element} container Родительский элемент
+ * @param {Element} wrapper Родительский элемент
  * @param {Element} element Вставляемый элемент
  * @param {string} place Позиция вставляемого элемента относительно родительского
  */
-export const render = (container, element, place = RenderPosition.BEFOREEND) => {
-  const parent = container instanceof Component ? container.element : container;
+export const render = (wrapper, element, place = RenderPosition.BEFOREEND) => {
+  const parent = wrapper instanceof Component ? wrapper.element : wrapper;
   const child = element instanceof Component ? element.element : element;
 
   if (!child) {

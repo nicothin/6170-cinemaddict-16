@@ -9,7 +9,7 @@ import MoviesPage from '../view/movies-page/movies-page';
 
 export default class PageContentPresenter {
   #model = null;
-  #container = null;
+  #wrapperElement = null;
   #currentHash = Hashes.ALL;
 
   #moviesPageInnerComponent = new MoviesPage();
@@ -18,12 +18,12 @@ export default class PageContentPresenter {
   #moviesPagePresenter = null;
   #statsPagePresenter = null;
 
-  constructor(model, container) {
+  constructor(model, wrapperElement) {
     this.#model = model;
-    this.#container = container;
+    this.#wrapperElement = wrapperElement;
 
-    this.#moviesPagePresenter = new MoviesPagePresenter(model, container);
-    this.#statsPagePresenter = new StatsPagePresenter(model, container);
+    this.#moviesPagePresenter = new MoviesPagePresenter(model, wrapperElement);
+    this.#statsPagePresenter = new StatsPagePresenter(model, wrapperElement);
 
     this.init();
   }
@@ -36,7 +36,7 @@ export default class PageContentPresenter {
   }
 
   showLoading = () => {
-    render(this.#container, this.#moviesPageInnerComponent);
+    render(this.#wrapperElement, this.#moviesPageInnerComponent);
     render(this.#moviesPageInnerComponent, this.#loadingComponent);
   }
 
