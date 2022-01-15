@@ -97,13 +97,13 @@ export default class StatsPagePresenter {
 
     total.list.sort((a, b) => b.counter - a.counter);
 
-    const chartDataBar100Percent = total.list[0].counter;
+    const chartDataBar100Percent = total.list[0]?.counter;
 
     this.#statsData = {
       user: getUserData(this.#getAllWatchedMovies().length),
       counter: watchedMovies.length,
       duration: total.duration,
-      topGenre: total.list[0].genre,
+      topGenre: total.list[0]?.genre,
       activeFilter,
       chartData: total.list.map((item) => ({ ...item, barSize: Math.round(item.counter * 100 / chartDataBar100Percent) })),
     };

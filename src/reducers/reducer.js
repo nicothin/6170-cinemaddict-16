@@ -8,7 +8,7 @@ const ActionType = {
 };
 
 export const initialState = {
-  [ModelState.ALL_MOVIES]: [],
+  [ModelState.ALL_MOVIES]: null,
   [ModelState.HASH]: Hashes.ALL,
   [ModelState.ACTIVE_MOVIE_ID]: null,
 };
@@ -36,6 +36,8 @@ export const Operation = {
     .then((response) => {
       const all = response.data;
       dispatch(ActionCreator.setAllMovies(all));
+      // NOTE[@nicothin]: имитатор пустоты пришедшего ответа:
+      // dispatch(ActionCreator.setAllMovies([]));
       return response;
     })
     .catch((reason) => {
