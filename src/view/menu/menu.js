@@ -33,9 +33,7 @@ export default class Menu extends SmartComponent {
   }
 
   #linkClickHandler = (event) => {
-    if (event.target.hash) {
-      this._callback.linkClick(event.target.hash);
-    }
+    this._callback.linkClick(event.target.closest('a').hash);
   }
 
   restoreHandlers = () => {
