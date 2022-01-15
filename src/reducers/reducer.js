@@ -7,10 +7,8 @@ const ActionType = {
   SET_ACTIVE_MOVIE_ID: 'SET_ACTIVE_MOVIE_ID',
 };
 
-export const initialState = {
-  // TODO[@nicothin]: подумать как будет откатываться изменение, если сервер ответит на PUT не 200
-  // [StoreState.ORIGINAL_MOVIES]: [], // возможно, хранением массива, мутируемого только после ответа 200
-  [ModelState.ALL_MOVIES]: [],
+export const InitialState = {
+  [ModelState.ALL_MOVIES]: null,
   [ModelState.HASH]: Hashes.ALL,
   [ModelState.ACTIVE_MOVIE_ID]: null,
 };
@@ -20,10 +18,12 @@ export const ActionCreator = {
     type: ActionType.SET_ALL_MOVIES,
     payload: state,
   }),
+
   setHash: (state) => ({
     type: ActionType.SET_HASH,
     payload: state,
   }),
+
   setActiveMovieId: (id) => ({
     type: ActionType.SET_ACTIVE_MOVIE_ID,
     payload: id,
@@ -37,10 +37,35 @@ export const Operation = {
       const all = response.data;
       dispatch(ActionCreator.setAllMovies(all));
       return response;
+    })
+    .catch((reason) => {
+      throw new Error(reason);
     }),
+
+  changeMovieUserDetails: (movieId, data) => async () => axios
+    .put(`movies/${movieId}`, data)
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
+
   requestComments: (movieId) => async () => axios
     .get(`comments/${movieId}`)
-    .then((response) => response.data),
+    .then((response) => response.data)
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
+
+  deleteComment: (commentId) => async () => axios
+    .delete(`comments/${commentId}`)
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
+
+  sendComment: (movieId, data) => async () => axios
+    .post(`comments/${movieId}`, data)
+    .catch((reason) => {
+      throw new Error(reason);
+    }),
 };
 
 export const reducer = (state, action) => {

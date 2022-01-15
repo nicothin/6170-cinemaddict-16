@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { initialState, reducer } from '../reducers/reducer';
+import { InitialState, reducer } from '../reducers/reducer';
 
 class Store {
   #reduxStore = {};
@@ -9,7 +9,7 @@ class Store {
   #subscribers = new Set();
 
   constructor() {
-    this.#reduxStore = createStore(reducer, initialState, applyMiddleware(thunk));
+    this.#reduxStore = createStore(reducer, InitialState, applyMiddleware(thunk));
     this.#reduxStore.subscribe(() => {
       const nowStore = this.#reduxStore.getState();
       this.#subscribers.forEach((subscriber) => {

@@ -5,7 +5,7 @@ import { remove, render } from '../utils/render';
 import MovieCardPresenter from './movie-card-presenter';
 
 import MovieList from '../view/movie-list/movie-list';
-import MoviesPageEmpty from '../view/movies-page-empty/movies-page-empty';
+import PageContentEmpty from '../view/page-content-empty/page-content-empty';
 import MoviesPage from '../view/movies-page/movies-page';
 import ShowMore from '../view/show-more-button/show-more-button';
 import Sorter from '../view/sorter/sorter';
@@ -13,23 +13,22 @@ import dayjs from 'dayjs';
 
 export default class MoviesPagePresenter {
   #model = null;
-  #container = null;
+  #wrapperElement = null;
 
   #allMovies = [];
   #moviesList = [];
   #topRatedList = [];
   #mostCommentedList = [];
 
-  #currentFilter = Hashes.ALL;
+  #currentHash = Hashes.ALL;
   #currentSortType = Sorting.DEFAULT;
 
   #moviesPageInnerComponent = new MoviesPage();
-  #noMoviesComponent = new MoviesPageEmpty('There are no movies in our database');
-  #loadingComponent = new MoviesPageEmpty('Loading...');
-  #noWatchlistComponent = new MoviesPageEmpty('There are no watchlist movies now');
-  #noHistoryComponent = new MoviesPageEmpty('There are no history movies now');
-  #noFavoritesComponent = new MoviesPageEmpty('There are no favorite movies now');
-  #sorterComponent = new Sorter();
+  #noMoviesComponent = new PageContentEmpty('There are no movies in our database');
+  #noWatchlistComponent = new PageContentEmpty('There are no movies to watch now');
+  #noHistoryComponent = new PageContentEmpty('There are no watched movies now');
+  #noFavoritesComponent = new PageContentEmpty('There are no favorite movies now');
+  #sorterComponent = new Sorter({ type: this.#currentSortType });
   #mainListComponent = new MovieList({ title: 'All movies. Upcoming', hideTitle: true });
   #topRatedListComponent = new MovieList({ title: 'Top rated', modifiers: 'films-list--extra' });;
   #mostCommentedListComponent = new MovieList({ title: 'Most commented', modifiers: 'films-list--extra' });
@@ -37,27 +36,23 @@ export default class MoviesPagePresenter {
 
   #renderedMovieCardCounter = MOVIE_COUNT_PER_STEP;
 
-  constructor(model, container) {
+  constructor(model, wrapperElement) {
     this.#model = model;
-    this.#container = container;
+    this.#wrapperElement = wrapperElement;
 
     this.init();
   }
 
   init = () => {
-    render(this.#container, this.#moviesPageInnerComponent);
+    this.#currentHash = this.#model.getState(ModelState.HASH);
 
-    this.#currentFilter = this.#model.getState(ModelState.HASH);
-
-    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-    this.#model.subscribe(ModelState.HASH, this.#changeHashHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
+    this.#model.subscribe(ModelState.HASH, this.#modelHashChangeHandler);
   }
 
-  showLoading = () => {
-    render(this.#moviesPageInnerComponent, this.#loadingComponent);
-  }
+  render = () => {
+    render(this.#wrapperElement, this.#moviesPageInnerComponent);
 
-  #renderMoviesPage = () => {
     if (this.#allMovies.length === 0) {
       remove(this.#mainListComponent);
       remove(this.#topRatedListComponent);
@@ -75,8 +70,12 @@ export default class MoviesPagePresenter {
     this.#renderMostCommentedList();
   }
 
+  remove = () => {
+    remove(this.#sorterComponent);
+    remove(this.#moviesPageInnerComponent);
+  }
+
   #removeAllEmptyText = () => {
-    remove(this.#loadingComponent);
     remove(this.#noMoviesComponent);
     remove(this.#noWatchlistComponent);
     remove(this.#noHistoryComponent);
@@ -88,7 +87,7 @@ export default class MoviesPagePresenter {
     if (this.#moviesList.length > 0) {
       this.#removeAllEmptyText();
 
-      this.#renderSorter();
+      this.#sorterComponent.updateData({ type: this.#currentSortType });
 
       render(this.#moviesPageInnerComponent, this.#mainListComponent, RenderPosition.AFTERBEGIN);
 
@@ -113,7 +112,7 @@ export default class MoviesPagePresenter {
       remove(this.#sorterComponent);
       remove(this.#mainListComponent);
 
-      switch (this.#currentFilter) {
+      switch (this.#currentHash) {
         case Hashes.WATCHLIST:
           render(this.#moviesPageInnerComponent, this.#noWatchlistComponent, RenderPosition.AFTERBEGIN);
           break;
@@ -129,7 +128,7 @@ export default class MoviesPagePresenter {
     }
   }
 
-  #changeAllMoviesListHandler = (allMovies) => {
+  #modelAllMoviesListChangeHandler = (allMovies) => {
     if (allMovies.length === 0) {
       this.#allMovies = [];
       this.#moviesList = [];
@@ -138,25 +137,31 @@ export default class MoviesPagePresenter {
     }
     else {
       this.#allMovies = allMovies;
-      this.#moviesList = this.#getMovieList(allMovies, this.#currentFilter);
-      this.#topRatedList = this.#getMovieListSortedByRating(allMovies).slice(0, MOVIE_TOP_RATED_COUNT);
-      this.#mostCommentedList = this.#getMovieListSortedByCommentsCount(allMovies).slice(0, MOVIE_MOST_COMMENT_COUNT);
-    }
+      this.#moviesList = this.#getMovieList(allMovies, this.#currentHash);
 
-    this.#renderMoviesPage();
+      this.#topRatedList = this.#getMovieListSortedByRating(allMovies).slice(0, MOVIE_TOP_RATED_COUNT);
+      const haveOnlyZeroRatedMovies = this.#topRatedList.length === this.#topRatedList.filter((movie) => movie.filmInfo.totalRating === 0).length;
+      if (haveOnlyZeroRatedMovies) {
+        this.#topRatedList = [];
+      }
+
+      this.#mostCommentedList = this.#getMovieListSortedByCommentsCount(allMovies).slice(0, MOVIE_MOST_COMMENT_COUNT);
+      const haveOnlyMoviesWithoutComments = this.#mostCommentedList.length === this.#mostCommentedList.filter((movie) => movie.comments.length === 0).length;
+      if (haveOnlyMoviesWithoutComments) {
+        this.#mostCommentedList = [];
+      }
+    }
   }
 
-  #changeHashHandler = (hash) => {
-    if (hash === this.#currentFilter) {
+  #modelHashChangeHandler = (hash) => {
+    if (hash === this.#currentHash) {
       return;
     }
 
-    this.#currentFilter = hash;
+    this.#currentHash = hash;
     this.#renderedMovieCardCounter = MOVIE_COUNT_PER_STEP;
     this.#currentSortType = Sorting.DEFAULT;
-    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentFilter);
-
-    this.#renderMainList();
+    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentHash);
   }
 
   #getMovieList = (allMovies, currentFilter) => {
@@ -194,7 +199,7 @@ export default class MoviesPagePresenter {
   #renderMovieCards = (wrapperComponent, list, from = 0, to = list.length) => {
     list
       .slice(from, to)
-      .forEach((movie) => new MovieCardPresenter(wrapperComponent, movie));
+      .forEach((movie) => new MovieCardPresenter(this.#model, wrapperComponent, movie));
   }
 
   #renderShowMoreMainList = () => {
@@ -218,21 +223,25 @@ export default class MoviesPagePresenter {
   }
 
   #renderTopRatedList = () => {
-    render(this.#moviesPageInnerComponent, this.#topRatedListComponent);
-    this.#topRatedListComponent.clearList();
-    this.#renderMovieCards(
-      this.#topRatedListComponent,
-      this.#topRatedList,
-    );
+    if (this.#topRatedList.length) {
+      render(this.#moviesPageInnerComponent, this.#topRatedListComponent);
+      this.#topRatedListComponent.clearList();
+      this.#renderMovieCards(
+        this.#topRatedListComponent,
+        this.#topRatedList,
+      );
+    }
   }
 
   #renderMostCommentedList = () => {
-    render(this.#moviesPageInnerComponent, this.#mostCommentedListComponent);
-    this.#mostCommentedListComponent.clearList();
-    this.#renderMovieCards(
-      this.#mostCommentedListComponent,
-      this.#mostCommentedList,
-    );
+    if (this.#mostCommentedList.length) {
+      render(this.#moviesPageInnerComponent, this.#mostCommentedListComponent);
+      this.#mostCommentedListComponent.clearList();
+      this.#renderMovieCards(
+        this.#mostCommentedListComponent,
+        this.#mostCommentedList,
+      );
+    }
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -241,7 +250,11 @@ export default class MoviesPagePresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentFilter);
+    this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentHash);
+
+    // NOTE[@nicothin]: увы, по ТЗ при смене сортировки нужно сбросить счетчик показанных (WTF?)
+    this.#renderedMovieCardCounter = MOVIE_COUNT_PER_STEP;
+
     this.#renderMainList();
   }
 

@@ -12,7 +12,7 @@ const getScrollSize = () => {
 
 /**
  * Переключить скролл страницы
- * @param {boolean} disableScroll ФлагЖ включить или выключить
+ * @param {boolean} disableScroll Флаг: включить или выключить
  */
 export const setPageScrollDisable = (disableScroll = true) => {
   const body = document.body;

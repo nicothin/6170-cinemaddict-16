@@ -2,7 +2,10 @@ export const MOVIE_COUNT_PER_STEP = 5;
 export const MOVIE_TOP_RATED_COUNT = 2;
 export const MOVIE_MOST_COMMENT_COUNT = 2;
 
-export const EMOTIONS = [
+export const SHAKE_CLASSNAME = 'shake-it-baby';
+export const SHAKE_CLASSNAME_REMOVE_DELAY = 1000;
+
+export const Emotions = [
   'smile',
   'sleeping',
   'puke',
@@ -30,8 +33,22 @@ export const Sorting = {
   RATING: 'rating',
 };
 
+export const StatsFilter = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
+
 export const ModelState = {
   ALL_MOVIES: 'allMovies',
   HASH: 'hash',
   ACTIVE_MOVIE_ID: 'activeMovieId',
+};
+
+export const TypeOfActionOnMovie = {
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
 };

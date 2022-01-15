@@ -1,6 +1,6 @@
 import Component from '../../abstract/component';
 
-export default class MoviesPageEmpty extends Component {
+export default class PageContentEmpty extends Component {
   #text = '';
 
   constructor(text = 'Something is wrong...') {
@@ -13,6 +13,7 @@ export default class MoviesPageEmpty extends Component {
     return `
       <section class="films-list">
         <h2 class="films-list__title">${this.#text}</h2>
-      </section>`.trim();
+      </section>
+    `.trim();
   }
 }

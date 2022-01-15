@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
-import { EMOTIONS } from '../../constants';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { Emotions } from '../../constants';
+
+dayjs.extend(relativeTime);
 
 export const createComments = (data) => {
   const { list, isLoading } = data;
@@ -9,7 +12,7 @@ export const createComments = (data) => {
   const comments = list.map((item) => {
     const { id, author, comment, date, emotion } = item;
 
-    const formattedDate = dayjs(date).format('YYYY/M/D H:mm');
+    const formattedDate = dayjs(date).fromNow();
 
     return `
       <li class="film-details__comment" data-comment-id="${id}">
@@ -21,32 +24,34 @@ export const createComments = (data) => {
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${author}</span>
             <span class="film-details__comment-day">${formattedDate}</span>
-            <button class="film-details__comment-delete">Delete</button>
+            <button class="film-details__comment-delete" data-request-text="Deleting..." data-default-text="Delete">Delete</button>
           </p>
         </div>
       </li>
     `.trim();
   }).join(' ');
 
-  const emotionsList = EMOTIONS.map((emotion) => `
-  <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
-  <label class="film-details__emoji-label" for="emoji-${emotion}">
-    <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
-  </label>
-`).join(' ');
+  const emotionsList = Emotions.map((emotion) => `
+    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+    <label class="film-details__emoji-label" for="emoji-${emotion}">
+      <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
+    </label>
+  `).join(' ');
 
   const realForm = !isLoading ? `
-    <div class="film-details__new-comment">
-      <div class="film-details__add-emoji-label"></div>
+    <form class="film-details__new-comment" action="" method="get">
+      <fieldset class="film-details__new-comment-inner">
+        <div class="film-details__add-emoji-label"></div>
 
-      <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-      </label>
+        <label class="film-details__comment-label">
+          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+        </label>
 
-      <div class="film-details__emoji-list">
-        ${emotionsList}
-      </div>
-    </div>`.trim() :
+        <div class="film-details__emoji-list">
+          ${emotionsList}
+        </div>
+      </fieldset>
+    </form>`.trim() :
     '';
 
   return `
@@ -59,5 +64,5 @@ export const createComments = (data) => {
 
       ${realForm}
     </section>
-`.trim();
+  `.trim();
 };

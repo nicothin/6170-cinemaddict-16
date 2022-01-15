@@ -1,8 +1,5 @@
 export const createMovieCounter = (data) => {
   const { counter } = data;
 
-  return `
-<p>${counter} movies inside</p>
-`.trim();
-
+  return `<p>${counter ? counter : 'No'} movies inside</p>`;
 };
