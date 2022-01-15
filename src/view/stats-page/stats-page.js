@@ -13,15 +13,15 @@ export default class StatsPage extends SmartComponent {
   }
 
   setFilterHandler = (callback) => {
-    this._callback.filter = callback;
+    this._callback.change = callback;
     this.element.addEventListener('change', this.#filterChange);
   }
 
   #filterChange = (event) => {
-    this._callback.filter(event.target.value);
+    this._callback.change(event.target.value);
   }
 
   restoreHandlers = () => {
-    this.setFilterHandler(this._callback.filter);
+    this.setFilterHandler(this._callback.change);
   }
 }

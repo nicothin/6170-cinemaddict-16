@@ -36,6 +36,7 @@ export default class StatsPagePresenter {
 
   render = () => {
     render(this.#container, this.#statsPageComponent);
+    this.#statsPageComponent.setFilterHandler(this.#filterChange);
   }
 
   remove = () => {
