@@ -30,20 +30,20 @@ export default class MovieDetailsPresenter {
   }
 
   init = () => {
-    this.#movieDetailsComponent.setCloseClickHandler(this.#clickCloseButton);
-    this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
-    this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
-    this.#movieDetailsComponent.setFavoriteClickHandler(this.#favoriteHandler);
-    this.#movieDetailsComponent.setScrollHandler(this.#onScroll);
+    this.#movieDetailsComponent.setCloseClickHandler(this.#movieDetailsCloseButtonClickHandler);
+    this.#movieDetailsComponent.setAddToWatchlistClickHandler(this.#movieDetailsAddToWatchlistHandler);
+    this.#movieDetailsComponent.setMarkAsWatchedClickHandler(this.#movieDetailsMarkAsWatchedHandler);
+    this.#movieDetailsComponent.setFavoriteClickHandler(this.#movieDetailsFavoriteHandler);
+    this.#movieDetailsComponent.setScrollHandler(this.#movieDetailsScrollHandler);
 
-    this.#commentsComponent.setDeleteCommentHandler(this.#deleteComment);
-    this.#commentsComponent.setSubmitCommentHandler(this.#submitComment);
+    this.#commentsComponent.setDeleteCommentHandler(this.#commentsDeleteHandler);
+    this.#commentsComponent.setSubmitCommentHandler(this.#commentsSubmitHandler);
 
-    this.#model.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#changeActiveMovieIdHandler);
-    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    this.#model.subscribe(ModelState.ACTIVE_MOVIE_ID, this.#modelActiveMovieIdChangeHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
   }
 
-  #changeActiveMovieIdHandler = (newMovieId) => {
+  #modelActiveMovieIdChangeHandler = (newMovieId) => {
     this.#removeMovieDetails();
 
     if (!newMovieId) {
@@ -57,7 +57,7 @@ export default class MovieDetailsPresenter {
     }
   }
 
-  #changeAllMoviesListHandler = (allMovies) => {
+  #modelAllMoviesListChangeHandler = (allMovies) => {
     if (this.#currentMovie) {
       const newCurrentMovie = allMovies.find((movie) => movie.id === this.#currentMovie.id);
       if (newCurrentMovie && !_.isEqual(newCurrentMovie, this.#currentMovie)) {
@@ -124,36 +124,36 @@ export default class MovieDetailsPresenter {
     }
   };
 
-  #clickCloseButton = () => {
+  #movieDetailsCloseButtonClickHandler = () => {
     this.#model.dispatch(ActionCreator.setActiveMovieId(null));
   }
 
-  #onScroll = (scrollTop) => {
+  #movieDetailsScrollHandler = (scrollTop) => {
     this.#currentScroll = scrollTop;
   }
 
-  #addToWatchlistHandler = (movieId) => {
+  #movieDetailsAddToWatchlistHandler = (movieId) => {
     changeMovieUserDetails(this.#model, TypeOfActionOnMovie.WATCHLIST, movieId)
       .catch(() => {
         this.#movieDetailsComponent.shakeYourButtonBaby(TypeOfActionOnMovie.WATCHLIST);
       });
   }
 
-  #markAsWatchedHandler = (movieId) => {
+  #movieDetailsMarkAsWatchedHandler = (movieId) => {
     changeMovieUserDetails(this.#model, TypeOfActionOnMovie.HISTORY, movieId)
       .catch(() => {
         this.#movieDetailsComponent.shakeYourButtonBaby(TypeOfActionOnMovie.HISTORY);
       });
   }
 
-  #favoriteHandler = (movieId) => {
+  #movieDetailsFavoriteHandler = (movieId) => {
     changeMovieUserDetails(this.#model, TypeOfActionOnMovie.FAVORITES, movieId)
       .catch(() => {
         this.#movieDetailsComponent.shakeYourButtonBaby(TypeOfActionOnMovie.FAVORITES);
       });
   }
 
-  #deleteComment = (commentId) => {
+  #commentsDeleteHandler = (commentId) => {
     this.#commentsComponent.setDeleteButtonToRequestState(commentId);
     this.#model.dispatch(Operation.deleteComment(commentId))
       .then(() => {
@@ -166,7 +166,7 @@ export default class MovieDetailsPresenter {
       });
   }
 
-  #submitComment = (formData) => {
+  #commentsSubmitHandler = (formData) => {
     const data = {
       comment: he.encode(formData.get('comment')),
       emotion: formData.get('comment-emoji'),

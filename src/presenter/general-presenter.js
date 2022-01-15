@@ -26,10 +26,10 @@ export default class GeneralPresenter {
     render(this.#siteHeaderElement, this.#userRankComponent);
     render(this.#siteFooterElement, this.#movieCounterComponent);
 
-    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
   }
 
-  #changeAllMoviesListHandler = (movies) => {
+  #modelAllMoviesListChangeHandler = (movies) => {
     const newMoviesCounter = movies.filter((movie) => movie.userDetails.alreadyWatched).length;
     if (newMoviesCounter !== this.#moviesCounter) {
       this.#moviesCounter = newMoviesCounter;

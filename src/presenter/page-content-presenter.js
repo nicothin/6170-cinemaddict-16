@@ -31,8 +31,8 @@ export default class PageContentPresenter {
   init = () => {
     this.#currentHash = this.#model.getState(ModelState.HASH);
 
-    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-    this.#model.subscribe(ModelState.HASH, this.#changeHashHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
+    this.#model.subscribe(ModelState.HASH, this.#modelHashChangeHandler);
   }
 
   showLoading = () => {
@@ -53,13 +53,13 @@ export default class PageContentPresenter {
     }
   }
 
-  #changeAllMoviesListHandler = () => {
+  #modelAllMoviesListChangeHandler = () => {
     remove(this.#loadingComponent);
 
     this.#renderPageContent();
   }
 
-  #changeHashHandler = (hash) => {
+  #modelHashChangeHandler = (hash) => {
     if (hash === this.#currentHash) {
       return;
     }

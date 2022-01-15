@@ -59,11 +59,11 @@ export default class MainMenuPresenter {
 
     this.#menuComponent.setLinkClickHandler(this.#linkClickHandler);
 
-    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-    this.#model.subscribe(ModelState.HASH, this.#changeHashHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
+    this.#model.subscribe(ModelState.HASH, this.#modelHashChangeHandler);
   }
 
-  #changeAllMoviesListHandler = (movies) => {
+  #modelAllMoviesListChangeHandler = (movies) => {
     let hasChange = false;
     this.#menuData.filters.forEach((item) => {
       switch (item.id) {
@@ -120,7 +120,7 @@ export default class MainMenuPresenter {
     this.#model.dispatch(ActionCreator.setHash(newHash));
   }
 
-  #changeHashHandler = (hash) => {
+  #modelHashChangeHandler = (hash) => {
     this.#updateMenuData(hash);
     this.#menuComponent.updateData(this.#menuData);
   }

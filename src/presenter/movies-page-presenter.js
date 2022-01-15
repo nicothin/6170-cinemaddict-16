@@ -46,8 +46,8 @@ export default class MoviesPagePresenter {
   init = () => {
     this.#currentHash = this.#model.getState(ModelState.HASH);
 
-    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
-    this.#model.subscribe(ModelState.HASH, this.#changeHashHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
+    this.#model.subscribe(ModelState.HASH, this.#modelHashChangeHandler);
   }
 
   render = () => {
@@ -128,7 +128,7 @@ export default class MoviesPagePresenter {
     }
   }
 
-  #changeAllMoviesListHandler = (allMovies) => {
+  #modelAllMoviesListChangeHandler = (allMovies) => {
     if (allMovies.length === 0) {
       this.#allMovies = [];
       this.#moviesList = [];
@@ -153,7 +153,7 @@ export default class MoviesPagePresenter {
     }
   }
 
-  #changeHashHandler = (hash) => {
+  #modelHashChangeHandler = (hash) => {
     if (hash === this.#currentHash) {
       return;
     }

@@ -29,27 +29,27 @@ export default class StatsPagePresenter {
   }
 
   init = () => {
-    this.#model.subscribe(ModelState.ALL_MOVIES, this.#changeAllMoviesListHandler);
+    this.#model.subscribe(ModelState.ALL_MOVIES, this.#modelAllMoviesListChangeHandler);
 
-    this.#statsPageComponent.setFilterHandler(this.#filterChange);
+    this.#statsPageComponent.setFilterChangeHandler(this.#statsFilterChangeHandler);
   }
 
   render = () => {
     render(this.#container, this.#statsPageComponent);
-    this.#statsPageComponent.setFilterHandler(this.#filterChange);
+    this.#statsPageComponent.setFilterChangeHandler(this.#statsFilterChangeHandler);
   }
 
   remove = () => {
     remove(this.#statsPageComponent);
   }
 
-  #changeAllMoviesListHandler = (movies) => {
+  #modelAllMoviesListChangeHandler = (movies) => {
     const watchedMovies = movies.filter((movie) => movie.userDetails.alreadyWatched);
     this.#updateStatsData(watchedMovies);
     this.#statsPageComponent.updateData(this.#statsData);
   }
 
-  #filterChange = (filter) => {
+  #statsFilterChangeHandler = (filter) => {
     let watchedMovies = this.#getAllWatchedMovies();
     const now = dayjs();
 

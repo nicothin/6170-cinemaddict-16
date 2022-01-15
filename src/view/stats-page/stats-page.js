@@ -12,16 +12,16 @@ export default class StatsPage extends SmartComponent {
     return createStatsPage(this._data);
   }
 
-  setFilterHandler = (callback) => {
-    this._callback.change = callback;
-    this.element.addEventListener('change', this.#filterChange);
+  setFilterChangeHandler = (callback) => {
+    this._callback.filterChange = callback;
+    this.element.addEventListener('change', this.#filterChangeHandler);
   }
 
-  #filterChange = (event) => {
-    this._callback.change(event.target.value);
+  #filterChangeHandler = (event) => {
+    this._callback.filterChange(event.target.value);
   }
 
   restoreHandlers = () => {
-    this.setFilterHandler(this._callback.change);
+    this.setFilterChangeHandler(this._callback.filterChange);
   }
 }

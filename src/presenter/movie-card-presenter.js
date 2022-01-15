@@ -19,33 +19,33 @@ export default class MovieCardPresenter {
 
   init = () => {
     this.#movieCardComponent = new MovieCard(this.#movie);
-    this.#movieCardComponent.setLinkClickHandler(this.#linkClickHandler);
-    this.#movieCardComponent.setAddToWatchlistClickHandler(this.#addToWatchlistHandler);
-    this.#movieCardComponent.setMarkAsWatchedClickHandler(this.#markAsWatchedHandler);
-    this.#movieCardComponent.setFavoriteClickHandler(this.#favoriteHandler);
+    this.#movieCardComponent.setLinkClickHandler(this.#movieCardLinkClickHandler);
+    this.#movieCardComponent.setAddToWatchlistClickHandler(this.#movieCardAddToWatchlistHandler);
+    this.#movieCardComponent.setMarkAsWatchedClickHandler(this.#movieCardMarkAsWatchedHandler);
+    this.#movieCardComponent.setFavoriteClickHandler(this.#movieCardFavoriteHandler);
 
     this.#wrapperComponent.renderMovieCard(this.#movieCardComponent);
   }
 
-  #linkClickHandler = (movieId) => {
+  #movieCardLinkClickHandler = (movieId) => {
     this.#model.dispatch(ActionCreator.setActiveMovieId(movieId));
   }
 
-  #addToWatchlistHandler = (movieId) => {
+  #movieCardAddToWatchlistHandler = (movieId) => {
     changeMovieUserDetails(this.#model, TypeOfActionOnMovie.WATCHLIST, movieId)
       .catch(() => {
         this.#movieCardComponent.shakeYourButtonBaby(TypeOfActionOnMovie.WATCHLIST);
       });
   }
 
-  #markAsWatchedHandler = (movieId) => {
+  #movieCardMarkAsWatchedHandler = (movieId) => {
     changeMovieUserDetails(this.#model, TypeOfActionOnMovie.HISTORY, movieId)
       .catch(() => {
         this.#movieCardComponent.shakeYourButtonBaby(TypeOfActionOnMovie.HISTORY);
       });
   }
 
-  #favoriteHandler = (movieId) => {
+  #movieCardFavoriteHandler = (movieId) => {
     changeMovieUserDetails(this.#model, TypeOfActionOnMovie.FAVORITES, movieId)
       .catch(() => {
         this.#movieCardComponent.shakeYourButtonBaby(TypeOfActionOnMovie.FAVORITES);
