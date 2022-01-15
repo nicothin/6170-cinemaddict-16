@@ -12,16 +12,16 @@ export default class StatsPage extends SmartComponent {
     return createStatsPage(this._data);
   }
 
-  // setScrollHandler = (callback) => {
-  //   this._callback.scroll = callback;
-  //   this.element.addEventListener('scroll', this.#onScroll);
-  // }
+  setFilterHandler = (callback) => {
+    this._callback.filter = callback;
+    this.element.addEventListener('change', this.#filterChange);
+  }
 
-  // #onScroll = (event) => {
-  //   this._callback.scroll(event.target.scrollTop);
-  // }
+  #filterChange = (event) => {
+    this._callback.filter(event.target.value);
+  }
 
   restoreHandlers = () => {
-    // this.setScrollHandler(this._callback.scroll);
+    this.setFilterHandler(this._callback.filter);
   }
 }

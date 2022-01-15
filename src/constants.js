@@ -33,6 +33,14 @@ export const Sorting = {
   RATING: 'rating',
 };
 
+export const StatsFilter = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
+
 export const ModelState = {
   ALL_MOVIES: 'allMovies',
   HASH: 'hash',

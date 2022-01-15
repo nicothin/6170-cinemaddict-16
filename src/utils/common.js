@@ -23,22 +23,27 @@ export const getFormattedList = (data) => typeof data === 'string' ? data : data
 /**
  * Получить длительность в часах изи длительности в минутах
  * @param {number} minutes Количество минут
+ * @param {string} letterWrapperClassName Класс обертки букв в форматированной длительности
+ * @param {string} letterWrapperTag Тег обертки букв в форматированной длительности
  * @returns {string} Длительность в формате ЧЧh ММm
  */
-export const getFormattedRuntime = (minutes) => {
+export const getFormattedRuntime = (minutes, letterWrapperClassName, letterWrapperTag = 'span') => {
   const runtimeHours = Math.trunc(minutes / 60);
-  return `${runtimeHours ? `${runtimeHours}h` : ''} ${minutes % 60}m`;
+  const hoursMarkup = letterWrapperClassName ? `<${letterWrapperTag} class="${letterWrapperClassName}">h</${letterWrapperTag}>` : 'h';
+  const minutesMarkup = letterWrapperClassName ? `<${letterWrapperTag} class="${letterWrapperClassName}">m</${letterWrapperTag}>` : 'h';
+  return `${runtimeHours ? `${runtimeHours}${hoursMarkup}` : ''} ${minutes % 60}${minutesMarkup}`;
 };
 
 export const isEscPressed = (event) => event.key === 'Escape' || event.key === 'Esc';
 
 /**
- * Получить статус юзера
+ * Получить данные юзера
  * @param {number} moviesCounter Количество просмотренных фильмов
- * @returns {string} Соответствующий статус
+ * @returns {{ rank: string, avatar: string }} Ранг и аватар
  */
-export const getUserRank = (moviesCounter) => {
+export const getUserData = (moviesCounter) => {
   let rank = '';
+  const avatar = 'images/bitmap@2x.png'; // NOTE[@nicothin]: предположительно, тоже будет меняться
 
   if (moviesCounter >= 1 && moviesCounter <= 10) {
     rank = 'novice';
@@ -50,5 +55,8 @@ export const getUserRank = (moviesCounter) => {
     rank = 'movie buff';
   }
 
-  return rank;
+  return {
+    rank,
+    avatar
+  };
 };
