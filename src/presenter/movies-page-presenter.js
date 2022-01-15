@@ -237,6 +237,10 @@ export default class MoviesPagePresenter {
 
     this.#currentSortType = sortType;
     this.#moviesList = this.#getMovieList(this.#allMovies, this.#currentHash);
+
+    // NOTE[@nicothin]: увы, по ТЗ при смене сортировки нужно сбросить счетчик показанных (WTF?)
+    this.#renderedMovieCardCounter = MOVIE_COUNT_PER_STEP;
+
     this.#renderMainList();
   }
 
