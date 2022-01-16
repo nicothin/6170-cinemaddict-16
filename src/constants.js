@@ -9,7 +9,7 @@ export const Emotions = [
   'smile',
   'sleeping',
   'puke',
-  'angry'
+  'angry',
 ];
 
 export const RenderPosition = {

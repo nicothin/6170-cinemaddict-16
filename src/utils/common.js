@@ -57,6 +57,6 @@ export const getUserData = (moviesCounter) => {
 
   return {
     rank,
-    avatar
+    avatar,
   };
 };

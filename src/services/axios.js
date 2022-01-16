@@ -4,7 +4,7 @@ import camelcaseKeys from 'camelcase-keys';
 const axiosInstance = axios.create({
   baseURL: 'https://16.ecmascript.pages.academy/cinemaddict/',
   timeout: 10000,
-  headers: { 'Authorization': 'Basic nicothin\'s_Frankenstein' }
+  headers: { 'Authorization': 'Basic nicothin\'s_Frankenstein' },
 });
 
 axiosInstance.interceptors.response.use((response) => {
