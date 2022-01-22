@@ -16,7 +16,7 @@ export const createMovieDetails = (movie) => {
     director = '',
     writers = [],
     actors = [],
-    genre = [],
+    genre: genres = [],
     release = {
       date: dayjs(),
     },
@@ -36,13 +36,13 @@ export const createMovieDetails = (movie) => {
   const InfoText = {
     WRITER: `Writer${writers.length > 1 ? 's' : ''}`,
     ACTOR: `Actor${actors.length > 1 ? 's' : ''}`,
-    GENRE: `Genre${genre.length > 1 ? 's' : ''}`,
+    GENRE: `Genre${genres.length > 1 ? 's' : ''}`,
   };
 
   const formattedDirector = getFormattedList(director);
   const formattedWriter = getFormattedList(writers);
   const formattedActor = getFormattedList(actors);
-  const formattedGenres = genre.map((item) => `<span class="film-details__genre">${item}</span>`).join(' ');
+  const formattedGenres = genres.map((item) => `<span class="film-details__genre">${item}</span>`).join(' ');
   const formattedRelease = dayjs(release.date).format('DD MMMM YYYY');
   const formattedRuntime = getFormattedRuntime(runtime);
 

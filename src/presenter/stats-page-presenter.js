@@ -46,34 +46,34 @@ export default class StatsPagePresenter {
   #updateStatsData = (watchedMovies, activeFilter = StatsFilter.ALL_TIME) => {
     const total = watchedMovies.reduce((data, movie) => {
       movie.filmInfo.genre.forEach((genre) => {
-        const listItem = data.list.find((item) => item.genre === genre);
+        const listItem = data.genresList.find((item) => item.genre === genre);
         if (listItem) {
           listItem.counter += 1;
         }
         else {
-          data.list.push({ genre, counter: 1 });
+          data.genresList.push({ genre, counter: 1 });
         }
       });
       return {
         duration: data.duration + movie.filmInfo.runtime,
-        list: data.list
+        genresList: data.genresList
       };
     }, {
       duration: 0,
-      list: []
+      genresList: []
     });
 
-    total.list.sort((a, b) => b.counter - a.counter);
+    total.genresList.sort((a, b) => b.counter - a.counter);
 
-    const chartDataBar100Percent = total.list[0]?.counter;
+    const chartDataBar100Percent = total.genresList[0]?.counter;
 
     this.#statsData = {
       user: getUserData(this.#getAllWatchedMovies().length),
       counter: watchedMovies.length,
       duration: total.duration,
-      topGenre: total.list[0]?.genre,
+      topGenre: total.genresList[0]?.genre,
       activeFilter,
-      chartData: total.list.map((item) => ({ ...item, barSize: Math.round(item.counter * 100 / chartDataBar100Percent) })),
+      chartData: total.genresList.map((item) => ({ ...item, barSize: Math.round(item.counter * 100 / chartDataBar100Percent) })),
     };
   }
 

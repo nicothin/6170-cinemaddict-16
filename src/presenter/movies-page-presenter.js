@@ -17,8 +17,8 @@ export default class MoviesPagePresenter {
 
   #allMovies = [];
   #moviesList = [];
-  #topRatedList = [];
-  #mostCommentedList = [];
+  #topRatedMoviesList = [];
+  #mostCommentedMoviesList = [];
 
   #currentHash = Hashes.ALL;
   #currentSortType = Sorting.DEFAULT;
@@ -132,23 +132,23 @@ export default class MoviesPagePresenter {
     if (allMovies.length === 0) {
       this.#allMovies = [];
       this.#moviesList = [];
-      this.#topRatedList = [];
-      this.#mostCommentedList = [];
+      this.#topRatedMoviesList = [];
+      this.#mostCommentedMoviesList = [];
     }
     else {
       this.#allMovies = allMovies;
       this.#moviesList = this.#getMovieList(allMovies, this.#currentHash);
 
-      this.#topRatedList = this.#getMovieListSortedByRating(allMovies).slice(0, MOVIE_TOP_RATED_COUNT);
-      const haveOnlyZeroRatedMovies = this.#topRatedList.length === this.#topRatedList.filter((movie) => movie.filmInfo.totalRating === 0).length;
+      this.#topRatedMoviesList = this.#getMovieListSortedByRating(allMovies).slice(0, MOVIE_TOP_RATED_COUNT);
+      const haveOnlyZeroRatedMovies = this.#topRatedMoviesList.length === this.#topRatedMoviesList.filter((movie) => movie.filmInfo.totalRating === 0).length;
       if (haveOnlyZeroRatedMovies) {
-        this.#topRatedList = [];
+        this.#topRatedMoviesList = [];
       }
 
-      this.#mostCommentedList = this.#getMovieListSortedByCommentsCount(allMovies).slice(0, MOVIE_MOST_COMMENT_COUNT);
-      const haveOnlyMoviesWithoutComments = this.#mostCommentedList.length === this.#mostCommentedList.filter((movie) => movie.comments.length === 0).length;
+      this.#mostCommentedMoviesList = this.#getMovieListSortedByCommentsCount(allMovies).slice(0, MOVIE_MOST_COMMENT_COUNT);
+      const haveOnlyMoviesWithoutComments = this.#mostCommentedMoviesList.length === this.#mostCommentedMoviesList.filter((movie) => movie.comments.length === 0).length;
       if (haveOnlyMoviesWithoutComments) {
-        this.#mostCommentedList = [];
+        this.#mostCommentedMoviesList = [];
       }
     }
   }
@@ -165,24 +165,24 @@ export default class MoviesPagePresenter {
   }
 
   #getMovieList = (allMovies, currentFilter) => {
-    let filteredMovieList = [];
+    let filteredMoviesList = [];
     switch (currentFilter) {
       case Hashes.WATCHLIST:
-        filteredMovieList = allMovies.filter((movie) => movie.userDetails.watchlist);
+        filteredMoviesList = allMovies.filter((movie) => movie.userDetails.watchlist);
         break;
       case Hashes.HISTORY:
-        filteredMovieList = allMovies.filter((movie) => movie.userDetails.alreadyWatched);
+        filteredMoviesList = allMovies.filter((movie) => movie.userDetails.alreadyWatched);
         break;
       case Hashes.FAVORITES:
-        filteredMovieList = allMovies.filter((movie) => movie.userDetails.favorite);
+        filteredMoviesList = allMovies.filter((movie) => movie.userDetails.favorite);
         break;
       default:
-        filteredMovieList = _.cloneDeep(allMovies);
+        filteredMoviesList = _.cloneDeep(allMovies);
     }
 
     return this.#currentSortType !== Sorting.DEFAULT ?
-      this.#sortMoviesList(filteredMovieList, this.#currentSortType) :
-      filteredMovieList;
+      this.#sortMoviesList(filteredMoviesList, this.#currentSortType) :
+      filteredMoviesList;
   }
 
   #getMovieListSortedByRating = (list) => _.cloneDeep(list).sort((a, b) => a.filmInfo.totalRating < b.filmInfo.totalRating ? 1 : -1);
@@ -223,23 +223,23 @@ export default class MoviesPagePresenter {
   }
 
   #renderTopRatedList = () => {
-    if (this.#topRatedList.length) {
+    if (this.#topRatedMoviesList.length) {
       render(this.#moviesPageInnerComponent, this.#topRatedListComponent);
       this.#topRatedListComponent.clearList();
       this.#renderMovieCards(
         this.#topRatedListComponent,
-        this.#topRatedList,
+        this.#topRatedMoviesList,
       );
     }
   }
 
   #renderMostCommentedList = () => {
-    if (this.#mostCommentedList.length) {
+    if (this.#mostCommentedMoviesList.length) {
       render(this.#moviesPageInnerComponent, this.#mostCommentedListComponent);
       this.#mostCommentedListComponent.clearList();
       this.#renderMovieCards(
         this.#mostCommentedListComponent,
-        this.#mostCommentedList,
+        this.#mostCommentedMoviesList,
       );
     }
   }

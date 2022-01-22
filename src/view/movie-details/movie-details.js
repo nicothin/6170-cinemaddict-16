@@ -54,7 +54,7 @@ export default class MovieDetails extends SmartComponent {
 
   setScrollHandler = (callback) => {
     this._callback.scroll = callback;
-    this.element.addEventListener('scroll', this.#onScroll);
+    this.element.addEventListener('scroll', this.#movieDetailsScrollHandler);
   }
 
   #closeClickHandler = (event) => {
@@ -77,7 +77,7 @@ export default class MovieDetails extends SmartComponent {
     this._callback.favorite(this._data.id);
   }
 
-  #onScroll = (event) => {
+  #movieDetailsScrollHandler = (event) => {
     this._callback.scroll(event.target.scrollTop);
   }
 

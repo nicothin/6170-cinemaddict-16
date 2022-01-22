@@ -45,8 +45,8 @@ export default class MovieDetailsPresenter {
 
   #renderMovieDetails = () => {
     setPageScrollDisable(true);
-    document.addEventListener('keydown', this.#onEscKeyDown);
-    document.addEventListener('keydown', this.#onCtrlEnterDown);
+    document.addEventListener('keydown', this.#documentEscKeyDownHandler);
+    document.addEventListener('keydown', this.#documentCtrlEnterKeyDownHandler);
 
     this.#movieDetailsComponent.updateData(this.#currentMovie);
     render(this.#wrapperElement, this.#movieDetailsComponent, RenderPosition.AFTEREND);
@@ -68,8 +68,8 @@ export default class MovieDetailsPresenter {
 
   #removeMovieDetails = () => {
     setPageScrollDisable(false);
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-    document.removeEventListener('keydown', this.#onCtrlEnterDown);
+    document.removeEventListener('keydown', this.#documentEscKeyDownHandler);
+    document.removeEventListener('keydown', this.#documentCtrlEnterKeyDownHandler);
 
     this.#currentMovie = null;
     this.#currentScroll = 0;
@@ -86,13 +86,13 @@ export default class MovieDetailsPresenter {
     this.#movieDetailsComponent.element.scrollTo(0, this.#currentScroll);
   }
 
-  #onEscKeyDown = (event) => {
+  #documentEscKeyDownHandler = (event) => {
     if (isEscPressed(event)) {
       this.#model.dispatch(ActionCreator.setActiveMovieId(null));
     }
   };
 
-  #onCtrlEnterDown = (event) => {
+  #documentCtrlEnterKeyDownHandler = (event) => {
     if (event.code === 'Enter' && (event.ctrlKey || event.metaKey)) {
       this.#commentsComponent.submitForm();
     }
