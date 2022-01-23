@@ -72,10 +72,10 @@ export default class Comments extends SmartComponent {
 
   #setEmotionInputChangeHandler = (callback) => {
     this._callback.changeEmotion = callback;
-    this.element.addEventListener('change', this.#setCommentEmotion);
+    this.element.addEventListener('change', this.#setCommentEmotionInputChangeHandler);
   }
 
-  #setCommentEmotion = (event) => {
+  #setCommentEmotionInputChangeHandler = (event) => {
     if (event.target.classList.contains('film-details__emoji-item')) {
       const emotion = event.target.value;
       const emotionWrapperElement = this.element.querySelector('.film-details__add-emoji-label');
